@@ -104,34 +104,75 @@ export default async function handler(req: Request): Promise<Response> {
 
   try {
     const { messages, context } = await req.json();
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error('LOVABLE_API_KEY is not configured');
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not configured');
 
     let guestContext = '';
     if (context?.wifiPassword) guestContext += `\nDas WLAN-Passwort für diesen Gast lautet: **${context.wifiPassword}**`;
     if (context?.boxCode) guestContext += `\nDer Schlüsselbox-Code für diesen Gast lautet: **${context.boxCode}**`;
     if (context?.guestName) guestContext += `\nDer Gast heißt: ${context.guestName}`;
 
-    const systemMessage = SYSTEM_PROMPT + (guestContext ? `\n\nINDIVIDUELLE GÄSTEDATEN:${guestContext}` : '');
+    const systemContent = SYSTEM_PROMPT + (guestContext ? `\n\nINDIVIDUELLE GÄSTEDATEN:${guestContext}` : '');
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'prompt-caching-2024-07-31',
+        'content-type': 'application/json',
+      },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'system', content: systemMessage }, ...messages],
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
         stream: true,
+        system: [{ type: 'text', text: systemContent, cache_control: { type: 'ephemeral' } }],
+        messages,
       }),
     });
 
     if (!response.ok) {
       const status = response.status;
       if (status === 429) return new Response(JSON.stringify({ error: 'Zu viele Anfragen – bitte kurz warten.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
-      if (status === 402) return new Response(JSON.stringify({ error: 'Service vorübergehend nicht verfügbar.' }), { status: 402, headers: { 'Content-Type': 'application/json' } });
       return new Response(JSON.stringify({ error: 'AI-Service nicht verfügbar' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
-    return new Response(response.body, { headers: { 'Content-Type': 'text/event-stream' } });
+    // Convert Anthropic SSE format to OpenAI SSE format (frontend expects OpenAI format)
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    (async () => {
+      const reader = response.body!.getReader();
+      let buffer = '';
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const jsonStr = line.slice(6).trim();
+            try {
+              const parsed = JSON.parse(jsonStr);
+              if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
+                const openai = JSON.stringify({ choices: [{ delta: { content: parsed.delta.text } }] });
+                await writer.write(encoder.encode(`data: ${openai}\n\n`));
+              } else if (parsed.type === 'message_stop') {
+                await writer.write(encoder.encode('data: [DONE]\n\n'));
+              }
+            } catch { /* ignore malformed lines */ }
+          }
+        }
+      } finally {
+        await writer.close();
+      }
+    })();
+
+    return new Response(readable, { headers: { 'Content-Type': 'text/event-stream' } });
   } catch (e) {
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : 'Unbekannter Fehler' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
