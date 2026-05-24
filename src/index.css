@@ -1,0 +1,199 @@
+/* Fonts are loaded in index.html with preload for better performance */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ACHZEIT Design System - Modern Alpine Premium */
+
+@layer base {
+  :root {
+    /* Core brand colors - warm alpine palette */
+    --background: 40 30% 97%;
+    --foreground: 30 10% 15%;
+
+    --card: 40 25% 95%;
+    --card-foreground: 30 10% 15%;
+
+    --popover: 40 30% 97%;
+    --popover-foreground: 30 10% 15%;
+
+    /* Primary - warm dark grey/charcoal */
+    --primary: 30 8% 20%;
+    --primary-foreground: 40 30% 97%;
+
+    /* Secondary - warm beige */
+    --secondary: 35 25% 88%;
+    --secondary-foreground: 30 10% 15%;
+
+    /* Muted - soft natural tones */
+    --muted: 35 20% 92%;
+    --muted-foreground: 30 8% 45%;
+
+    /* Accent - warm sand/stone */
+    --accent: 32 30% 82%;
+    --accent-foreground: 30 10% 15%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 20% 85%;
+    --input: 35 20% 85%;
+    --ring: 30 8% 20%;
+
+    --radius: 0.25rem;
+
+    /* Alpine specific tokens */
+    --alpine-cream: 40 35% 95%;
+    --alpine-stone: 35 15% 75%;
+    --alpine-wood: 25 35% 35%;
+    --alpine-charcoal: 30 8% 20%;
+    --alpine-forest: 150 20% 25%;
+    --alpine-snow: 0 0% 99%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, hsla(30, 8%, 20%, 0.7) 0%, hsla(30, 8%, 20%, 0.4) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(35 25% 93%) 100%);
+    --gradient-section: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(35 25% 94%) 100%);
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsla(30, 10%, 20%, 0.08);
+    --shadow-medium: 0 8px 30px -6px hsla(30, 10%, 20%, 0.12);
+    --shadow-elevated: 0 16px 50px -12px hsla(30, 10%, 20%, 0.18);
+
+    /* Sidebar */
+    --sidebar-background: 40 30% 97%;
+    --sidebar-foreground: 30 10% 15%;
+    --sidebar-primary: 30 8% 20%;
+    --sidebar-primary-foreground: 40 30% 97%;
+    --sidebar-accent: 35 25% 88%;
+    --sidebar-accent-foreground: 30 10% 15%;
+    --sidebar-border: 35 20% 85%;
+    --sidebar-ring: 30 8% 20%;
+  }
+
+  .dark {
+    --background: 30 10% 8%;
+    --foreground: 40 20% 92%;
+
+    --card: 30 10% 12%;
+    --card-foreground: 40 20% 92%;
+
+    --popover: 30 10% 10%;
+    --popover-foreground: 40 20% 92%;
+
+    --primary: 40 25% 90%;
+    --primary-foreground: 30 10% 10%;
+
+    --secondary: 30 12% 18%;
+    --secondary-foreground: 40 20% 92%;
+
+    --muted: 30 10% 18%;
+    --muted-foreground: 35 15% 60%;
+
+    --accent: 32 15% 25%;
+    --accent-foreground: 40 20% 92%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 10% 20%;
+    --input: 30 10% 20%;
+    --ring: 40 25% 90%;
+
+    --alpine-cream: 30 10% 15%;
+    --alpine-stone: 30 8% 35%;
+    --alpine-wood: 25 20% 50%;
+    --alpine-charcoal: 40 20% 85%;
+    --alpine-forest: 150 15% 35%;
+    --alpine-snow: 30 10% 95%;
+
+    --sidebar-background: 30 10% 10%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 40 25% 90%;
+    --sidebar-primary-foreground: 30 10% 10%;
+    --sidebar-accent: 30 12% 18%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 30 10% 20%;
+    --sidebar-ring: 40 25% 90%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  .container-narrow {
+    @apply max-w-5xl mx-auto px-6;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .alpine-divider {
+    @apply w-16 h-0.5 bg-alpine-stone mx-auto;
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Hide scrollbar for sticky nav */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

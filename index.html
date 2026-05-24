@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digitale Gästemappe</title>
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" /></noscript>
+
+    <style>
+      :root{--background:40 30% 97%;--foreground:30 10% 15%;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Inter',system-ui,sans-serif}
+      *,::after,::before{box-sizing:border-box;border:0 solid}
+      html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;line-height:1.5}
+      body{margin:0;background-color:hsl(var(--background));color:hsl(var(--foreground));font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+      #root{min-height:100vh}
+      img{max-width:100%;height:auto;display:block}
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

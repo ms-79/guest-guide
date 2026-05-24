@@ -1,0 +1,4 @@
+# Redirect all unknown paths to homepage with 301 (permanent redirect)
+# This is SEO-friendly as it tells search engines the content has moved
+
+/*    /    301
