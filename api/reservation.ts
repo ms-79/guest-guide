@@ -1,12 +1,17 @@
 export const config = { runtime: 'edge' };
 
-const LISTING_ID = '463607';
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
-let cachedReservations: { data: any[]; fetchedAt: number } | null = null;
+// Per-listing caches keyed by listingId
+const cachedReservations: Record<string, { data: any[]; fetchedAt: number }> = {};
+const cachedListings: Record<string, { doorCode: string; wifiPassword: string; fetchedAt: number }> = {};
 const RESERVATION_CACHE_TTL = 30_000;
-let cachedListing: { doorCode: string; wifiPassword: string; fetchedAt: number } | null = null;
 const LISTING_CACHE_TTL = 120_000;
+
+function getListingIdFromSlug(slug: string): string | null {
+  const id = (slug || '').split('-')[0];
+  return /^\d+$/.test(id) ? id : null;
+}
 
 async function getHostawayToken(): Promise<string> {
   if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken!;
@@ -26,14 +31,16 @@ async function getHostawayToken(): Promise<string> {
   return data.access_token;
 }
 
-async function getActiveReservations(accessToken: string): Promise<any[]> {
+async function getActiveReservations(accessToken: string, listingId: string): Promise<any[]> {
   const now = Date.now();
-  if (cachedReservations && (now - cachedReservations.fetchedAt) < RESERVATION_CACHE_TTL) return cachedReservations.data;
+  const cached = cachedReservations[listingId];
+  if (cached && (now - cached.fetchedAt) < RESERVATION_CACHE_TTL) return cached.data;
+  const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
   const today = new Date().toISOString().slice(0, 10);
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString().slice(0, 10);
   const threeDaysAhead = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
   const res = await fetch(
-    `https://api.hostaway.com/v1/reservations?listingId=${LISTING_ID}&arrivalStartDate=${thirtyDaysAgo}&arrivalEndDate=${threeDaysAhead}&departureStartDate=${today}&limit=5&sortOrder=arrivalDate&sortDirection=desc&includeResources=1`,
+    `${baseUrl}/reservations?listingId=${listingId}&arrivalStartDate=${thirtyDaysAgo}&arrivalEndDate=${threeDaysAhead}&departureStartDate=${today}&limit=5&sortOrder=arrivalDate&sortDirection=desc&includeResources=1`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
   if (!res.ok) throw new Error(`Hostaway error: ${res.status}`);
@@ -46,20 +53,22 @@ async function getActiveReservations(accessToken: string): Promise<any[]> {
     if (!arrival || !departure) return false;
     return (today >= arrival && today <= departure) || (arrival > today && arrival <= threeDaysAhead);
   });
-  cachedReservations = { data: active, fetchedAt: now };
+  cachedReservations[listingId] = { data: active, fetchedAt: now };
   return active;
 }
 
-async function getListingDetails(accessToken: string): Promise<{ doorCode: string; wifiPassword: string }> {
+async function getListingDetails(accessToken: string, listingId: string): Promise<{ doorCode: string; wifiPassword: string }> {
   const now = Date.now();
-  if (cachedListing && (now - cachedListing.fetchedAt) < LISTING_CACHE_TTL) return cachedListing;
+  const cached = cachedListings[listingId];
+  if (cached && (now - cached.fetchedAt) < LISTING_CACHE_TTL) return cached;
+  const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
   try {
-    const res = await fetch(`https://api.hostaway.com/v1/listings/${LISTING_ID}`, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const res = await fetch(`${baseUrl}/listings/${listingId}`, { headers: { Authorization: `Bearer ${accessToken}` } });
     if (res.ok) {
       const data = await res.json();
       const l = data.result;
       const result = { doorCode: l.doorCode || l.doorSecurityCode || '', wifiPassword: l.wifiPassword || '', fetchedAt: now };
-      cachedListing = result;
+      cachedListings[listingId] = result;
       return result;
     }
   } catch { /* ignore */ }
@@ -99,22 +108,34 @@ export default async function handler(req: Request): Promise<Response> {
     const pin = url.searchParams.get('pin');
     const reservationId = url.searchParams.get('reservationId');
     const token = url.searchParams.get('token');
+    const propertySlug = url.searchParams.get('property') || '';
+
+    // Extract listing ID from slug (format: "{listingId}-{name}")
+    const listingId = getListingIdFromSlug(propertySlug);
+    if (!listingId) return json({ error: 'invalid_property', message: 'Unbekannte Property.' }, 400);
 
     const accessToken = await getHostawayToken();
 
     if (reservationId && token) {
       if (token !== FIXED_TOKEN) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
-      const resRes = await fetch(`https://api.hostaway.com/v1/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
+      const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
+      const resRes = await fetch(`${baseUrl}/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!resRes.ok) return json({ error: 'reservation_not_found' }, 404);
       const resData = await resRes.json();
       const reservation = resData.result;
-      if (String(reservation.listingMapId) !== LISTING_ID && String(reservation.listingId) !== LISTING_ID) return json({ error: 'reservation_not_found' }, 404);
-      const listing = await getListingDetails(accessToken);
+      // Verify reservation belongs to this listing
+      if (String(reservation.listingMapId) !== listingId && String(reservation.listingId) !== listingId) {
+        return json({ error: 'reservation_not_found' }, 404);
+      }
+      const listing = await getListingDetails(accessToken, listingId);
       const resp = buildGuestResponse(reservation, reservation.doorCode || reservation.doorSecurityCode || listing.doorCode, listing.wifiPassword);
       return json({ ...resp, reservationId, token });
     }
 
-    const [activeReservations, listing] = await Promise.all([getActiveReservations(accessToken), getListingDetails(accessToken)]);
+    const [activeReservations, listing] = await Promise.all([
+      getActiveReservations(accessToken, listingId),
+      getListingDetails(accessToken, listingId),
+    ]);
     if (activeReservations.length === 0) return json({ error: 'no_active_reservation', message: 'Aktuell kein aktiver Aufenthalt.' }, 404);
     if (!pin) return json({ status: 'pin_required' });
 
