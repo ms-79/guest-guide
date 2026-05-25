@@ -1,5 +1,8 @@
 export const config = { runtime: 'edge' };
 
+/** Strip UTF-8 BOM (U+FEFF) and surrounding whitespace from an env var. */
+const env = (name: string): string => (process.env[name] || '').replace(/^﻿/, '').trim();
+
 const SYSTEM_PROMPT = `Du bist der digitale Concierge des Ferienhauses ACHZEIT im Allgäu (Fischen im Allgäu, Achweg 5a). Du antwortest freundlich, persönlich und locker – du duzt die Gäste immer. Sprich den Gast NUR mit dem Vornamen an (z. B. „Hallo Christian!" statt „Hallo Christian Rhiel!"). Halte deine Antworten knapp und hilfreich.
 
 SPRACHE: Erkenne automatisch die Sprache der Nachricht des Gastes und antworte IMMER in derselben Sprache. Antworte ausschließlich basierend auf den folgenden Informationen.
@@ -104,7 +107,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   try {
     const { messages, context } = await req.json();
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = env('ANTHROPIC_API_KEY');
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not configured');
 
     let guestContext = '';
@@ -133,8 +136,9 @@ export default async function handler(req: Request): Promise<Response> {
 
     if (!response.ok) {
       const status = response.status;
+      const body = await response.text().catch(() => '');
       if (status === 429) return new Response(JSON.stringify({ error: 'Zu viele Anfragen – bitte kurz warten.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
-      return new Response(JSON.stringify({ error: 'AI-Service nicht verfügbar' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'AI-Service nicht verfügbar', status, detail: body.slice(0, 200) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
     // Convert Anthropic SSE format to OpenAI SSE format (frontend expects OpenAI format)
