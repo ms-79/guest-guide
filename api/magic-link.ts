@@ -1,5 +1,14 @@
 export const config = { runtime: 'edge' };
 
+// Static mapping: Hostaway listingId → property slug.
+// Update when adding new properties.
+const LISTING_SLUGS: Record<string, string> = {
+  '463607': '463607-achzeit-family-retreat',
+  '464732': '464732-felders-boutique-appartement',
+  '464733': '464733-felders-boutique-house',
+  '507092': '507092-phils-apartment',
+};
+
 // Generates the same HMAC token as reservation.ts — must stay in sync.
 async function generateToken(reservationId: string): Promise<string> {
   const secret = process.env.REDIRECT_HMAC_SECRET;
@@ -23,23 +32,27 @@ export default async function handler(req: Request): Promise<Response> {
   try {
     const url = new URL(req.url, `https://${req.headers.get('host') ?? 'localhost'}`);
     const reservationId = url.searchParams.get('r');
-    const propertySlug = url.searchParams.get('p');
+    const listingId = url.searchParams.get('p');   // accepts listingId (e.g. "463607")
     const key = url.searchParams.get('k');
 
-    // Shared secret — prevents enumeration of reservation IDs.
-    // Must match MAGIC_LINK_KEY env var. Guests never see this key (they get the HMAC token URL).
+    // Short shared secret — prevents reservation ID enumeration.
+    // Guests never see this key (they receive the HMAC token URL after redirect).
     const expectedKey = process.env.MAGIC_LINK_KEY;
     if (!expectedKey || key !== expectedKey) {
       return error('Unauthorized', 403);
     }
 
-    if (!reservationId || !propertySlug) {
-      return error('Missing required params: r (reservationId) and p (propertySlug)');
+    if (!reservationId || !listingId) {
+      return error('Missing required params: r (reservationId) and p (listingId)');
     }
 
-    // Validate reservationId is numeric to prevent token generation for arbitrary input
-    if (!/^\d+$/.test(reservationId)) {
-      return error('Invalid reservationId');
+    if (!/^\d+$/.test(reservationId) || !/^\d+$/.test(listingId)) {
+      return error('Invalid params');
+    }
+
+    const propertySlug = LISTING_SLUGS[listingId];
+    if (!propertySlug) {
+      return error('Unknown listing', 404);
     }
 
     const token = await generateToken(reservationId);
