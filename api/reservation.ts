@@ -13,23 +13,23 @@ function getListingIdFromSlug(slug: string): string | null {
   return /^\d+$/.test(id) ? id : null;
 }
 
+// Strip BOM / stray whitespace from env var value, then fall back to hardcoded default.
+function getHostawayBaseUrl(): string {
+  const raw = (process.env.HOSTAWAY_BASE_URL || '').replace(/^﻿/, '').trim();
+  return raw.startsWith('https://') ? raw : 'https://api.hostaway.com/v1';
+}
+
 async function getHostawayToken(): Promise<string> {
   if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken!;
   const accountId = process.env.HOSTAWAY_CLIENT_ID;
   const apiKey = process.env.HOSTAWAY_API_TOKEN;
-  const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
-  if (!accountId || !apiKey) throw new Error('Missing Hostaway credentials: id=' + (accountId ? 'ok' : 'missing') + ' key=' + (apiKey ? 'ok' : 'missing'));
-  const tokenUrl = `${baseUrl}/accessTokens`;
-  let res: Response;
-  try {
-    res = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ grant_type: 'client_credentials', client_id: accountId, client_secret: apiKey, scope: 'general' }),
-    });
-  } catch (e) {
-    throw new TypeError(`fetch_token failed url="${tokenUrl}" err=${e}`);
-  }
+  const baseUrl = getHostawayBaseUrl();
+  if (!accountId || !apiKey) throw new Error('Missing Hostaway credentials');
+  const res = await fetch(`${baseUrl}/accessTokens`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ grant_type: 'client_credentials', client_id: accountId, client_secret: apiKey, scope: 'general' }),
+  });
   if (!res.ok) throw new Error(`Token request failed: ${await res.text()}`);
   const data = await res.json();
   cachedToken = data.access_token;
@@ -41,7 +41,7 @@ async function getActiveReservations(accessToken: string, listingId: string): Pr
   const now = Date.now();
   const cached = cachedReservations[listingId];
   if (cached && (now - cached.fetchedAt) < RESERVATION_CACHE_TTL) return cached.data;
-  const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
+  const baseUrl = getHostawayBaseUrl();
   const today = new Date().toISOString().slice(0, 10);
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString().slice(0, 10);
   const threeDaysAhead = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
@@ -67,7 +67,7 @@ async function getListingDetails(accessToken: string, listingId: string): Promis
   const now = Date.now();
   const cached = cachedListings[listingId];
   if (cached && (now - cached.fetchedAt) < LISTING_CACHE_TTL) return cached;
-  const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
+  const baseUrl = getHostawayBaseUrl();
   try {
     const res = await fetch(`${baseUrl}/listings/${listingId}`, { headers: { Authorization: `Bearer ${accessToken}` } });
     if (res.ok) {
@@ -131,13 +131,10 @@ export default async function handler(req: Request): Promise<Response> {
   const json = (data: unknown, status = 200) =>
     new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
 
-  let step = 'init';
   try {
-    step = 'url_parse';
     // Use host header as base — handles both absolute and relative req.url (Edge runtime quirk)
     const host = req.headers.get('host') ?? 'localhost';
     const url = new URL(req.url.startsWith('http') ? req.url : `https://${host}${req.url}`);
-    step = 'params';
     const pin = url.searchParams.get('pin');
     const reservationId = url.searchParams.get('reservationId');
     const token = url.searchParams.get('token');
@@ -147,14 +144,11 @@ export default async function handler(req: Request): Promise<Response> {
     const listingId = getListingIdFromSlug(propertySlug);
     if (!listingId) return json({ error: 'invalid_property', message: 'Unbekannte Property.' }, 400);
 
-    step = 'hostaway_token';
     const accessToken = await getHostawayToken();
 
     if (reservationId && token) {
-      step = 'verify_token';
       if (!await verifyToken(reservationId, token)) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
-      step = 'fetch_reservation';
-      const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
+      const baseUrl = getHostawayBaseUrl();
       const resRes = await fetch(`${baseUrl}/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!resRes.ok) return json({ error: 'reservation_not_found' }, 404);
       const resData = await resRes.json();
@@ -168,7 +162,6 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ...resp, reservationId, token });
     }
 
-    step = 'fetch_active_reservations';
     const [activeReservations, listing] = await Promise.all([
       getActiveReservations(accessToken, listingId),
       getListingDetails(accessToken, listingId),
@@ -187,6 +180,6 @@ export default async function handler(req: Request): Promise<Response> {
     const reservationToken = await generateToken(String(matched.id));
     return json({ ...resp, reservationId: String(matched.id), token: reservationToken });
   } catch (error) {
-    return json({ error: String(error), step }, 500);
+    return json({ error: String(error) }, 500);
   }
 }
