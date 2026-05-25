@@ -13,16 +13,21 @@ function getListingIdFromSlug(slug: string): string | null {
   return /^\d+$/.test(id) ? id : null;
 }
 
+/** Strip UTF-8 BOM (U+FEFF) and surrounding whitespace from an env var value. */
+function env(name: string): string {
+  return (process.env[name] || '').replace(/^﻿/, '').trim();
+}
+
 // Strip BOM / stray whitespace from env var value, then fall back to hardcoded default.
 function getHostawayBaseUrl(): string {
-  const raw = (process.env.HOSTAWAY_BASE_URL || '').replace(/^﻿/, '').trim();
+  const raw = env('HOSTAWAY_BASE_URL');
   return raw.startsWith('https://') ? raw : 'https://api.hostaway.com/v1';
 }
 
 async function getHostawayToken(): Promise<string> {
   if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken!;
-  const accountId = process.env.HOSTAWAY_CLIENT_ID;
-  const apiKey = process.env.HOSTAWAY_API_TOKEN;
+  const accountId = env('HOSTAWAY_CLIENT_ID');
+  const apiKey = env('HOSTAWAY_API_TOKEN');
   const baseUrl = getHostawayBaseUrl();
   if (!accountId || !apiKey) throw new Error('Missing Hostaway credentials');
   const res = await fetch(`${baseUrl}/accessTokens`, {
@@ -84,7 +89,7 @@ async function getListingDetails(accessToken: string, listingId: string): Promis
 // Generate a deterministic, unforgeable token from reservationId using HMAC-SHA256.
 // Web Crypto API is available in Vercel Edge Runtime (no Node crypto needed).
 async function generateToken(reservationId: string): Promise<string> {
-  const secret = process.env.REDIRECT_HMAC_SECRET;
+  const secret = env('REDIRECT_HMAC_SECRET');
   if (!secret) throw new Error('REDIRECT_HMAC_SECRET not configured');
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey(

@@ -1,5 +1,8 @@
 export const config = { runtime: 'edge' };
 
+/** Strip UTF-8 BOM (U+FEFF) and surrounding whitespace from an env var value. */
+const env = (name: string): string => (process.env[name] || '').replace(/^﻿/, '').trim();
+
 // Static mapping: Hostaway listingId → property slug.
 // Update when adding new properties.
 const LISTING_SLUGS: Record<string, string> = {
@@ -11,7 +14,7 @@ const LISTING_SLUGS: Record<string, string> = {
 
 // Generates the same HMAC token as reservation.ts — must stay in sync.
 async function generateToken(reservationId: string): Promise<string> {
-  const secret = process.env.REDIRECT_HMAC_SECRET;
+  const secret = env('REDIRECT_HMAC_SECRET');
   if (!secret) throw new Error('REDIRECT_HMAC_SECRET not configured');
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -37,7 +40,7 @@ export default async function handler(req: Request): Promise<Response> {
 
     // Short shared secret — prevents reservation ID enumeration.
     // Guests never see this key (they receive the HMAC token URL after redirect).
-    const expectedKey = process.env.MAGIC_LINK_KEY;
+    const expectedKey = env('MAGIC_LINK_KEY');
     if (!expectedKey || key !== expectedKey) {
       return error('Unauthorized', 403);
     }
