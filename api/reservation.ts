@@ -125,9 +125,13 @@ export default async function handler(req: Request): Promise<Response> {
   const json = (data: unknown, status = 200) =>
     new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
 
+  let step = 'init';
   try {
+    step = 'url_parse';
     // Use host header as base — handles both absolute and relative req.url (Edge runtime quirk)
-    const url = new URL(req.url, `https://${req.headers.get('host') ?? 'localhost'}`);
+    const host = req.headers.get('host') ?? 'localhost';
+    const url = new URL(req.url.startsWith('http') ? req.url : `https://${host}${req.url}`);
+    step = 'params';
     const pin = url.searchParams.get('pin');
     const reservationId = url.searchParams.get('reservationId');
     const token = url.searchParams.get('token');
@@ -137,10 +141,13 @@ export default async function handler(req: Request): Promise<Response> {
     const listingId = getListingIdFromSlug(propertySlug);
     if (!listingId) return json({ error: 'invalid_property', message: 'Unbekannte Property.' }, 400);
 
+    step = 'hostaway_token';
     const accessToken = await getHostawayToken();
 
     if (reservationId && token) {
+      step = 'verify_token';
       if (!await verifyToken(reservationId, token)) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
+      step = 'fetch_reservation';
       const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
       const resRes = await fetch(`${baseUrl}/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!resRes.ok) return json({ error: 'reservation_not_found' }, 404);
@@ -155,6 +162,7 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ...resp, reservationId, token });
     }
 
+    step = 'fetch_active_reservations';
     const [activeReservations, listing] = await Promise.all([
       getActiveReservations(accessToken, listingId),
       getListingDetails(accessToken, listingId),
@@ -173,6 +181,6 @@ export default async function handler(req: Request): Promise<Response> {
     const reservationToken = await generateToken(String(matched.id));
     return json({ ...resp, reservationId: String(matched.id), token: reservationToken });
   } catch (error) {
-    return json({ error: String(error) }, 500);
+    return json({ error: String(error), step }, 500);
   }
 }
