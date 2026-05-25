@@ -18,12 +18,18 @@ async function getHostawayToken(): Promise<string> {
   const accountId = process.env.HOSTAWAY_CLIENT_ID;
   const apiKey = process.env.HOSTAWAY_API_TOKEN;
   const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
-  if (!accountId || !apiKey) throw new Error('Missing Hostaway credentials');
-  const res = await fetch(`${baseUrl}/accessTokens`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'client_credentials', client_id: accountId, client_secret: apiKey, scope: 'general' }),
-  });
+  if (!accountId || !apiKey) throw new Error('Missing Hostaway credentials: id=' + (accountId ? 'ok' : 'missing') + ' key=' + (apiKey ? 'ok' : 'missing'));
+  const tokenUrl = `${baseUrl}/accessTokens`;
+  let res: Response;
+  try {
+    res = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'client_credentials', client_id: accountId, client_secret: apiKey, scope: 'general' }),
+    });
+  } catch (e) {
+    throw new TypeError(`fetch_token failed url="${tokenUrl}" err=${e}`);
+  }
   if (!res.ok) throw new Error(`Token request failed: ${await res.text()}`);
   const data = await res.json();
   cachedToken = data.access_token;
