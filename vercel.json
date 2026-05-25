@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/guide/achzeit",
+      "destination": "/463607-achzeit-family-retreat",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]

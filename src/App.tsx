@@ -24,7 +24,7 @@ const App = () => (
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/guide/:slug" element={<GuestGuide />} />
+            <Route path="/:slug" element={<GuestGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

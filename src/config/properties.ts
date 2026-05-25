@@ -8,8 +8,8 @@ export interface PropertyConfig {
 }
 
 const PROPERTIES: Record<string, PropertyConfig> = {
-  achzeit: {
-    slug: 'achzeit',
+  '463607-achzeit-family-retreat': {
+    slug: '463607-achzeit-family-retreat',
     displayName: 'ACHZEIT',
     whatsappNumber: '4915679656368',
     logo: '/logos/achzeit.webp',
