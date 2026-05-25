@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 
 import { getProperty, type PropertyConfig } from '@/config/properties';
@@ -33,7 +33,7 @@ const FALLBACK_DATA: GuestData = {
   awpassLink: '',
 };
 
-type GuideState = 'loading' | 'pin' | 'loaded' | 'no_reservation' | 'error';
+type GuideState = 'loading' | 'pin' | 'loaded' | 'no_reservation' | 'error' | 'rate_limited';
 
 const fetchWithRetry = async (url: string, opts: RequestInit, retries = 2): Promise<Response> => {
   for (let i = 0; i <= retries; i++) {
@@ -47,11 +47,55 @@ const fetchWithRetry = async (url: string, opts: RequestInit, retries = 2): Prom
   throw new Error('Netzwerkfehler');
 };
 
+// ---------------------------------------------------------------------------
+// Rate-limited lockout screen with live countdown
+// ---------------------------------------------------------------------------
+const RateLimitedScreen = ({
+  lockedUntil,
+  property,
+  onExpired,
+}: {
+  lockedUntil: number;
+  property: PropertyConfig;
+  onExpired: () => void;
+}) => {
+  const { locale } = useGuestGuideLocale();
+  const t = translations;
+
+  const secondsLeft = () => Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+  const [secs, setSecs] = useState(secondsLeft);
+
+  useEffect(() => {
+    if (secs <= 0) { onExpired(); return; }
+    const timer = setTimeout(() => setSecs(secondsLeft()), 1000);
+    return () => clearTimeout(timer);
+  }, [secs]);
+
+  const min = Math.ceil(secs / 60);
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="w-full max-w-sm text-center">
+        <img src={property.logo} alt={property.displayName} className="w-24 mx-auto mb-8 opacity-40" />
+        <p className="text-destructive font-medium mb-2">{t.pinTooManyAttempts[locale]}</p>
+        <p className="text-muted-foreground text-sm">
+          {t.pinRetryIn[locale]} {min} {t.pinRetryMinutes[locale]}
+        </p>
+        <div className="mt-4 text-3xl font-mono text-muted-foreground tabular-nums">
+          {String(Math.floor(secs / 60)).padStart(2, '0')}:{String(secs % 60).padStart(2, '0')}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
   const [state, setState] = useState<GuideState>('loading');
   const [guestData, setGuestData] = useState<GuestData>(FALLBACK_DATA);
   const [errorMsg, setErrorMsg] = useState('');
   const [activeSection, setActiveSection] = useState('zugang');
+  const [pinFailures, setPinFailures] = useState(0);
+  const [rateLimitedUntil, setRateLimitedUntil] = useState(0); // ms timestamp
   const { locale, setLocale } = useGuestGuideLocale();
 
   const warmupPromiseRef = useRef<Promise<void> | null>(null);
@@ -119,7 +163,7 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
     load();
   }, []);
 
-  const handlePinSubmit = async (pin: string) => {
+  const handlePinSubmit = async (pin: string): Promise<'ok' | 'invalid'> => {
     try {
       const res = await fetchWithRetry(
         `${baseUrl}?pin=${pin}&property=${property.slug}`,
@@ -129,18 +173,27 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
 
       if (res.ok && body.status === 'ok') {
         setState('loading');
+        setPinFailures(0);
         applyGuestData(body);
+        return 'ok';
+      } else if (res.status === 429) {
+        const retryAfterSec: number = body.retryAfter ?? 900;
+        setRateLimitedUntil(Date.now() + retryAfterSec * 1_000);
+        setState('rate_limited');
+        return 'invalid';
       } else if (body.error === 'invalid_pin') {
+        setPinFailures(f => f + 1);
         return 'invalid';
       } else {
         setErrorMsg(body.message || body.error || 'Fehler');
         setState('error');
+        return 'invalid';
       }
     } catch {
       setErrorMsg('Verbindungsfehler. Bitte erneut versuchen.');
       setState('error');
+      return 'invalid';
     }
-    return 'ok';
   };
 
   if (state === 'loading') {
@@ -178,8 +231,16 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
     );
   }
 
+  if (state === 'rate_limited') {
+    return <RateLimitedScreen
+      lockedUntil={rateLimitedUntil}
+      property={property}
+      onExpired={() => { setPinFailures(0); setState('pin'); }}
+    />;
+  }
+
   if (state === 'pin') {
-    return <GuestGuidePinEntry onSubmit={handlePinSubmit} />;
+    return <GuestGuidePinEntry onSubmit={handlePinSubmit} failures={pinFailures} />;
   }
 
   const handleNavClick = (section: string) => {

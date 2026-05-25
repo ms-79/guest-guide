@@ -587,6 +587,10 @@ export const translations = {
     'Voer de laatste 4 cijfers van je telefoonnummer in.',
   ),
   pinInvalid: t('Ungültige PIN. Bitte versuche es erneut.', 'Invalid PIN. Please try again.', 'PIN inválido. Inténtelo de nuevo.', 'PIN non valido. Riprovare.', 'PIN invalide. Veuillez réessayer.', 'Ongeldige PIN. Probeer het opnieuw.'),
+  pinAttemptsLeft: t('Versuch übrig', 'attempt left', 'intento restante', 'tentativo rimasto', 'tentative restante', 'poging over'),
+  pinTooManyAttempts: t('Zu viele Fehlversuche.', 'Too many failed attempts.', 'Demasiados intentos fallidos.', 'Troppi tentativi falliti.', 'Trop de tentatives échouées.', 'Te veel mislukte pogingen.'),
+  pinRetryIn: t('Bitte warte', 'Please wait', 'Por favor espera', 'Attendi', 'Veuillez patienter', 'Wacht'),
+  pinRetryMinutes: t('Minute(n).', 'minute(s).', 'minuto(s).', 'minuto/i.', 'minute(s).', 'minuut/minuten.'),
   pinButton: t('Weiter', 'Continue', 'Continuar', 'Continua', 'Continuer', 'Verder'),
   pinChecking: t('Prüfe…', 'Checking…', 'Verificando…', 'Verifica…', 'Vérification…', 'Controleren…'),
   pinHint: t(

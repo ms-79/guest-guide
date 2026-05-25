@@ -8,6 +8,47 @@ const cachedListings: Record<string, { doorCode: string; wifiPassword: string; f
 const RESERVATION_CACHE_TTL = 30_000;
 const LISTING_CACHE_TTL = 120_000;
 
+// ---------------------------------------------------------------------------
+// PIN brute-force protection (in-memory, per-instance)
+// Note: Vercel Edge may spawn multiple instances — this guards within one
+// instance. Sufficient for low-traffic vacation rental use case.
+// ---------------------------------------------------------------------------
+const PIN_MAX_ATTEMPTS = 5;
+const PIN_WINDOW_MS   = 15 * 60 * 1000;  // 15 min rolling window
+const PIN_LOCKOUT_MS  = 15 * 60 * 1000;  // 15 min lockout after max attempts
+const PIN_FAILURE_DELAY_MS = 1_000;       // slow down each wrong guess
+
+interface RateEntry { count: number; windowStart: number; lockedUntil: number; }
+const pinRateMap = new Map<string, RateEntry>();
+
+function getClientIp(req: Request): string {
+  return (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+    || req.headers.get('x-real-ip')
+    || 'unknown';
+}
+
+function checkPinRate(ip: string): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const e = pinRateMap.get(ip);
+  if (!e) return { allowed: true };
+  if (e.lockedUntil > now) return { allowed: false, retryAfter: Math.ceil((e.lockedUntil - now) / 1000) };
+  if (now - e.windowStart > PIN_WINDOW_MS) { pinRateMap.delete(ip); return { allowed: true }; }
+  return { allowed: e.count < PIN_MAX_ATTEMPTS };
+}
+
+function recordPinFailure(ip: string): void {
+  const now = Date.now();
+  const e = pinRateMap.get(ip);
+  if (!e || now - e.windowStart > PIN_WINDOW_MS) {
+    pinRateMap.set(ip, { count: 1, windowStart: now, lockedUntil: 0 });
+  } else {
+    e.count++;
+    if (e.count >= PIN_MAX_ATTEMPTS) e.lockedUntil = now + PIN_LOCKOUT_MS;
+  }
+}
+
+function clearPinRate(ip: string): void { pinRateMap.delete(ip); }
+
 function getListingIdFromSlug(slug: string): string | null {
   const id = (slug || '').split('-')[0];
   return /^\d+$/.test(id) ? id : null;
@@ -174,13 +215,25 @@ export default async function handler(req: Request): Promise<Response> {
     if (activeReservations.length === 0) return json({ error: 'no_active_reservation', message: 'Aktuell kein aktiver Aufenthalt.' }, 404);
     if (!pin) return json({ status: 'pin_required' });
 
+    // Rate-limit PIN guesses per client IP
+    const ip = getClientIp(req);
+    const rateCheck = checkPinRate(ip);
+    if (!rateCheck.allowed) {
+      return json({ error: 'rate_limited', message: 'Zu viele Fehlversuche.', retryAfter: rateCheck.retryAfter }, 429);
+    }
+
     const matched = activeReservations.find((r: any) => {
       const digits = (r.guestPhone || r.phone || '').replace(/\D/g, '');
       const expectedPin = digits.slice(-4);
       return expectedPin && pin === expectedPin;
     });
 
-    if (!matched) return json({ error: 'invalid_pin', message: 'Ungültige PIN.' }, 403);
+    if (!matched) {
+      recordPinFailure(ip);
+      await new Promise(r => setTimeout(r, PIN_FAILURE_DELAY_MS)); // slow-down on wrong PIN
+      return json({ error: 'invalid_pin', message: 'Ungültige PIN.' }, 403);
+    }
+    clearPinRate(ip); // successful login → reset counter
     const resp = buildGuestResponse(matched, matched.doorCode || matched.doorSecurityCode || listing.doorCode, listing.wifiPassword);
     const reservationToken = await generateToken(String(matched.id));
     return json({ ...resp, reservationId: String(matched.id), token: reservationToken });

@@ -5,16 +5,20 @@ import { Lock } from 'lucide-react';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
 import { translations } from './translations';
 
+const PIN_MAX_ATTEMPTS = 5; // must match backend
+
 interface Props {
   onSubmit: (pin: string) => Promise<'ok' | 'invalid'>;
+  failures?: number; // consecutive wrong attempts (tracked by parent)
 }
 
-const GuestGuidePinEntry = ({ onSubmit }: Props) => {
+const GuestGuidePinEntry = ({ onSubmit, failures = 0 }: Props) => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { locale } = useGuestGuideLocale();
   const t = translations;
+  const attemptsLeft = PIN_MAX_ATTEMPTS - failures;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +67,14 @@ const GuestGuidePinEntry = ({ onSubmit }: Props) => {
           />
 
           {error && (
-            <p className="text-destructive text-sm">{t.pinInvalid[locale]}</p>
+            <div className="space-y-1">
+              <p className="text-destructive text-sm">{t.pinInvalid[locale]}</p>
+              {failures > 0 && attemptsLeft > 0 && (
+                <p className="text-amber-600 dark:text-amber-400 text-xs">
+                  {attemptsLeft} {t.pinAttemptsLeft[locale]}
+                </p>
+              )}
+            </div>
           )}
 
           <Button
