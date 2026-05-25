@@ -75,7 +75,29 @@ async function getListingDetails(accessToken: string, listingId: string): Promis
   return { doorCode: '', wifiPassword: '' };
 }
 
-const FIXED_TOKEN = 'ABC321';
+// Generate a deterministic, unforgeable token from reservationId using HMAC-SHA256.
+// Web Crypto API is available in Vercel Edge Runtime (no Node crypto needed).
+async function generateToken(reservationId: string): Promise<string> {
+  const secret = process.env.REDIRECT_HMAC_SECRET;
+  if (!secret) throw new Error('REDIRECT_HMAC_SECRET not configured');
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', enc.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false, ['sign'],
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(reservationId));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyToken(reservationId: string, token: string): Promise<boolean> {
+  try {
+    const expected = await generateToken(reservationId);
+    return expected === token;
+  } catch {
+    return false;
+  }
+}
 
 function extractCustomField(reservation: any, fieldId: number): string {
   const cfv = reservation.customFieldValues;
@@ -118,7 +140,7 @@ export default async function handler(req: Request): Promise<Response> {
     const accessToken = await getHostawayToken();
 
     if (reservationId && token) {
-      if (token !== FIXED_TOKEN) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
+      if (!await verifyToken(reservationId, token)) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
       const baseUrl = process.env.HOSTAWAY_BASE_URL || 'https://api.hostaway.com/v1';
       const resRes = await fetch(`${baseUrl}/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!resRes.ok) return json({ error: 'reservation_not_found' }, 404);
@@ -148,7 +170,8 @@ export default async function handler(req: Request): Promise<Response> {
 
     if (!matched) return json({ error: 'invalid_pin', message: 'Ungültige PIN.' }, 403);
     const resp = buildGuestResponse(matched, matched.doorCode || matched.doorSecurityCode || listing.doorCode, listing.wifiPassword);
-    return json({ ...resp, reservationId: String(matched.id), token: FIXED_TOKEN });
+    const reservationToken = await generateToken(String(matched.id));
+    return json({ ...resp, reservationId: String(matched.id), token: reservationToken });
   } catch (error) {
     return json({ error: String(error) }, 500);
   }
