@@ -104,7 +104,8 @@ export default async function handler(req: Request): Promise<Response> {
     new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
 
   try {
-    const url = new URL(req.url);
+    // Use host header as base — handles both absolute and relative req.url (Edge runtime quirk)
+    const url = new URL(req.url, `https://${req.headers.get('host') ?? 'localhost'}`);
     const pin = url.searchParams.get('pin');
     const reservationId = url.searchParams.get('reservationId');
     const token = url.searchParams.get('token');
