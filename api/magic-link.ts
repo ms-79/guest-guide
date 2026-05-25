@@ -24,6 +24,14 @@ export default async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url, `https://${req.headers.get('host') ?? 'localhost'}`);
     const reservationId = url.searchParams.get('r');
     const propertySlug = url.searchParams.get('p');
+    const key = url.searchParams.get('k');
+
+    // Shared secret — prevents enumeration of reservation IDs.
+    // Must match MAGIC_LINK_KEY env var. Guests never see this key (they get the HMAC token URL).
+    const expectedKey = process.env.MAGIC_LINK_KEY;
+    if (!expectedKey || key !== expectedKey) {
+      return error('Unauthorized', 403);
+    }
 
     if (!reservationId || !propertySlug) {
       return error('Missing required params: r (reservationId) and p (propertySlug)');
