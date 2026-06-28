@@ -122,6 +122,15 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             </span>
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-4">
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.bedroomsTitle[locale]}</h4>
+              <ul className="space-y-1 text-sm">
+                {[t.bedroom1, t.bedroom2, t.bedroom3].map((item, i) => (
+                  <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
+                ))}
+              </ul>
+            </div>
+
             <ul className="space-y-2 text-sm">
               {[t.familyItems.crib, t.familyItems.changingMat, t.familyItems.bedGuard, t.familyItems.dishes, t.familyItems.games].map((item, i) => (
                 <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
@@ -145,6 +154,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
               <li>• {t.kitchenItems.oven[locale]}</li>
               <li>• {t.kitchenItems.coffee[locale]}</li>
               <li>• {t.kitchenItems.waste[locale]}</li>
+              <li>• {t.washerDryerNote[locale]}</li>
             </ul>
             <p className="text-sm font-medium text-foreground">{t.kitchenDishwasherNote[locale]}</p>
           </AccordionContent>
@@ -243,6 +253,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <li>• {t.fireplaceNote3[locale]}</li>
               </ul>
             </div>
+            <p className="text-sm">{t.balconyNote[locale]}</p>
             <p className="text-sm italic text-muted-foreground pt-2">{t.saunaEnjoyNote[locale]}</p>
           </AccordionContent>
         </AccordionItem>

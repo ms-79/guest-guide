@@ -46,6 +46,13 @@ WLAN:
 - Router im Keller unter der Treppe
 - Bei Problemen: Kurz vom Strom trennen (30 Sek.) und neu verbinden
 
+SCHLAFZIMMER:
+- Schlafzimmer 1: Doppelbett 200×200 cm, Arbeitsbereich, eigenes Bad
+- Schlafzimmer 2: Doppelbett 200×200 cm
+- Schlafzimmer 3: Etagenbett (90×200 cm) + Einzelbett (80×180 cm) – ideal für Kinder & Jugendliche
+- Kapazität: bis zu 7 Gäste, komfortabel 6 Erwachsene
+- Balkon im Dachgeschoss mit Bergblick
+
 FAMILIE:
 - Hochstuhl im Keller unter der Treppe (gerne vorab melden – dann stellen wir ihn bereit)
 - Reisebett auf Anfrage
@@ -53,6 +60,9 @@ FAMILIE:
 - Rausfallschutz im Kinderzimmer in der Schublade unter dem Etagenbett
 - Kindergeschirr in der unteren Küchenschublade
 - Spiele & Bücher im Wohnbereich
+
+WÄSCHE:
+- Waschmaschine & Wäschetrockner im Keller
 
 KÜCHE & GERÄTE:
 - BORA-Kochfeld mit integriertem Abzug: Am Hauptschalter (rechte Seite) einschalten, Kochzone durch +-Symbol aktivieren, Absaugung startet automatisch.

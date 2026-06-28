@@ -239,6 +239,32 @@ export const translations = {
       'Spellen & boeken in de woonkamer',
     ),
   },
+  bedroomsTitle: t('Schlafzimmer', 'Bedrooms', 'Dormitorios', 'Camere da letto', 'Chambres', 'Slaapkamers'),
+  bedroom1: t(
+    'Schlafzimmer 1 – Doppelbett 200×200 cm, Arbeitsbereich, eigenes Bad',
+    'Bedroom 1 – double bed 200×200 cm, work desk, en-suite bathroom',
+    'Dormitorio 1 – cama doble 200×200 cm, escritorio, baño privado',
+    'Camera 1 – letto matrimoniale 200×200 cm, scrivania, bagno privato',
+    'Chambre 1 – grand lit 200×200 cm, espace de travail, salle de bain privée',
+    'Slaapkamer 1 – tweepersoonsbed 200×200 cm, werkplek, eigen badkamer',
+  ),
+  bedroom2: t(
+    'Schlafzimmer 2 – Doppelbett 200×200 cm',
+    'Bedroom 2 – double bed 200×200 cm',
+    'Dormitorio 2 – cama doble 200×200 cm',
+    'Camera 2 – letto matrimoniale 200×200 cm',
+    'Chambre 2 – grand lit 200×200 cm',
+    'Slaapkamer 2 – tweepersoonsbed 200×200 cm',
+  ),
+  bedroom3: t(
+    'Schlafzimmer 3 – Etagenbett (90×200 cm) + Einzelbett (80×180 cm), ideal für Kinder & Jugendliche',
+    'Bedroom 3 – bunk bed (90×200 cm) + single bed (80×180 cm), ideal for children & teens',
+    'Dormitorio 3 – litera (90×200 cm) + cama individual (80×180 cm), ideal para niños',
+    'Camera 3 – letto a castello (90×200 cm) + letto singolo (80×180 cm), ideale per bambini',
+    'Chambre 3 – lits superposés (90×200 cm) + lit simple (80×180 cm), idéal pour les enfants',
+    'Slaapkamer 3 – stapelbed (90×200 cm) + eenpersoonsbed (80×180 cm), ideaal voor kinderen',
+  ),
+
   familyNote: t(
     'ACHZEIT ist bewusst familienfreundlich konzipiert – damit sich auch die Kleinsten wohlfühlen.',
     'ACHZEIT is designed to be family-friendly – so even the little ones feel at home.',
@@ -255,6 +281,15 @@ export const translations = {
     coffee: t('Kaffeemaschine im Küchenbereich', 'Coffee machine in the kitchen area', 'Cafetera en la cocina', 'Macchina del caffè in cucina', 'Machine à café dans la cuisine', 'Koffiezetapparaat in de keuken'),
     waste: t('Mülltrennung unter der Spüle (Restmüll, Bio, Gelber Sack)', 'Waste separation under the sink (residual, organic, recyclables)', 'Separación de basura debajo del fregadero', 'Raccolta differenziata sotto il lavello', 'Tri des déchets sous l\'évier', 'Afvalscheiding onder de gootsteen'),
   },
+  washerDryerNote: t(
+    'Waschmaschine & Wäschetrockner vorhanden – im Keller',
+    'Washing machine & tumble dryer available – in the basement',
+    'Lavadora y secadora disponibles – en el sótano',
+    'Lavatrice e asciugatrice disponibili – in cantina',
+    'Lave-linge et sèche-linge disponibles – à la cave',
+    'Wasmachine & wasdroger aanwezig – in de kelder',
+  ),
+
   kitchenDishwasherNote: t(
     '📌 Bitte den Geschirrspüler vor Abreise starten.',
     '📌 Please start the dishwasher before departure.',
@@ -272,6 +307,15 @@ export const translations = {
   fireplaceNote1: t('Starterset mit Anzünder, Anfeuerholz und Holz als Erstausstattung vorhanden.', 'Starter set with firelighters, kindling, and wood included.', 'Kit de inicio con encendedor y leña incluido.', 'Kit di avviamento con accendifuoco e legna incluso.', 'Kit de démarrage avec allume-feu et bois fourni.', 'Starterset met aanmaakblokjes en hout aanwezig.'),
   fireplaceNote2: t('Nur trockenes Holz verwenden.', 'Only use dry wood.', 'Usar solo leña seca.', 'Usare solo legna secca.', 'N\'utiliser que du bois sec.', 'Gebruik alleen droog hout.'),
   fireplaceNote3: t('Asche erst vollständig abgekühlt entsorgen.', 'Only dispose of ashes when fully cooled.', 'Desechar cenizas solo cuando estén completamente frías.', 'Smaltire le ceneri solo quando completamente fredde.', 'Ne jeter les cendres que lorsqu\'elles sont complètement refroidies.', 'As pas weggooien als deze volledig is afgekoeld.'),
+  balconyNote: t(
+    'Balkon im Dachgeschoss mit Bergblick – perfekt für den Morgenkaffee.',
+    'Top-floor balcony with mountain views – perfect for your morning coffee.',
+    'Balcón en el último piso con vistas a la montaña – perfecto para el café matutino.',
+    'Balcone all\'ultimo piano con vista sulle montagne – perfetto per il caffè mattutino.',
+    'Balcon au dernier étage avec vue sur les montagnes – parfait pour le café du matin.',
+    'Balkon op de bovenste verdieping met bergzicht – perfect voor de ochtendkoffie.',
+  ),
+
   saunaEnjoyNote: t(
     'Genießt eure ganz persönliche ACHZEIT – mit Wärme, Ruhe und Bergblick.',
     'Enjoy your personal ACHZEIT – with warmth, peace, and mountain views.',
