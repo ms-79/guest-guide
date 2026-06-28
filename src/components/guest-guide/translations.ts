@@ -166,6 +166,14 @@ export const translations = {
   ),
   parking: t('Parken', 'Parking', 'Aparcamiento', 'Parcheggio', 'Parking', 'Parkeren'),
   carportNote: t('Stellplatz direkt am Haus; weitere Parkplätze auf der Straße vorhanden.', 'Parking space right at the house; additional street parking available.', 'Plaza de aparcamiento junto a la casa; también hay aparcamiento en la calle.', 'Posto auto direttamente alla casa; disponibili ulteriori parcheggi in strada.', 'Place de stationnement à la maison; places supplémentaires dans la rue.', 'Parkeerplaats direct bij het huis; extra straatparkeren beschikbaar.'),
+  bikeNote: t(
+    'Fahrräder: vor der Haustür überdacht Platz für 2–3 Räder; alternativ auf die umzäunte Terrasse.',
+    'Bikes: covered space for 2–3 bikes at the front door; alternatively on the fenced terrace.',
+    'Bicicletas: espacio cubierto para 2–3 bicicletas en la entrada; alternativa: terraza vallada.',
+    'Biciclette: posto coperto per 2–3 bici davanti alla porta; in alternativa sul terrazzo recintato.',
+    'Vélos : espace couvert pour 2–3 vélos devant la porte ; sinon sur la terrasse clôturée.',
+    'Fietsen: overdekte ruimte voor 2–3 fietsen bij de voordeur; alternatief op het omheinde terras.',
+  ),
 
   // WLAN
   networkName: t('Netzwerkname', 'Network Name', 'Nombre de red', 'Nome rete', 'Nom du réseau', 'Netwerknaam'),

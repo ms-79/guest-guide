@@ -38,6 +38,7 @@ ANREISE & ZUGANG:
 - Schlüssel nach Entnahme wieder sicher verschließen
 - Beim Check-out Schlüssel zurück in die Box und Code verdrehen
 - Stellplatz direkt am Haus; weitere Parkplätze auf der Straße vorhanden
+- Fahrräder: vor der Haustür überdacht Platz für 2–3 Räder; alternativ auf die umzäunte Terrasse
 
 WLAN:
 - Netzwerkname: ACHZEIT

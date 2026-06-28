@@ -77,7 +77,8 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <Car size={16} className="text-alpine-wood" /> {t.parking[locale]}
               </h4>
               <ul className="space-y-1 text-sm">
-                <li>• {t.carportNote[locale]}</li>
+                <li className="flex gap-2"><span className="shrink-0">•</span><span>{t.carportNote[locale]}</span></li>
+                <li className="flex gap-2"><span className="shrink-0">•</span><span>{t.bikeNote[locale]}</span></li>
               </ul>
             </div>
           </AccordionContent>
