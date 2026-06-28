@@ -122,11 +122,9 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-4">
             <ul className="space-y-2 text-sm">
-              <li>• {t.familyItems.crib[locale]}</li>
-              <li>• {t.familyItems.changingMat[locale]}</li>
-              <li>• {t.familyItems.bedGuard[locale]}</li>
-              <li>• {t.familyItems.dishes[locale]}</li>
-              <li>• {t.familyItems.games[locale]}</li>
+              {[t.familyItems.crib, t.familyItems.changingMat, t.familyItems.bedGuard, t.familyItems.dishes, t.familyItems.games].map((item, i) => (
+                <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
+              ))}
             </ul>
             <p className="text-sm italic text-muted-foreground">{t.familyNote[locale]}</p>
           </AccordionContent>
