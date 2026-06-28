@@ -6,7 +6,6 @@ import ReactMarkdown from 'react-markdown';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
 import { translations } from './translations';
 import whatsappButtonImg from '@/assets/whatsapp-button.png';
-import achzeitLogo from '@/assets/logo-achzeit-transparent.webp';
 import { cn } from '@/lib/utils';
 
 interface ISpeechRecognition extends EventTarget {
@@ -50,9 +49,10 @@ export interface ChatGuestData {
 
 interface GuestGuideChatbotProps {
   guestData: ChatGuestData;
+  logo: string;
 }
 
-const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData }) => {
+const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo }) => {
   const { locale } = useGuestGuideLocale();
   const t = translations;
   const [open, setOpen] = useState(false);
@@ -288,7 +288,7 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData }) => {
               {/* Mountain logo – cropped to hide ACHZEIT text */}
               <div className="w-7 h-5 overflow-hidden shrink-0 opacity-90">
                 <img
-                  src={achzeitLogo}
+                  src={logo}
                   alt=""
                   className="w-7 object-cover object-top brightness-0 invert"
                 />

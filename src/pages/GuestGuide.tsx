@@ -240,7 +240,7 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
   }
 
   if (state === 'pin') {
-    return <GuestGuidePinEntry onSubmit={handlePinSubmit} failures={pinFailures} />;
+    return <GuestGuidePinEntry onSubmit={handlePinSubmit} failures={pinFailures} logo={property.logo} displayName={property.displayName} />;
   }
 
   const handleNavClick = (section: string) => {
@@ -256,11 +256,11 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <GuestGuideHero guestData={guestData} onNavClick={handleNavClick} />
+      <GuestGuideHero guestData={guestData} onNavClick={handleNavClick} logo={property.logo} displayName={property.displayName} />
       <GuestGuideStickyNav activeSection={activeSection} onNavClick={handleNavClick} />
       <GuestGuideContent guestData={guestData} activeSection={activeSection} onSectionChange={setActiveSection} />
 
-      <GuestGuideChatbot guestData={guestData} />
+      <GuestGuideChatbot guestData={guestData} logo={property.logo} />
 
       <div className="max-w-3xl mx-auto px-6 text-center mt-16 pb-12 pt-8 border-t border-border">
         <img src={property.logo} alt={property.displayName} className="w-20 mx-auto mb-3 opacity-30" />
@@ -285,6 +285,19 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
 const GuestGuide = () => {
   const { slug } = useParams<{ slug: string }>();
   const property = getProperty(slug ?? '');
+
+  // Set the favicon per property (ACHZEIT keeps its own, others use Allgäu Stays).
+  useEffect(() => {
+    if (!property) return;
+    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.type = property.favicon.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
+    link.href = property.favicon;
+  }, [property]);
 
   if (!property) {
     return <Navigate to="/404" replace />;

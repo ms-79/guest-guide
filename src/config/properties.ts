@@ -3,6 +3,8 @@ export interface PropertyConfig {
   displayName: string;
   whatsappNumber: string;
   logo: string;
+  /** Path to the favicon used while this property's guide is open */
+  favicon: string;
   primaryColor: string;
   hostawayListingId: number;
 }
@@ -12,32 +14,36 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     slug: '463607-achzeit',
     displayName: 'ACHZEIT Family Retreat',
     whatsappNumber: '4915679656368',
-    logo: '/logos/achzeit.webp',
-    primaryColor: '#363330',
+    logo: '/logos/achzeit.webp', // ACHZEIT keeps its own logo
+    favicon: '/favicon.png',     // ACHZEIT keeps its own favicon
+    primaryColor: '#2F4F3E',
     hostawayListingId: 463607,
   },
   '464732-felders-boutique-appartement': {
     slug: '464732-felders-boutique-appartement',
     displayName: "Felder's Boutique Appartement",
     whatsappNumber: '', // TODO: add WhatsApp number
-    logo: '/logos/felders-appartement.webp', // TODO: add logo
-    primaryColor: '#363330',
+    logo: '/logos/allgaeu-stays.svg',
+    favicon: '/favicon-allgaeu.svg',
+    primaryColor: '#2F4F3E',
     hostawayListingId: 464732,
   },
   '464733-felders-boutique-house': {
     slug: '464733-felders-boutique-house',
     displayName: "Felder's Boutique House",
     whatsappNumber: '', // TODO: add WhatsApp number
-    logo: '/logos/felders-house.webp', // TODO: add logo
-    primaryColor: '#363330',
+    logo: '/logos/allgaeu-stays.svg',
+    favicon: '/favicon-allgaeu.svg',
+    primaryColor: '#2F4F3E',
     hostawayListingId: 464733,
   },
   '507092-phils-apartment': {
     slug: '507092-phils-apartment',
     displayName: "Phils Apartment",
     whatsappNumber: '', // TODO: add WhatsApp number
-    logo: '/logos/phils-apartment.webp', // TODO: add logo
-    primaryColor: '#363330',
+    logo: '/logos/allgaeu-stays.svg',
+    favicon: '/favicon-allgaeu.svg',
+    primaryColor: '#2F4F3E',
     hostawayListingId: 507092,
   },
 };

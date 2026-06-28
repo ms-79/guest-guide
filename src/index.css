@@ -8,72 +8,76 @@
 
 @layer base {
   :root {
-    /* Core brand colors - warm alpine palette */
-    --background: 40 30% 97%;
-    --foreground: 30 10% 15%;
+    /* Allgäu Stays corporate palette — matched from allgaeu-stays.com */
+    --background: 40 23% 94%;
+    --foreground: 60 3% 18%;
 
-    --card: 40 25% 95%;
-    --card-foreground: 30 10% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 60 3% 18%;
 
-    --popover: 40 30% 97%;
-    --popover-foreground: 30 10% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 3% 18%;
 
-    /* Primary - warm dark grey/charcoal */
-    --primary: 30 8% 20%;
-    --primary-foreground: 40 30% 97%;
+    /* Primary - warm charcoal */
+    --primary: 60 3% 18%;
+    --primary-foreground: 40 23% 94%;
 
-    /* Secondary - warm beige */
-    --secondary: 35 25% 88%;
-    --secondary-foreground: 30 10% 15%;
+    /* Secondary - warm sand */
+    --secondary: 40 18% 90%;
+    --secondary-foreground: 60 3% 18%;
 
     /* Muted - soft natural tones */
-    --muted: 35 20% 92%;
-    --muted-foreground: 30 8% 45%;
+    --muted: 40 14% 88%;
+    --muted-foreground: 40 5% 50%;
 
-    /* Accent - warm sand/stone */
-    --accent: 32 30% 82%;
-    --accent-foreground: 30 10% 15%;
+    /* Accent - Allgäu Stays forest green (#2F4F3E) */
+    --accent: 153 25% 28%;
+    --accent-foreground: 40 23% 94%;
+
+    /* Wood accent */
+    --wood: 36 33% 57%;
+    --wood-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 20% 85%;
-    --input: 35 20% 85%;
-    --ring: 30 8% 20%;
+    --border: 40 15% 85%;
+    --input: 40 15% 85%;
+    --ring: 153 25% 28%;
 
     --radius: 0.25rem;
 
     /* Alpine specific tokens */
-    --alpine-cream: 40 35% 95%;
-    --alpine-stone: 35 15% 75%;
-    --alpine-wood: 25 35% 35%;
-    --alpine-charcoal: 30 8% 20%;
-    --alpine-forest: 150 20% 25%;
+    --alpine-cream: 40 23% 94%;
+    --alpine-stone: 40 12% 72%;
+    --alpine-wood: 36 33% 57%;
+    --alpine-charcoal: 60 3% 18%;
+    --alpine-forest: 153 25% 28%;
     --alpine-snow: 0 0% 99%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(180deg, hsla(30, 8%, 20%, 0.7) 0%, hsla(30, 8%, 20%, 0.4) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(35 25% 93%) 100%);
-    --gradient-section: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(35 25% 94%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsla(60, 3%, 18%, 0.7) 0%, hsla(60, 3%, 18%, 0.4) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(40 18% 96%) 100%);
+    --gradient-section: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(40 20% 92%) 100%);
 
     /* Typography */
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsla(30, 10%, 20%, 0.08);
-    --shadow-medium: 0 8px 30px -6px hsla(30, 10%, 20%, 0.12);
-    --shadow-elevated: 0 16px 50px -12px hsla(30, 10%, 20%, 0.18);
+    --shadow-soft: 0 4px 20px -4px hsla(60, 3%, 18%, 0.08);
+    --shadow-medium: 0 8px 30px -6px hsla(60, 3%, 18%, 0.12);
+    --shadow-elevated: 0 16px 50px -12px hsla(60, 3%, 18%, 0.18);
 
     /* Sidebar */
-    --sidebar-background: 40 30% 97%;
-    --sidebar-foreground: 30 10% 15%;
-    --sidebar-primary: 30 8% 20%;
-    --sidebar-primary-foreground: 40 30% 97%;
-    --sidebar-accent: 35 25% 88%;
-    --sidebar-accent-foreground: 30 10% 15%;
-    --sidebar-border: 35 20% 85%;
-    --sidebar-ring: 30 8% 20%;
+    --sidebar-background: 40 23% 94%;
+    --sidebar-foreground: 60 3% 18%;
+    --sidebar-primary: 60 3% 18%;
+    --sidebar-primary-foreground: 40 23% 94%;
+    --sidebar-accent: 40 18% 90%;
+    --sidebar-accent-foreground: 60 3% 18%;
+    --sidebar-border: 40 15% 85%;
+    --sidebar-ring: 153 25% 28%;
   }
 
   .dark {
@@ -95,7 +99,7 @@
     --muted: 30 10% 18%;
     --muted-foreground: 35 15% 60%;
 
-    --accent: 32 15% 25%;
+    --accent: 153 22% 34%;
     --accent-foreground: 40 20% 92%;
 
     --destructive: 0 60% 45%;

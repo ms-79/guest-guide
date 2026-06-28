@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import logoAchzeit from '@/assets/logo-achzeit-transparent.webp';
 import { Button } from '@/components/ui/button';
 import { Lock } from 'lucide-react';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
@@ -10,9 +9,11 @@ const PIN_MAX_ATTEMPTS = 5; // must match backend
 interface Props {
   onSubmit: (pin: string) => Promise<'ok' | 'invalid'>;
   failures?: number; // consecutive wrong attempts (tracked by parent)
+  logo: string;
+  displayName: string;
 }
 
-const GuestGuidePinEntry = ({ onSubmit, failures = 0 }: Props) => {
+const GuestGuidePinEntry = ({ onSubmit, failures = 0, logo, displayName }: Props) => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ const GuestGuidePinEntry = ({ onSubmit, failures = 0 }: Props) => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm text-center">
-        <img src={logoAchzeit} alt="ACHZEIT" className="w-24 mx-auto mb-8 opacity-40" />
+        <img src={logo} alt={displayName} className="w-24 mx-auto mb-8 opacity-40" />
 
         <div className="flex items-center justify-center gap-2 mb-2">
           <Lock size={18} className="text-muted-foreground" />

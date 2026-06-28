@@ -3,7 +3,6 @@ import {
   Key, Wifi, Baby, Flame, Trash2, AlertTriangle,
   UtensilsCrossed, Mountain, Zap, ShoppingCart, ExternalLink,
 } from 'lucide-react';
-import logoAchzeit from '@/assets/logo-achzeit-transparent.webp';
 import iconAwpass from '@/assets/icon-awpass.svg';
 import type { GuestData } from '@/pages/GuestGuide';
 import GuestGuideLanguageToggle from './GuestGuideLanguageToggle';
@@ -13,9 +12,11 @@ import { translations } from './translations';
 interface Props {
   guestData: GuestData;
   onNavClick?: (section: string) => void;
+  logo: string;
+  displayName: string;
 }
 
-const GuestGuideHero = ({ guestData, onNavClick }: Props) => {
+const GuestGuideHero = ({ guestData, onNavClick, logo, displayName }: Props) => {
   const { guestName, checkin, checkout } = guestData;
   const { locale } = useGuestGuideLocale();
   const t = translations;
@@ -53,8 +54,8 @@ const GuestGuideHero = ({ guestData, onNavClick }: Props) => {
 
       <div className="max-w-3xl mx-auto text-center">
         <motion.img
-          src={logoAchzeit}
-          alt="ACHZEIT"
+          src={logo}
+          alt={displayName}
           className="w-28 md:w-36 mx-auto mb-8 brightness-0 invert opacity-80"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 0.8, y: 0 }}
