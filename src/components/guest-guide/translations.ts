@@ -49,12 +49,12 @@ export const translations = {
     'Je ACHZEIT in Fischen begint nu.',
   ),
   heroIntro: t(
-    'Schön, dass ihr da seid. Hier findet ihr alle wichtigen Informationen für einen entspannten Aufenthalt im ACHZEIT Family Retreat.',
-    'Great to have you here. You\'ll find all the important information for a relaxing stay at ACHZEIT Family Retreat.',
-    'Qué bueno teneros aquí. Aquí encontraréis toda la información importante para una estancia relajante en ACHZEIT Family Retreat.',
-    'Che bello avervi qui. Qui troverete tutte le informazioni importanti per un soggiorno rilassante all\'ACHZEIT Family Retreat.',
-    'Ravi de vous avoir ici. Vous trouverez toutes les informations importantes pour un séjour relaxant à l\'ACHZEIT Family Retreat.',
-    'Fijn dat jullie er zijn. Hier vinden jullie alle belangrijke informatie voor een ontspannen verblijf in ACHZEIT Family Retreat.',
+    'Schön, dass ihr da seid. Hier findet ihr alle wichtigen Informationen für einen entspannten Aufenthalt im ACHZEIT Family & Friends Retreat.',
+    'Great to have you here. You\'ll find all the important information for a relaxing stay at ACHZEIT Family & Friends Retreat.',
+    'Qué bueno teneros aquí. Aquí encontraréis toda la información importante para una estancia relajante en ACHZEIT Family & Friends Retreat.',
+    'Che bello avervi qui. Qui troverete tutte le informazioni importanti per un soggiorno rilassante all\'ACHZEIT Family & Friends Retreat.',
+    'Ravi de vous avoir ici. Vous trouverez toutes les informations importantes pour un séjour relaxant à l\'ACHZEIT Family & Friends Retreat.',
+    'Fijn dat jullie er zijn. Hier vinden jullie alle belangrijke informatie voor een ontspannen verblijf in ACHZEIT Family & Friends Retreat.',
   ),
   stay: t('Aufenthalt', 'Stay', 'Estancia', 'Soggiorno', 'Séjour', 'Verblijf'),
   whatsappCta: t(
@@ -630,7 +630,7 @@ export const translations = {
   awpassButton: t('Pass öffnen', 'Open Pass', 'Abrir pase', 'Apri pass', 'Ouvrir le pass', 'Pass openen'),
 
   // Footer
-  footerText: t('Eure Gästemappe · ACHZEIT Family Retreat. Fischen im Allgäu.', 'Your Guest Guide · ACHZEIT Family Retreat. Fischen im Allgäu.', 'Tu guía del huésped · ACHZEIT Family Retreat. Fischen im Allgäu.', 'La tua guida ospiti · ACHZEIT Family Retreat. Fischen im Allgäu.', 'Votre guide · ACHZEIT Family Retreat. Fischen im Allgäu.', 'Jullie gastenboek · ACHZEIT Family Retreat. Fischen im Allgäu.'),
+  footerText: t('Eure Gästemappe · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.', 'Your Guest Guide · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.', 'Tu guía del huésped · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.', 'La tua guida ospiti · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.', 'Votre guide · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.', 'Jullie gastenboek · ACHZEIT Family & Friends Retreat. Fischen im Allgäu.'),
 
   // Status screens
   noReservationTitle: t('Aktuell kein aktiver Aufenthalt', 'No Active Stay', 'Sin estancia activa', 'Nessun soggiorno attivo', 'Pas de séjour actif', 'Geen actief verblijf'),

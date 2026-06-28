@@ -12,7 +12,7 @@ export interface PropertyConfig {
 const PROPERTIES: Record<string, PropertyConfig> = {
   '463607-achzeit': {
     slug: '463607-achzeit',
-    displayName: 'ACHZEIT Family Retreat',
+    displayName: 'ACHZEIT Family & Friends Retreat',
     whatsappNumber: '4915679656368',
     logo: '/logos/achzeit.webp', // ACHZEIT keeps its own logo
     favicon: '/favicon.png',     // ACHZEIT keeps its own favicon

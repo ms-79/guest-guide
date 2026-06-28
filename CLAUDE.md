@@ -46,7 +46,7 @@ Mid-term, it serves as the foundation for an AI-powered guest service layer (con
 ## ACHZEIT Brand & Tone
 
 Brand name: **ACHZEIT** — always in ALL CAPS.
-Full name in communications: **ACHZEIT Family Retreat**
+Full name in communications: **ACHZEIT Family & Friends Retreat**
 
 **Tone:**
 - Warm, high-quality, calm, natural
