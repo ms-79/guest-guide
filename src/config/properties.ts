@@ -7,6 +7,24 @@ export interface PropertyConfig {
   favicon: string;
   primaryColor: string;
   hostawayListingId: number;
+
+  // Property-specific operational details
+  /** WiFi network name shown in the guide */
+  wifiName: string;
+  /** Standard check-in time, 24h format e.g. '16:00' */
+  checkinTime: string;
+  /** Standard check-out time, 24h format e.g. '11:00' */
+  checkoutTime: string;
+  /** Whether pets are allowed */
+  petsAllowed: boolean;
+  /** Whether an outdoor grill is available */
+  grillAvailable: boolean;
+  /** Coffee machine type present in the property */
+  coffeeType: 'nespresso' | 'filter' | 'vollautomat';
+  /** Whether dishwasher tabs are stocked */
+  dishwasherTabsIncluded: boolean;
+  /** Kurtaxe per adult per night in EUR; undefined = no kurtaxe section shown */
+  kurtaxePerPersonPerNight?: number;
 }
 
 const PROPERTIES: Record<string, PropertyConfig> = {
@@ -18,6 +36,14 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     favicon: '/favicon.png',     // ACHZEIT keeps its own favicon
     primaryColor: '#2F4F3E',
     hostawayListingId: 463607,
+    wifiName: 'ACHZEIT',
+    checkinTime: '16:00',
+    checkoutTime: '11:00',
+    petsAllowed: false,
+    grillAvailable: true,
+    coffeeType: 'nespresso',
+    dishwasherTabsIncluded: true,
+    kurtaxePerPersonPerNight: 3.80,
   },
   '464732-felders-boutique-appartement': {
     slug: '464732-felders-boutique-appartement',
@@ -27,6 +53,13 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     favicon: '/favicon-allgaeu.svg',
     primaryColor: '#2F4F3E',
     hostawayListingId: 464732,
+    wifiName: "Felder's Appartement",
+    checkinTime: '15:00',
+    checkoutTime: '11:00',
+    petsAllowed: false,
+    grillAvailable: false,
+    coffeeType: 'nespresso',
+    dishwasherTabsIncluded: true,
   },
   '464733-felders-boutique-house': {
     slug: '464733-felders-boutique-house',
@@ -36,15 +69,29 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     favicon: '/favicon-allgaeu.svg',
     primaryColor: '#2F4F3E',
     hostawayListingId: 464733,
+    wifiName: "Felder's House",
+    checkinTime: '15:00',
+    checkoutTime: '11:00',
+    petsAllowed: true,
+    grillAvailable: false,
+    coffeeType: 'nespresso',
+    dishwasherTabsIncluded: true,
   },
   '507092-phils-apartment': {
     slug: '507092-phils-apartment',
-    displayName: "Phils Apartment",
+    displayName: 'Phils Apartment',
     whatsappNumber: '', // TODO: add WhatsApp number
     logo: '/logos/allgaeu-stays.svg',
     favicon: '/favicon-allgaeu.svg',
     primaryColor: '#2F4F3E',
     hostawayListingId: 507092,
+    wifiName: 'PhilsApartment',
+    checkinTime: '15:00',
+    checkoutTime: '10:00',
+    petsAllowed: false,
+    grillAvailable: true,
+    coffeeType: 'filter',
+    dishwasherTabsIncluded: true,
   },
 };
 

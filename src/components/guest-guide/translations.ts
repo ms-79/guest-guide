@@ -127,6 +127,7 @@ export const translations = {
   navCheckout: t('Check-out', 'Check-out', 'Check-out', 'Check-out', 'Check-out', 'Check-out'),
   navAnleitungen: t('Anleitungen', 'Instructions', 'Instrucciones', 'Istruzioni', 'Instructions', 'Handleidingen'),
   navNotfall: t('Notfall', 'Emergency', 'Emergencia', 'Emergenza', 'Urgence', 'Noodgeval'),
+  navFaq: t('Infos', 'Info', 'Info', 'Info', 'Infos', 'Info'),
 
   // Section titles
   sectionZugang: t('Anreise & Zugang', 'Arrival & Access', 'Llegada y acceso', 'Arrivo e accesso', 'Arrivée et accès', 'Aankomst & Toegang'),
@@ -138,13 +139,13 @@ export const translations = {
   sectionEinkaufen: t('Einkaufen & Versorgung', 'Shopping & Supplies', 'Compras y suministros', 'Spesa e forniture', 'Courses et approvisionnement', 'Winkelen & Bevoorrading'),
   sectionAusfluege: t('Ausflüge & Veranstaltungen', 'Excursions & Events', 'Excursiones y eventos', 'Escursioni e eventi', 'Excursions et événements', 'Uitstapjes & Evenementen'),
   sectionEAuto: t('E-Auto Ladestationen', 'EV Charging Stations', 'Estaciones de carga', 'Stazioni di ricarica', 'Bornes de recharge', 'Laadstations'),
+  sectionFaq: t('Gut zu wissen', 'Good to Know', 'Información útil', 'Informazioni utili', 'Infos pratiques', 'Handige info'),
   sectionCheckout: t('Abreise', 'Departure', 'Salida', 'Partenza', 'Départ', 'Vertrek'),
   sectionAnleitungen: t('Hilfe & Anleitungen', 'Help & Instructions', 'Ayuda e instrucciones', 'Aiuto e istruzioni', 'Aide et instructions', 'Hulp & Handleidingen'),
   sectionNotfall: t('Notfall & Hilfe', 'Emergency & Help', 'Emergencia y ayuda', 'Emergenza e aiuto', 'Urgence et aide', 'Noodgeval & Hulp'),
 
   // Zugang section
   checkinFrom: t('Check-in ist ab', 'Check-in from', 'Check-in a partir de las', 'Check-in dalle', 'Enregistrement à partir de', 'Inchecken vanaf'),
-  checkinTime: t('16:00 Uhr', '4:00 PM', '16:00', '16:00', '16h00', '16:00'),
   possible: t('möglich.', 'possible.', 'posible.', 'possibile.', 'possible.', 'mogelijk.'),
   boxCodeLabel: t('Schlüsselbox-Code', 'Key Box Code', 'Código de la caja', 'Codice della cassetta', 'Code du boîtier', 'Sleutelkluiscode'),
   boxCodeNote1: t(
@@ -164,7 +165,7 @@ export const translations = {
     '📌 Bij vertrek de sleutel terughangen en de code verdraaien.',
   ),
   parking: t('Parken', 'Parking', 'Aparcamiento', 'Parcheggio', 'Parking', 'Parkeren'),
-  carportNote: t('Carport direkt am Haus.', 'Carport right at the house.', 'Carport junto a la casa.', 'Carport direttamente alla casa.', 'Carport directement à la maison.', 'Carport direct bij het huis.'),
+  carportNote: t('Stellplatz direkt am Haus; weitere Parkplätze auf der Straße vorhanden.', 'Parking space right at the house; additional street parking available.', 'Plaza de aparcamiento junto a la casa; también hay aparcamiento en la calle.', 'Posto auto direttamente alla casa; disponibili ulteriori parcheggi in strada.', 'Place de stationnement à la maison; places supplémentaires dans la rue.', 'Parkeerplaats direct bij het huis; extra straatparkeren beschikbaar.'),
 
   // WLAN
   networkName: t('Netzwerkname', 'Network Name', 'Nombre de red', 'Nome rete', 'Nom du réseau', 'Netwerknaam'),
@@ -190,12 +191,12 @@ export const translations = {
   // Familie
   familyItems: {
     crib: t(
-      'Babybett und Hochstuhl stehen im Keller unter der Treppe',
-      'Crib and high chair are in the basement under the stairs',
-      'Cuna y trona están en el sótano debajo de las escaleras',
-      'Lettino e seggiolone in cantina sotto le scale',
-      'Lit bébé et chaise haute au sous-sol sous l\'escalier',
-      'Babybed en kinderstoel staan in de kelder onder de trap',
+      'Hochstuhl im Keller unter der Treppe (gerne vorab melden – dann stellen wir ihn bereit); Reisebett auf Anfrage',
+      'High chair in the basement under the stairs (let us know in advance and we\'ll set it up); travel cot available on request',
+      'Trona en el sótano bajo las escaleras (avísanos antes y la preparamos); cuna de viaje bajo petición',
+      'Seggiolone in cantina sotto le scale (avvisaci prima e lo prepariamo); lettino da viaggio su richiesta',
+      'Chaise haute au sous-sol sous l\'escalier (prévenez-nous à l\'avance et on la prépare); lit de voyage sur demande',
+      'Kinderstoel in de kelder onder de trap (meld het van tevoren dan zetten wij hem klaar); reisbedje op aanvraag',
     ),
     changingMat: t(
       'Wickelunterlage im Schrank im Kinderzimmer – bitte Handtuch unterlegen',
@@ -470,9 +471,96 @@ export const translations = {
     'Alle stations 5–15 min. rijden · Bron: Hörnerdörfer Toerisme',
   ),
 
+  // Gut zu wissen / FAQ
+  faqCheckinTitle: t('Flexible Anreise', 'Flexible Check-in', 'Llegada flexible', 'Arrivo flessibile', 'Arrivée flexible', 'Flexibel inchecken'),
+  faqCheckinBody: t(
+    'Standard-Check-in ab {time}. Da ihr per Self-Check-in über die Schlüsselbox reinkommt, klappt auch eine spätere Anreise problemlos.',
+    'Standard check-in from {time}. Since you access via self-check-in with the key box, late arrivals work perfectly fine.',
+    'Check-in estándar desde las {time}. Como el acceso es mediante auto-check-in con caja de llaves, también es posible llegar más tarde.',
+    'Check-in standard dalle {time}. Poiché l\'accesso avviene tramite self-check-in con cassetta, anche un arrivo tardivo va benissimo.',
+    'Check-in standard à partir de {time}. Comme l\'accès se fait par self-check-in via boîtier, une arrivée tardive ne pose aucun problème.',
+    'Standaard check-in vanaf {time}. Omdat de toegang via self-check-in met sleutelkluis verloopt, is ook later aankomen prima.',
+  ),
+  faqCheckinEarly: t(
+    'Für frühzeitigen Check-in bitte per WhatsApp anfragen – wir geben schnellstmöglich Bescheid.',
+    'For early check-in, please ask via WhatsApp – we\'ll let you know as soon as possible.',
+    'Para un check-in temprano, escríbenos por WhatsApp – te responderemos lo antes posible.',
+    'Per un check-in anticipato, scrivici su WhatsApp – ti risponderemo il prima possibile.',
+    'Pour un check-in anticipé, contactez-nous par WhatsApp – nous vous répondrons dès que possible.',
+    'Voor vroeg inchecken graag via WhatsApp vragen – we laten het zo snel mogelijk weten.',
+  ),
+  faqPetsTitle: t('Haustiere', 'Pets', 'Mascotas', 'Animali domestici', 'Animaux de compagnie', 'Huisdieren'),
+  faqPetsAllowed: t(
+    'Haustiere sind auf Anfrage willkommen. Bitte vor der Buchung kurz per WhatsApp melden.',
+    'Pets are welcome on request. Please get in touch via WhatsApp before booking.',
+    'Las mascotas son bienvenidas bajo consulta previa. Contáctenos por WhatsApp antes de reservar.',
+    'Gli animali domestici sono benvenuti su richiesta. Si prega di contattarci via WhatsApp prima della prenotazione.',
+    'Les animaux de compagnie sont les bienvenus sur demande. Veuillez nous contacter via WhatsApp avant de réserver.',
+    'Huisdieren zijn welkom op aanvraag. Neem voor de boeking even contact op via WhatsApp.',
+  ),
+  faqPetsNotAllowed: t(
+    'Leider sind in dieser Unterkunft keine Haustiere erlaubt.',
+    'Unfortunately, pets are not allowed in this property.',
+    'Lamentablemente, no se admiten mascotas en este alojamiento.',
+    'Purtroppo, gli animali domestici non sono ammessi in questa struttura.',
+    'Malheureusement, les animaux de compagnie ne sont pas autorisés dans ce logement.',
+    'Helaas zijn huisdieren niet toegestaan in dit verblijf.',
+  ),
+  faqKitchenTitle: t('Küche & Kaffee', 'Kitchen & Coffee', 'Cocina y café', 'Cucina e caffè', 'Cuisine et café', 'Keuken & Koffie'),
+  faqCoffeeNespresso: t(
+    'Kaffeemaschine: Nespresso (Kapseln in der Küchenschublade).',
+    'Coffee machine: Nespresso (capsules in the kitchen drawer).',
+    'Cafetera: Nespresso (cápsulas en el cajón de la cocina).',
+    'Macchina del caffè: Nespresso (capsule nel cassetto della cucina).',
+    'Machine à café : Nespresso (capsules dans le tiroir de la cuisine).',
+    'Koffiezetapparaat: Nespresso (capsules in de keukenlade).',
+  ),
+  faqCoffeeFilter: t(
+    'Filterkaffeemaschine (Kaffeepulver bitte selbst mitbringen).',
+    'Filter coffee machine (please bring your own ground coffee).',
+    'Cafetera de filtro (trae tu propio café molido).',
+    'Macchina da caffè a filtro (portare il proprio caffè macinato).',
+    'Cafetière filtre (apportez votre propre café moulu).',
+    'Filterkoffiezetapparaat (gemalen koffie zelf meenemen).',
+  ),
+  faqCoffeeVollautomat: t(
+    'Kaffeevollautomat (Bohnen vorhanden).',
+    'Bean-to-cup coffee machine (beans included).',
+    'Cafetera automática de granos (granos incluidos).',
+    'Macchina automatica a chicchi (chicchi inclusi).',
+    'Machine à café automatique (grains fournis).',
+    'Volautomatisch koffiezetapparaat (koffiebonen aanwezig).',
+  ),
+  faqDishwasherTabsYes: t(
+    'Spülmaschinen-Tabs sind vorhanden (unter der Spüle).',
+    'Dishwasher tabs are available (under the sink).',
+    'Hay pastillas para el lavavajillas (debajo del fregadero).',
+    'Le pastiglie per la lavastoviglie sono disponibili (sotto il lavello).',
+    'Des pastilles lave-vaisselle sont disponibles (sous l\'évier).',
+    'Vaatwastabletten zijn aanwezig (onder de gootsteen).',
+  ),
+  faqGrillTitle: t('Grill', 'Barbecue', 'Barbacoa', 'Barbecue', 'Barbecue', 'Barbecue'),
+  faqGrillAvailable: t(
+    'Eingebauter Holzkohlegrill auf der Straßenterrasse. Holzkohle bitte selbst mitbringen. Grillzange und Bürste liegen neben dem Kamin im Wohnzimmer. Nach der Nutzung bitte sauber hinterlassen.',
+    'Built-in charcoal grill on the street-facing terrace. Please bring your own charcoal. Grill tongs and brush are stored next to the fireplace in the living room. Please leave it clean after use.',
+    'Barbacoa de carbón integrada en la terraza. Trae tu propio carbón. Pinzas y cepillo junto a la chimenea en el salón. Déjala limpia después.',
+    'Griglia a carbone integrata sulla terrazza. Portare il proprio carbone. Pinze e spazzola accanto al camino in soggiorno. Lasciare pulito dopo l\'uso.',
+    'Grill au charbon intégré sur la terrasse. Apportez votre propre charbon. Pinces et brosse près de la cheminée au salon. Laisser propre après utilisation.',
+    'Ingebouwde houtskoolbarbecue op het terras. Breng eigen houtskool mee. Tang en borstel liggen bij de haard in de woonkamer. Na gebruik schoon achterlaten.',
+  ),
+
+  faqKurtaxeTitle: t('Kurtaxe', 'Tourist Tax', 'Tasa turística', 'Tassa di soggiorno', 'Taxe de séjour', 'Toeristenbelasting'),
+  faqKurtaxeBody: t(
+    '{amount} € pro Erwachsenem/Nacht (Kinder sind befreit). Die Kurtaxe ist nicht im Übernachtungspreis enthalten – du erhältst einen Zahlungslink vom Gastgeber.',
+    '{amount} € per adult/night (children exempt). The tourist tax is not included in the accommodation price – you\'ll receive a payment link from the host.',
+    '{amount} € por adulto/noche (niños exentos). La tasa turística no está incluida en el precio – recibirás un enlace de pago del anfitrión.',
+    '{amount} € per adulto/notte (bambini esenti). La tassa di soggiorno non è inclusa nel prezzo – riceverai un link di pagamento dall\'host.',
+    '{amount} € par adulte/nuit (enfants exemptés). La taxe de séjour n\'est pas incluse dans le prix – vous recevrez un lien de paiement de l\'hôte.',
+    '{amount} € per volwassene/nacht (kinderen vrijgesteld). De toeristenbelasting is niet inbegrepen in de prijs – je ontvangt een betaallink van de gastheer.',
+  ),
+
   // Check-out
   checkoutUntil: t('Check-out bis', 'Check-out by', 'Check-out antes de las', 'Check-out entro le', 'Check-out avant', 'Check-out vóór'),
-  checkoutTime: t('11:00 Uhr', '11:00 AM', '11:00', '11:00', '11h00', '11:00'),
   checkoutItems: {
     dishwasher: t('Spülmaschine anmachen', 'Start the dishwasher', 'Encender el lavavajillas', 'Avviare la lavastoviglie', 'Lancer le lave-vaisselle', 'Vaatwasser aanzetten'),
     yellowBag: t('Gelber Sack in die mit gelbem Symbol markierte Tonne im Keller', 'Yellow bag into the marked bin in the basement', 'Bolsa amarilla en el contenedor del sótano', 'Sacco giallo nel bidone in cantina', 'Sac jaune dans la poubelle au sous-sol', 'Gele zak in de gemarkeerde bak in de kelder'),

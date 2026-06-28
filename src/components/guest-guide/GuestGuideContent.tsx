@@ -4,12 +4,25 @@ import {
 import {
   Key, Wifi, Baby, Flame, Trash2, AlertTriangle, Car, Zap,
   UtensilsCrossed, Phone, MapPin, Star, Mountain, ExternalLink,
-  ShoppingCart, HelpCircle,
+  ShoppingCart, HelpCircle, Info,
 } from 'lucide-react';
 import type { GuestData } from '@/pages/GuestGuide';
+import type { PropertyConfig } from '@/config/properties';
 import GuestGuideEvents from './GuestGuideEvents';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
-import { translations } from './translations';
+import { translations, type GuestGuideLocale } from './translations';
+
+function formatTime(time: string, locale: GuestGuideLocale): string {
+  const [hStr, mStr = '00'] = time.split(':');
+  const h = parseInt(hStr, 10);
+  if (locale === 'en') {
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `${h % 12 || 12}:${mStr} ${ampm}`;
+  }
+  if (locale === 'fr') return `${h}h${mStr}`;
+  if (locale === 'de') return `${time} Uhr`;
+  return time; // es, it, nl
+}
 
 const WalkingIcon = ({ size = 14 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -27,9 +40,10 @@ interface Props {
   guestData: GuestData;
   activeSection: string;
   onSectionChange: (section: string) => void;
+  property: PropertyConfig;
 }
 
-const GuestGuideContent = ({ guestData, activeSection, onSectionChange }: Props) => {
+const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property }: Props) => {
   const { boxCode, wifiPassword } = guestData;
   const { locale } = useGuestGuideLocale();
   const t = translations;
@@ -46,7 +60,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange }: Props)
             </span>
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-4">
-            <p>{t.checkinFrom[locale]} <strong className="text-foreground">{t.checkinTime[locale]}</strong> {t.possible[locale]}</p>
+            <p>{t.checkinFrom[locale]} <strong className="text-foreground">{formatTime(property.checkinTime, locale)}</strong> {t.possible[locale]}</p>
 
             <div className="bg-muted rounded-lg p-4">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{t.boxCodeLabel[locale]}</p>
@@ -81,7 +95,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange }: Props)
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-muted rounded-lg p-4">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{t.networkName[locale]}</p>
-                <p className="text-lg font-mono font-bold text-foreground">ACHZEIT</p>
+                <p className="text-lg font-mono font-bold text-foreground">{property.wifiName}</p>
               </div>
               <div className="bg-muted rounded-lg p-4">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{t.password[locale]}</p>
@@ -134,6 +148,69 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange }: Props)
               <li>• {t.kitchenItems.waste[locale]}</li>
             </ul>
             <p className="text-sm font-medium text-foreground">{t.kitchenDishwasherNote[locale]}</p>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Gut zu wissen */}
+        <AccordionItem value="faq" id="faq" className="border border-border rounded-lg px-6 overflow-hidden">
+          <AccordionTrigger className="text-lg md:text-xl font-display hover:no-underline">
+            <span className="flex items-center gap-3">
+              <Info size={20} className="text-alpine-wood" />
+              {t.sectionFaq[locale]}
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="text-muted-foreground leading-relaxed space-y-5">
+
+            {/* Check-in Flexibilität */}
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.faqCheckinTitle[locale]}</h4>
+              <p className="text-sm">
+                {t.faqCheckinBody[locale].replace('{time}', formatTime(property.checkinTime, locale))}
+              </p>
+              <p className="text-sm mt-1">{t.faqCheckinEarly[locale]}</p>
+            </div>
+
+            {/* Haustiere */}
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.faqPetsTitle[locale]}</h4>
+              <p className="text-sm">
+                {property.petsAllowed ? t.faqPetsAllowed[locale] : t.faqPetsNotAllowed[locale]}
+              </p>
+            </div>
+
+            {/* Küche & Kaffee */}
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.faqKitchenTitle[locale]}</h4>
+              <ul className="space-y-1 text-sm">
+                <li>•{' '}
+                  {property.coffeeType === 'nespresso' && t.faqCoffeeNespresso[locale]}
+                  {property.coffeeType === 'filter' && t.faqCoffeeFilter[locale]}
+                  {property.coffeeType === 'vollautomat' && t.faqCoffeeVollautomat[locale]}
+                </li>
+                {property.dishwasherTabsIncluded && (
+                  <li>• {t.faqDishwasherTabsYes[locale]}</li>
+                )}
+              </ul>
+            </div>
+
+            {/* Grill */}
+            {property.grillAvailable && (
+              <div>
+                <h4 className="font-display text-base text-foreground mb-2">{t.faqGrillTitle[locale]}</h4>
+                <p className="text-sm">{t.faqGrillAvailable[locale]}</p>
+              </div>
+            )}
+
+            {/* Kurtaxe */}
+            {property.kurtaxePerPersonPerNight != null && (
+              <div>
+                <h4 className="font-display text-base text-foreground mb-2">{t.faqKurtaxeTitle[locale]}</h4>
+                <p className="text-sm">
+                  {t.faqKurtaxeBody[locale].replace('{amount}', property.kurtaxePerPersonPerNight.toFixed(2).replace('.', ','))}
+                </p>
+              </div>
+            )}
+
           </AccordionContent>
         </AccordionItem>
 
@@ -509,7 +586,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange }: Props)
             </span>
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-4">
-            <p>{t.checkoutUntil[locale]} <strong className="text-foreground">{t.checkoutTime[locale]}</strong>.</p>
+            <p>{t.checkoutUntil[locale]} <strong className="text-foreground">{formatTime(property.checkoutTime, locale)}</strong>.</p>
             <ul className="space-y-2 text-sm">
               <li>• {t.checkoutItems.dishwasher[locale]}</li>
               <li>• {t.checkoutItems.yellowBag[locale]}</li>
