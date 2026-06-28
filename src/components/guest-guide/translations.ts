@@ -178,6 +178,7 @@ export const translations = {
   // WLAN
   networkName: t('Netzwerkname', 'Network Name', 'Nombre de red', 'Nome rete', 'Nom du réseau', 'Netwerknaam'),
   password: t('Passwort', 'Password', 'Contraseña', 'Password', 'Mot de passe', 'Wachtwoord'),
+  wifiSpeed: t('Highspeed WLAN · 500+ Mbps', 'Highspeed WiFi · 500+ Mbps', 'WiFi de alta velocidad · 500+ Mbps', 'WiFi ad alta velocità · 500+ Mbps', 'WiFi haut débit · 500+ Mbps', 'Highspeed wifi · 500+ Mbps'),
   wifiTrouble: t('Bei Verbindungsproblemen', 'Connection Issues', 'Problemas de conexión', 'Problemi di connessione', 'Problèmes de connexion', 'Verbindingsproblemen'),
   wifiRouter: t(
     'Der Router befindet sich im Keller unter der Treppe.',
@@ -256,6 +257,14 @@ export const translations = {
     'Chambre 2 – grand lit 200×200 cm',
     'Slaapkamer 2 – tweepersoonsbed 200×200 cm',
   ),
+  safeNote: t(
+    'Safe im Haus vorhanden – frag uns nach dem Code',
+    'Safe available in the house – ask us for the code',
+    'Caja fuerte disponible – pregúntanos el código',
+    'Cassaforte disponibile – chiedici il codice',
+    'Coffre-fort disponible – demandez-nous le code',
+    'Kluis aanwezig – vraag ons naar de code',
+  ),
   bedroom3: t(
     'Schlafzimmer 3 – Etagenbett (90×200 cm) + Einzelbett (80×180 cm), ideal für Kinder & Jugendliche',
     'Bedroom 3 – bunk bed (90×200 cm) + single bed (80×180 cm), ideal for children & teens',
@@ -264,6 +273,13 @@ export const translations = {
     'Chambre 3 – lits superposés (90×200 cm) + lit simple (80×180 cm), idéal pour les enfants',
     'Slaapkamer 3 – stapelbed (90×200 cm) + eenpersoonsbed (80×180 cm), ideaal voor kinderen',
   ),
+
+  comfortTitle: t('Komfort & Ausstattung', 'Comfort & Amenities', 'Comodidades', 'Comfort e dotazioni', 'Confort & équipements', 'Comfort & voorzieningen'),
+  hairdryerNote: t('Föhn im Bad', 'Hair dryer in the bathroom', 'Secador de pelo en el baño', 'Asciugacapelli in bagno', 'Sèche-cheveux dans la salle de bain', 'Haardroger in de badkamer'),
+  ironNote: t('Bügeleisen & Bügelbrett vorhanden', 'Iron & ironing board available', 'Plancha y tabla de planchar disponibles', 'Ferro da stiro e asse da stiro disponibili', 'Fer à repasser et planche à repasser disponibles', 'Strijkijzer & strijkplank aanwezig'),
+  dryingRackNote: t('Wäscheständer vorhanden', 'Drying rack available', 'Tendedero disponible', 'Stendino disponibile', 'Séchoir disponible', 'Droogrek aanwezig'),
+  extraBeddingNote: t('Extra Kissen & Decken im Schrank', 'Extra pillows & blankets in the wardrobe', 'Almohadas y mantas extra en el armario', 'Cuscini e coperte extra nell\'armadio', 'Oreillers et couvertures supplémentaires dans l\'armoire', 'Extra kussens & dekens in de kast'),
+  blackoutNote: t('Verdunkelungsvorhänge in allen Schlafzimmern', 'Blackout curtains in all bedrooms', 'Cortinas opacas en todos los dormitorios', 'Tende oscuranti in tutte le camere', 'Rideaux occultants dans toutes les chambres', 'Verduisteringsgordijnen in alle slaapkamers'),
 
   familyNote: t(
     'ACHZEIT ist bewusst familienfreundlich konzipiert – damit sich auch die Kleinsten wohlfühlen.',
@@ -278,9 +294,15 @@ export const translations = {
   kitchenItems: {
     bora: t('BORA-Kochfeld mit integriertem Abzug', 'BORA cooktop with integrated extractor', 'Placa BORA con extractor integrado', 'Piano cottura BORA con aspiratore integrato', 'Plaque BORA avec hotte intégrée', 'BORA kookplaat met geïntegreerde afzuiging'),
     oven: t('Backofen & Geschirrspüler unter der Arbeitsplatte', 'Oven & dishwasher under the countertop', 'Horno y lavavajillas bajo la encimera', 'Forno e lavastoviglie sotto il piano di lavoro', 'Four et lave-vaisselle sous le plan de travail', 'Oven & vaatwasser onder het werkblad'),
+    microwave: t('Mikrowelle', 'Microwave', 'Microondas', 'Microonde', 'Micro-ondes', 'Magnetron'),
+    toaster: t('Toaster', 'Toaster', 'Tostadora', 'Tostapane', 'Grille-pain', 'Broodrooster'),
+    fridge: t('Kühlschrank & Gefrierfach', 'Fridge & freezer compartment', 'Nevera y congelador', 'Frigorifero e congelatore', 'Réfrigérateur et compartiment congélateur', 'Koelkast & vriesvak'),
     coffee: t('Kaffeemaschine im Küchenbereich', 'Coffee machine in the kitchen area', 'Cafetera en la cocina', 'Macchina del caffè in cucina', 'Machine à café dans la cuisine', 'Koffiezetapparaat in de keuken'),
     waste: t('Mülltrennung unter der Spüle (Restmüll, Bio, Gelber Sack)', 'Waste separation under the sink (residual, organic, recyclables)', 'Separación de basura debajo del fregadero', 'Raccolta differenziata sotto il lavello', 'Tri des déchets sous l\'évier', 'Afvalscheiding onder de gootsteen'),
   },
+  entertainmentTitle: t('Unterhaltung', 'Entertainment', 'Entretenimiento', 'Intrattenimento', 'Divertissement', 'Entertainment'),
+  smartTvNote: t('Smart TV im Wohnzimmer', 'Smart TV in the living room', 'Smart TV en el salón', 'Smart TV in soggiorno', 'Smart TV dans le salon', 'Smart TV in de woonkamer'),
+  soundSystemNote: t('Soundsystem vorhanden', 'Sound system available', 'Sistema de sonido disponible', 'Sistema audio disponibile', 'Système sonore disponible', 'Geluidsysteem aanwezig'),
   washerDryerNote: t(
     'Waschmaschine & Wäschetrockner vorhanden – im Keller',
     'Washing machine & tumble dryer available – in the basement',
@@ -307,6 +329,14 @@ export const translations = {
   fireplaceNote1: t('Starterset mit Anzünder, Anfeuerholz und Holz als Erstausstattung vorhanden.', 'Starter set with firelighters, kindling, and wood included.', 'Kit de inicio con encendedor y leña incluido.', 'Kit di avviamento con accendifuoco e legna incluso.', 'Kit de démarrage avec allume-feu et bois fourni.', 'Starterset met aanmaakblokjes en hout aanwezig.'),
   fireplaceNote2: t('Nur trockenes Holz verwenden.', 'Only use dry wood.', 'Usar solo leña seca.', 'Usare solo legna secca.', 'N\'utiliser que du bois sec.', 'Gebruik alleen droog hout.'),
   fireplaceNote3: t('Asche erst vollständig abgekühlt entsorgen.', 'Only dispose of ashes when fully cooled.', 'Desechar cenizas solo cuando estén completamente frías.', 'Smaltire le ceneri solo quando completamente fredde.', 'Ne jeter les cendres que lorsqu\'elles sont complètement refroidies.', 'As pas weggooien als deze volledig is afgekoeld.'),
+  terraceNote: t(
+    'Terrasse & Garten mit Lounge und Esstisch – direkt zugänglich vom Erdgeschoss',
+    'Terrace & garden with lounge and dining table – directly accessible from the ground floor',
+    'Terraza y jardín con salón y mesa de comedor – acceso directo desde la planta baja',
+    'Terrazza e giardino con zona relax e tavolo da pranzo – accesso diretto dal piano terra',
+    'Terrasse et jardin avec salon et table à manger – accès direct depuis le rez-de-chaussée',
+    'Terras & tuin met lounge en eettafel – direct toegankelijk vanuit de begane grond',
+  ),
   balconyNote: t(
     'Balkon im Dachgeschoss mit Bergblick – perfekt für den Morgenkaffee.',
     'Top-floor balcony with mountain views – perfect for your morning coffee.',

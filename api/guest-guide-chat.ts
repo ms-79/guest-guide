@@ -41,6 +41,7 @@ ANREISE & ZUGANG:
 - Fahrräder: vor der Haustür überdacht Platz für 2–3 Räder; alternativ auf die umzäunte Terrasse
 
 WLAN:
+- Highspeed WLAN, 500+ Mbps
 - Netzwerkname: ACHZEIT
 - Passwort: siehe individuelle Gästedaten unten (falls vorhanden)
 - Router im Keller unter der Treppe
@@ -64,9 +65,24 @@ FAMILIE:
 WÄSCHE:
 - Waschmaschine & Wäschetrockner im Keller
 
+AUSSTATTUNG:
+- Safe im Haus vorhanden (Code beim Gastgeber erfragen)
+- Föhn im Bad
+- Bügeleisen & Bügelbrett vorhanden
+- Wäscheständer vorhanden
+- Extra Kissen & Decken im Schrank
+- Verdunkelungsvorhänge in allen Schlafzimmern
+- Smart TV im Wohnzimmer
+- Soundsystem vorhanden
+- Terrasse & Garten mit Lounge und Esstisch (Erdgeschoss)
+- Balkon im Dachgeschoss mit Bergblick
+
 KÜCHE & GERÄTE:
 - BORA-Kochfeld mit integriertem Abzug: Am Hauptschalter (rechte Seite) einschalten, Kochzone durch +-Symbol aktivieren, Absaugung startet automatisch.
 - Backofen & Geschirrspüler unter der Arbeitsplatte
+- Mikrowelle vorhanden
+- Toaster vorhanden
+- Kühlschrank & Gefrierfach vorhanden
 - Nespresso: Knopf oben einschalten, Kapsel einlegen, Tasse unterstellen, Größe wählen.
 - Geschirrspüler: Tab in Fach einlegen, Tür schließen, Eco oder Auto empfohlen.
 - Mülltrennung unter der Spüle (Restmüll, Bio, Gelber Sack)

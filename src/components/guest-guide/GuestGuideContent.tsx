@@ -81,6 +81,8 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <li className="flex gap-2"><span className="shrink-0">•</span><span>{t.bikeNote[locale]}</span></li>
               </ul>
             </div>
+
+            <p className="text-sm">🔒 {t.safeNote[locale]}</p>
           </AccordionContent>
         </AccordionItem>
 
@@ -93,6 +95,8 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             </span>
           </AccordionTrigger>
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-4">
+            <p className="text-sm text-muted-foreground">{t.wifiSpeed[locale]}</p>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-muted rounded-lg p-4">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{t.networkName[locale]}</p>
@@ -131,6 +135,15 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
               </ul>
             </div>
 
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.comfortTitle[locale]}</h4>
+              <ul className="space-y-1 text-sm">
+                {[t.hairdryerNote, t.ironNote, t.dryingRackNote, t.extraBeddingNote, t.blackoutNote].map((item, i) => (
+                  <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
+                ))}
+              </ul>
+            </div>
+
             <ul className="space-y-2 text-sm">
               {[t.familyItems.crib, t.familyItems.changingMat, t.familyItems.bedGuard, t.familyItems.dishes, t.familyItems.games].map((item, i) => (
                 <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
@@ -152,11 +165,22 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             <ul className="space-y-2 text-sm">
               <li>• {t.kitchenItems.bora[locale]}</li>
               <li>• {t.kitchenItems.oven[locale]}</li>
+              <li>• {t.kitchenItems.microwave[locale]}</li>
+              <li>• {t.kitchenItems.toaster[locale]}</li>
+              <li>• {t.kitchenItems.fridge[locale]}</li>
               <li>• {t.kitchenItems.coffee[locale]}</li>
               <li>• {t.kitchenItems.waste[locale]}</li>
               <li>• {t.washerDryerNote[locale]}</li>
             </ul>
             <p className="text-sm font-medium text-foreground">{t.kitchenDishwasherNote[locale]}</p>
+
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.entertainmentTitle[locale]}</h4>
+              <ul className="space-y-1 text-sm">
+                <li>• {t.smartTvNote[locale]}</li>
+                <li>• {t.soundSystemNote[locale]}</li>
+              </ul>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
@@ -253,6 +277,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <li>• {t.fireplaceNote3[locale]}</li>
               </ul>
             </div>
+            <p className="text-sm">{t.terraceNote[locale]}</p>
             <p className="text-sm">{t.balconyNote[locale]}</p>
             <p className="text-sm italic text-muted-foreground pt-2">{t.saunaEnjoyNote[locale]}</p>
           </AccordionContent>
