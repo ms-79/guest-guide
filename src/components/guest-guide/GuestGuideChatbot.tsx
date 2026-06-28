@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-import { MessageCircle, ArrowUp, Mic, X } from 'lucide-react';
+import { MessageCircle, ArrowUp, Mic, X, RotateCcw } from 'lucide-react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import ReactMarkdown from 'react-markdown';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
@@ -77,6 +77,13 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
     vv.addEventListener('resize', update);
     return () => vv.removeEventListener('resize', update);
   }, []);
+
+  const handleNewChat = useCallback(() => {
+    setMessages([{ role: 'assistant', content: t.conciergeGreeting[locale] }]);
+    setInput('');
+    recognitionRef.current?.stop();
+    setIsListening(false);
+  }, [locale, t]);
 
   const stopListening = useCallback(() => {
     recognitionRef.current?.stop();
@@ -311,6 +318,20 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
               <p className="text-sm font-medium text-white/90">{t.chatTitle[locale]}</p>
               <span className="text-[10px] font-semibold uppercase tracking-wider bg-white/10 text-white/60 px-1.5 py-0.5 rounded-md">Beta</span>
             </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleNewChat}
+                className="text-white/60 hover:text-white transition-colors"
+                aria-label="Neuer Chat"
+                title="Neuer Chat"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+              <DialogPrimitive.Close className="text-white/70 hover:text-white transition-colors focus:outline-none">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Schließen</span>
+              </DialogPrimitive.Close>
+            </div>
           </div>
 
           {/* Messages area */}
@@ -450,11 +471,6 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
               )}
             </div>
           </div>
-          {/* Close button */}
-          <DialogPrimitive.Close className="absolute right-4 top-3 rounded-sm text-white/70 hover:text-white transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
         </DialogPrimitive.Content>
         </DialogPrimitive.Portal>
       </DialogPrimitive.Root>
