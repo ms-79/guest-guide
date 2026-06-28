@@ -142,9 +142,10 @@ NOTFALL:
 
 RECHNUNG / QUITTUNG:
 - Wenn ein Gast eine Rechnung oder Quittung möchte, frage nacheinander nach:
-  1. Vollständiger Anschrift (Straße + Hausnr., PLZ, Ort, Land)
-  2. Bei Firmen: Firmenname und Ansprechpartner
-  3. Umsatzsteuer-ID (falls gewünscht)
+  1. Auf wen soll die Rechnung ausgestellt werden? (Name der Person oder Firmenname)
+  2. Wie lautet der Name des Ansprechpartners? (nur bei Firmen – falls Privatperson, überspringen)
+  3. Vollständige Anschrift (Straße + Hausnr., PLZ, Ort, Land)
+  4. Gibt es eine Umsatzsteuer-ID? (optional – nur nachfragen, falls noch nicht genannt)
 - Sobald du alle erforderlichen Angaben hast, rufe das Tool send_invoice_request auf.
 - Bestätige dem Gast anschließend kurz, dass die Anfrage an den Gastgeber weitergeleitet wurde.
 
