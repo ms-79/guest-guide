@@ -72,11 +72,21 @@ export default async function handler(req: Request): Promise<Response> {
     }
 
     const token = await generateToken(reservationId);
+    const path = `/${propertySlug}?t=${reservationId}.${token}`;
+
+    // format=path: return the domain-less path as JSON (for automations like
+    // n8n that store it in a Hostaway custom field; the message template
+    // prepends the brand domain). Default: 302-redirect to the full URL.
+    if (url.searchParams.get('format') === 'path') {
+      return new Response(JSON.stringify({ path }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const host = req.headers.get('host') ?? 'localhost';
     const proto = host.startsWith('localhost') ? 'http' : 'https';
-    const destination = `${proto}://${host}/${propertySlug}?t=${reservationId}.${token}`;
-
-    return redirect(destination);
+    return redirect(`${proto}://${host}${path}`);
   } catch (e) {
     return error(e instanceof Error ? e.message : 'Unknown error', 500);
   }
