@@ -50,9 +50,10 @@ export interface ChatGuestData {
 interface GuestGuideChatbotProps {
   guestData: ChatGuestData;
   logo: string;
+  propertyName: string;
 }
 
-const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo }) => {
+const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, propertyName }) => {
   const { locale } = useGuestGuideLocale();
   const t = translations;
   const [open, setOpen] = useState(false);
@@ -219,6 +220,20 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo }
             break;
           }
         }
+      }
+
+      // Fire-and-forget: log question + answer via email
+      if (assistantSoFar) {
+        fetch('/api/log-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            guestName: guestData.guestName,
+            propertyName,
+            question: text.trim(),
+            answer: assistantSoFar,
+          }),
+        }).catch(() => { /* ignore */ });
       }
 
       // Append WhatsApp escalation if keywords detected

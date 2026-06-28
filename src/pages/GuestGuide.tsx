@@ -258,9 +258,9 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
     <div className="min-h-screen bg-background">
       <GuestGuideHero guestData={guestData} onNavClick={handleNavClick} logo={property.logo} displayName={property.displayName} />
       <GuestGuideStickyNav activeSection={activeSection} onNavClick={handleNavClick} />
-      <GuestGuideContent guestData={guestData} activeSection={activeSection} onSectionChange={setActiveSection} />
+      <GuestGuideContent guestData={guestData} activeSection={activeSection} onSectionChange={setActiveSection} property={property} />
 
-      <GuestGuideChatbot guestData={guestData} logo={property.logo} />
+      <GuestGuideChatbot guestData={guestData} logo={property.logo} propertyName={property.displayName} />
 
       <div className="max-w-3xl mx-auto px-6 text-center mt-16 pb-12 pt-8 border-t border-border">
         <img src={property.logo} alt={property.displayName} className="w-20 mx-auto mb-3 opacity-30" />
