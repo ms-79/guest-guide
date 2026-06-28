@@ -69,64 +69,59 @@ const GuestGuideStickyNav = ({ activeSection, onNavClick }: Props) => {
 
   return (
     <nav
-      className="sticky top-0 z-40 bg-background/85 backdrop-blur-md border-b border-border/60 relative"
+      className="sticky top-0 z-40 bg-background/85 backdrop-blur-md border-b border-border/60"
       style={{ height: NAV_HEIGHT }}
     >
-      {/* Left arrow + fade */}
-      <div
-        className={`absolute left-0 top-0 h-full flex items-center z-10 pointer-events-none transition-opacity duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}
-      >
-        <div className="h-full w-10 bg-gradient-to-r from-background/95 to-transparent" />
+      <div className="flex items-center h-full mx-auto max-w-[56rem] px-2 gap-1">
+
+        {/* Left arrow */}
         <button
           onClick={scrollLeft}
           aria-label="Scroll left"
-          className="absolute left-1 pointer-events-auto p-1 rounded-full text-muted-foreground hover:text-foreground transition-colors"
+          className={`shrink-0 p-1 rounded-full text-muted-foreground hover:text-foreground transition-all duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         >
           <ChevronLeft size={18} />
         </button>
-      </div>
 
-      <div
-        ref={scrollRef}
-        className="flex items-center gap-2 px-8 h-full overflow-x-auto scrollbar-hide mx-auto max-w-[56rem]"
-        style={{ WebkitOverflowScrolling: 'touch' }}
-      >
-        {navItems.map((item) => {
-          const isActive = activeSection === item.target;
-          return (
-            <button
-              key={item.target}
-              ref={(el) => { if (el) buttonRefs.current.set(item.target, el); }}
-              onClick={() => onNavClick(item.target)}
-              className={`
-                flex items-center gap-1.5 whitespace-nowrap shrink-0
-                px-3.5 py-2 rounded-full text-sm font-medium
-                border transition-colors duration-200
-                ${isActive
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-transparent text-muted-foreground border-border hover:text-foreground hover:border-foreground/30'
-                }
-              `}
-            >
-              <item.icon size={14} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </div>
+        {/* Scrollable pill strip */}
+        <div
+          ref={scrollRef}
+          className="flex items-center gap-2 h-full overflow-x-auto scrollbar-hide flex-1"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          {navItems.map((item) => {
+            const isActive = activeSection === item.target;
+            return (
+              <button
+                key={item.target}
+                ref={(el) => { if (el) buttonRefs.current.set(item.target, el); }}
+                onClick={() => onNavClick(item.target)}
+                className={`
+                  flex items-center gap-1.5 whitespace-nowrap shrink-0
+                  px-3.5 py-2 rounded-full text-sm font-medium
+                  border transition-colors duration-200
+                  ${isActive
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-transparent text-muted-foreground border-border hover:text-foreground hover:border-foreground/30'
+                  }
+                `}
+              >
+                <item.icon size={14} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
 
-      {/* Right arrow + fade */}
-      <div
-        className={`absolute right-0 top-0 h-full flex items-center z-10 pointer-events-none transition-opacity duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}
-      >
-        <div className="h-full w-10 bg-gradient-to-l from-background/95 to-transparent" />
+        {/* Right arrow */}
         <button
           onClick={scrollRight}
           aria-label="Scroll right"
-          className="absolute right-1 pointer-events-auto p-1 rounded-full text-muted-foreground hover:text-foreground transition-colors"
+          className={`shrink-0 p-1 rounded-full text-muted-foreground hover:text-foreground transition-all duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         >
           <ChevronRight size={18} />
         </button>
+
       </div>
     </nav>
   );
