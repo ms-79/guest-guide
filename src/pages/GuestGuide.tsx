@@ -286,6 +286,22 @@ const GuestGuide = () => {
   const { slug } = useParams<{ slug: string }>();
   const property = getProperty(slug ?? '');
 
+  // Inject Google Analytics if the property has a tracking ID.
+  useEffect(() => {
+    if (!property?.googleAnalyticsId) return;
+    const id = property.googleAnalyticsId;
+    if (document.getElementById('ga-script')) return; // already injected
+    const s = document.createElement('script');
+    s.id = 'ga-script';
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    s.async = true;
+    document.head.appendChild(s);
+    const i = document.createElement('script');
+    i.id = 'ga-init';
+    i.text = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${id}');`;
+    document.head.appendChild(i);
+  }, [property?.googleAnalyticsId]);
+
   // Set the favicon per property (ACHZEIT keeps its own, others use Allgäu Stays).
   useEffect(() => {
     if (!property) return;

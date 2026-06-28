@@ -25,6 +25,8 @@ export interface PropertyConfig {
   dishwasherTabsIncluded: boolean;
   /** Kurtaxe per adult per night in EUR; undefined = no kurtaxe section shown */
   kurtaxePerPersonPerNight?: number;
+  /** Google Analytics Measurement ID (e.g. 'G-XXXXXXXXXX'); undefined = no GA */
+  googleAnalyticsId?: string;
 }
 
 const PROPERTIES: Record<string, PropertyConfig> = {
@@ -44,6 +46,7 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     coffeeType: 'nespresso',
     dishwasherTabsIncluded: true,
     kurtaxePerPersonPerNight: 3.80,
+    googleAnalyticsId: 'G-ZT13CVSF52',
   },
   '464732-felders-boutique-appartement': {
     slug: '464732-felders-boutique-appartement',
