@@ -47,11 +47,12 @@ KÜCHE & GERÄTE:
 - Geschirrspüler vor Abreise starten
 
 SAUNA:
-- Drehregler außen an der Kabine einschalten
-- Empfohlene Temperatur: 70–85 °C
+- Einschalten: Power-Taste oben rechts am Bedienfeld ca. 3 Sekunden gedrückt halten, bis der Ladekreis voll ist
+- Läuft automatisch maximal 3 Stunden, dann automatische Abschaltung
+- Abschalten: Power-Taste kurz drücken. Das Licht bleibt noch 30 Minuten an.
+- Temperatur: Drehregler drehen → Menü öffnet sich → „Temperatur" auswählen → Regler drehen → Regler drücken zum Bestätigen (empfohlen: 70–85 °C)
 - Aufheizzeit ca. 30–45 Minuten
 - Immer auf einem Handtuch sitzen
-- Nach Nutzung: Regler auf 0 und kurz lüften
 
 KAMIN:
 - Kaminzufuhr (Hebel unten) vollständig öffnen
