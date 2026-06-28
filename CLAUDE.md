@@ -82,7 +82,19 @@ Route: `/guide/:slug` → `GuestGuide.tsx` → `getProperty(slug)` → `GuestGui
 
 **Current properties:** `achzeit` (listing ID `463607`).
 
-**To add a new property:** add entry to `PROPERTIES` in `properties.ts`. Do not duplicate components.
+**To add a new property:** add entry to `PROPERTIES` in `properties.ts`, then add its slug to the owning brand's `propertySlugs` in `BRANDS` (same file). Do not duplicate components.
+
+### Brands / Domains
+
+`BRANDS` in `properties.ts` is the single source of truth mapping each canonical host to the property slugs served under it:
+
+| Host | Brand | Properties |
+|---|---|---|
+| `guide.achzeit.de` | ACHZEIT | `463607-achzeit-family-retreat` |
+| `guide.felders-escapes.com` | Felder's Escapes | `464733-felders-boutique-house`, `464732-felders-boutique-appartement` |
+| `guide.allgaeu-stays.com` | Allgäu Stays | `507092-phils-apartment` |
+
+All hosts point at the **same** Vercel project (`guest-guide`) — add each as a domain in Vercel + a DNS CNAME → `cname.vercel-dns.com`. `GuestGuide.tsx` redirects a property reached on a non-canonical live host to its brand host (slug + `?t=` token preserved). `localhost`, `127.0.0.1`, and `*.vercel.app` are exempt so dev/preview work on any host. `api/magic-link.ts` builds the guest URL from the **request host**, so generate each property's link via its own brand domain and guests stay on-brand automatically.
 
 **Known limitation:** `reservation.ts` has `LISTING_ID` hardcoded as `'463607'`. The `property` param is passed in the query but not yet used for routing to different Hostaway listings. This must be made dynamic before adding a second property.
 

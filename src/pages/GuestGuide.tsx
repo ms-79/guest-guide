@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 
-import { getProperty, type PropertyConfig } from '@/config/properties';
+import { getProperty, getCanonicalHostForSlug, type PropertyConfig } from '@/config/properties';
 import GuestGuideHero from '@/components/guest-guide/GuestGuideHero';
 import GuestGuideStickyNav from '@/components/guest-guide/GuestGuideStickyNav';
 import GuestGuideContent from '@/components/guest-guide/GuestGuideContent';
@@ -288,6 +288,27 @@ const GuestGuide = () => {
 
   if (!property) {
     return <Navigate to="/404" replace />;
+  }
+
+  // Canonical-domain enforcement: each property has a brand home (see BRANDS in
+  // properties.ts). If reached via another live host, redirect to the canonical
+  // one (slug + query/token preserved). Skipped on localhost and Vercel preview
+  // deploys so dev/preview keep working on any host.
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    const isDevHost =
+      host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app');
+    const canonical = getCanonicalHostForSlug(property.slug);
+    if (!isDevHost && canonical && host !== canonical) {
+      window.location.replace(
+        `https://${canonical}${window.location.pathname}${window.location.search}`,
+      );
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      );
+    }
   }
 
   return (
