@@ -9,17 +9,19 @@ const RESERVATION_CACHE_TTL = 30_000;
 const LISTING_CACHE_TTL = 120_000;
 
 // ---------------------------------------------------------------------------
-// PIN brute-force protection (in-memory, per-instance)
+// Auth brute-force protection (in-memory, per-instance)
+// Shared by both auth paths — failed PIN guesses and failed token attempts
+// count toward the same per-IP counter and lockout.
 // Note: Vercel Edge may spawn multiple instances — this guards within one
 // instance. Sufficient for low-traffic vacation rental use case.
 // ---------------------------------------------------------------------------
-const PIN_MAX_ATTEMPTS = 5;
-const PIN_WINDOW_MS   = 15 * 60 * 1000;  // 15 min rolling window
-const PIN_LOCKOUT_MS  = 15 * 60 * 1000;  // 15 min lockout after max attempts
-const PIN_FAILURE_DELAY_MS = 1_000;       // slow down each wrong guess
+const AUTH_MAX_ATTEMPTS = 5;
+const AUTH_WINDOW_MS   = 15 * 60 * 1000;  // 15 min rolling window
+const AUTH_LOCKOUT_MS  = 15 * 60 * 1000;  // 15 min lockout after max attempts
+const AUTH_FAILURE_DELAY_MS = 1_000;       // slow down each wrong guess
 
 interface RateEntry { count: number; windowStart: number; lockedUntil: number; }
-const pinRateMap = new Map<string, RateEntry>();
+const authRateMap = new Map<string, RateEntry>();
 
 function getClientIp(req: Request): string {
   return (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
@@ -27,27 +29,27 @@ function getClientIp(req: Request): string {
     || 'unknown';
 }
 
-function checkPinRate(ip: string): { allowed: boolean; retryAfter?: number } {
+function checkAuthRate(ip: string): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
-  const e = pinRateMap.get(ip);
+  const e = authRateMap.get(ip);
   if (!e) return { allowed: true };
   if (e.lockedUntil > now) return { allowed: false, retryAfter: Math.ceil((e.lockedUntil - now) / 1000) };
-  if (now - e.windowStart > PIN_WINDOW_MS) { pinRateMap.delete(ip); return { allowed: true }; }
-  return { allowed: e.count < PIN_MAX_ATTEMPTS };
+  if (now - e.windowStart > AUTH_WINDOW_MS) { authRateMap.delete(ip); return { allowed: true }; }
+  return { allowed: e.count < AUTH_MAX_ATTEMPTS };
 }
 
-function recordPinFailure(ip: string): void {
+function recordAuthFailure(ip: string): void {
   const now = Date.now();
-  const e = pinRateMap.get(ip);
-  if (!e || now - e.windowStart > PIN_WINDOW_MS) {
-    pinRateMap.set(ip, { count: 1, windowStart: now, lockedUntil: 0 });
+  const e = authRateMap.get(ip);
+  if (!e || now - e.windowStart > AUTH_WINDOW_MS) {
+    authRateMap.set(ip, { count: 1, windowStart: now, lockedUntil: 0 });
   } else {
     e.count++;
-    if (e.count >= PIN_MAX_ATTEMPTS) e.lockedUntil = now + PIN_LOCKOUT_MS;
+    if (e.count >= AUTH_MAX_ATTEMPTS) e.lockedUntil = now + AUTH_LOCKOUT_MS;
   }
 }
 
-function clearPinRate(ip: string): void { pinRateMap.delete(ip); }
+function clearAuthRate(ip: string): void { authRateMap.delete(ip); }
 
 function getListingIdFromSlug(slug: string): string | null {
   const id = (slug || '').split('-')[0];
@@ -206,9 +208,19 @@ export default async function handler(req: Request): Promise<Response> {
     if (!listingId) return json({ error: 'invalid_property', message: 'Unbekannte Property.' }, 400);
 
     const accessToken = await getHostawayToken();
+    const ip = getClientIp(req);
 
     if (reservationId && token) {
-      if (!await verifyToken(reservationId, token)) return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
+      // Rate-limit token attempts per client IP (same counter/lockout as PIN)
+      const rateCheck = checkAuthRate(ip);
+      if (!rateCheck.allowed) {
+        return json({ error: 'rate_limited', message: 'Zu viele Fehlversuche.', retryAfter: rateCheck.retryAfter }, 429);
+      }
+      if (!await verifyToken(reservationId, token)) {
+        recordAuthFailure(ip);
+        await new Promise(r => setTimeout(r, AUTH_FAILURE_DELAY_MS)); // slow-down on wrong token
+        return json({ error: 'invalid_token', message: 'Ungültiger Zugangslink.' }, 403);
+      }
       const baseUrl = getHostawayBaseUrl();
       const resRes = await fetch(`${baseUrl}/reservations/${reservationId}?includeResources=1`, { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!resRes.ok) return json({ error: 'reservation_not_found' }, 404);
@@ -218,6 +230,7 @@ export default async function handler(req: Request): Promise<Response> {
       if (String(reservation.listingMapId) !== listingId && String(reservation.listingId) !== listingId) {
         return json({ error: 'reservation_not_found' }, 404);
       }
+      clearAuthRate(ip); // successful token login → reset counter
       const listing = await getListingDetails(accessToken, listingId);
       const resp = buildGuestResponse(reservation, reservation.doorCode || reservation.doorSecurityCode || listing.doorCode, listing.wifiPassword);
       return json({ ...resp, reservationId, token });
@@ -231,8 +244,7 @@ export default async function handler(req: Request): Promise<Response> {
     if (!pin) return json({ status: 'pin_required' });
 
     // Rate-limit PIN guesses per client IP
-    const ip = getClientIp(req);
-    const rateCheck = checkPinRate(ip);
+    const rateCheck = checkAuthRate(ip);
     if (!rateCheck.allowed) {
       return json({ error: 'rate_limited', message: 'Zu viele Fehlversuche.', retryAfter: rateCheck.retryAfter }, 429);
     }
@@ -244,11 +256,11 @@ export default async function handler(req: Request): Promise<Response> {
     });
 
     if (!matched) {
-      recordPinFailure(ip);
-      await new Promise(r => setTimeout(r, PIN_FAILURE_DELAY_MS)); // slow-down on wrong PIN
+      recordAuthFailure(ip);
+      await new Promise(r => setTimeout(r, AUTH_FAILURE_DELAY_MS)); // slow-down on wrong PIN
       return json({ error: 'invalid_pin', message: 'Ungültige PIN.' }, 403);
     }
-    clearPinRate(ip); // successful login → reset counter
+    clearAuthRate(ip); // successful login → reset counter
     const resp = buildGuestResponse(matched, matched.doorCode || matched.doorSecurityCode || listing.doorCode, listing.wifiPassword);
     const reservationToken = await generateToken(String(matched.id));
     return json({ ...resp, reservationId: String(matched.id), token: reservationToken });
