@@ -559,6 +559,16 @@ export const translations = {
     '{amount} € per volwassene/nacht (kinderen vrijgesteld). De toeristenbelasting is niet inbegrepen in de prijs – je ontvangt een betaallink van de gastheer.',
   ),
 
+  faqInvoiceTitle: t('Rechnung / Quittung', 'Invoice / Receipt', 'Factura / Recibo', 'Fattura / Ricevuta', 'Facture / Reçu', 'Factuur / Kwitantie'),
+  faqInvoiceBody: t(
+    'Gerne stellen wir dir eine Rechnung aus. Bitte teile uns dazu vorab mit: vollständige Anschrift (bei Firmen: Firmenname und Ansprechpartner) sowie ggf. deine Umsatzsteuer-ID.',
+    'We\'re happy to provide an invoice. Please send us in advance: your full address (for companies: company name and contact person) and your VAT ID if applicable.',
+    'Con gusto te enviamos una factura. Por favor, indícanos con antelación: dirección completa (para empresas: nombre de la empresa y persona de contacto) y, si corresponde, tu número de IVA.',
+    'Siamo lieti di emettere una fattura. Ti chiediamo di comunicarci in anticipo: indirizzo completo (per aziende: ragione sociale e persona di riferimento) e, se applicabile, il tuo numero di partita IVA.',
+    'Nous vous établissons volontiers une facture. Merci de nous communiquer à l\'avance : adresse complète (pour les entreprises : raison sociale et interlocuteur) et, le cas échéant, votre numéro de TVA.',
+    'We stellen graag een factuur op. Stuur ons van tevoren: volledig adres (voor bedrijven: bedrijfsnaam en contactpersoon) en indien van toepassing je btw-nummer.',
+  ),
+
   // Check-out
   checkoutUntil: t('Check-out bis', 'Check-out by', 'Check-out antes de las', 'Check-out entro le', 'Check-out avant', 'Check-out vóór'),
   checkoutItems: {

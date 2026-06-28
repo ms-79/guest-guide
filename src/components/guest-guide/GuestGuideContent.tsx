@@ -209,6 +209,12 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
               </div>
             )}
 
+            {/* Rechnung */}
+            <div>
+              <h4 className="font-display text-base text-foreground mb-2">{t.faqInvoiceTitle[locale]}</h4>
+              <p className="text-sm">{t.faqInvoiceBody[locale]}</p>
+            </div>
+
           </AccordionContent>
         </AccordionItem>
 
