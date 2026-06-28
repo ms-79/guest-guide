@@ -6,7 +6,7 @@ const env = (name: string): string => (process.env[name] || '').replace(/^﻿/, 
 // Static mapping: Hostaway listingId → property slug.
 // Update when adding new properties.
 const LISTING_SLUGS: Record<string, string> = {
-  '463607': '463607-achzeit-family-retreat',
+  '463607': '463607-achzeit',
   '464732': '464732-felders-boutique-appartement',
   '464733': '464733-felders-boutique-house',
   '507092': '507092-phils-apartment',

@@ -8,8 +8,8 @@ export interface PropertyConfig {
 }
 
 const PROPERTIES: Record<string, PropertyConfig> = {
-  '463607-achzeit-family-retreat': {
-    slug: '463607-achzeit-family-retreat',
+  '463607-achzeit': {
+    slug: '463607-achzeit',
     displayName: 'ACHZEIT Family Retreat',
     whatsappNumber: '4915679656368',
     logo: '/logos/achzeit.webp',
@@ -72,7 +72,7 @@ export const BRANDS: BrandConfig[] = [
   {
     host: 'guide.achzeit.de',
     name: 'ACHZEIT',
-    propertySlugs: ['463607-achzeit-family-retreat'],
+    propertySlugs: ['463607-achzeit'],
   },
   {
     host: 'guide.felders-escapes.com',

@@ -90,9 +90,11 @@ Route: `/guide/:slug` → `GuestGuide.tsx` → `getProperty(slug)` → `GuestGui
 
 | Host | Brand | Properties |
 |---|---|---|
-| `guide.achzeit.de` | ACHZEIT | `463607-achzeit-family-retreat` |
+| `guide.achzeit.de` | ACHZEIT | `463607-achzeit` |
 | `guide.felders-escapes.com` | Felder's Escapes | `464733-felders-boutique-house`, `464732-felders-boutique-appartement` |
 | `guide.allgaeu-stays.com` | Allgäu Stays | `507092-phils-apartment` |
+
+**Slug convention:** `<listingId>-<slug(internalListingName)>` where `internalListingName` is the Hostaway listing's internal name and `slug()` = lowercase, strip apostrophe/accent chars (`'` `´` `` ` `` `’`), other non-`[a-z0-9]` runs → single `-`, trim (e.g. `ACHZEIT` → `achzeit`, `Felder´s Boutique House` → `felders-boutique-house`). Slugs are static URL ids (not fetched at runtime) and the listingId prefix is how `getListingIdFromSlug` resolves the listing. Keep the same string in sync across `properties.ts`, `api/magic-link.ts`, and the n8n write-back's `LISTING_SLUGS`.
 
 All hosts point at the **same** Vercel project (`guest-guide`) — add each as a domain in Vercel + a DNS CNAME → `cname.vercel-dns.com`. `GuestGuide.tsx` redirects a property reached on a non-canonical live host to its brand host (slug + `?t=` token preserved). `localhost`, `127.0.0.1`, and `*.vercel.app` are exempt so dev/preview work on any host. `api/magic-link.ts` builds the guest URL from the **request host**, so generate each property's link via its own brand domain and guests stay on-brand automatically.
 
