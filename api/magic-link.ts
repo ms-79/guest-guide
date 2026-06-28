@@ -12,6 +12,19 @@ const LISTING_SLUGS: Record<string, string> = {
   '507092': '507092-phils-apartment',
 };
 
+// Encode the first 8 bytes of an HMAC into exactly 6 base62 chars.
+// Must stay byte-for-byte identical to the copy in reservation.ts.
+const TOKEN_B62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function shortToken(sig: ArrayBuffer): string {
+  const bytes = new Uint8Array(sig);
+  let num = 0n;
+  for (let i = 0; i < 8; i++) num = (num << 8n) | BigInt(bytes[i]);
+  num %= 62n ** 6n;
+  let out = '';
+  for (let i = 0; i < 6; i++) { out = TOKEN_B62[Number(num % 62n)] + out; num /= 62n; }
+  return out;
+}
+
 // Generates the same HMAC token as reservation.ts — must stay in sync.
 async function generateToken(reservationId: string): Promise<string> {
   const secret = env('REDIRECT_HMAC_SECRET');
@@ -23,7 +36,7 @@ async function generateToken(reservationId: string): Promise<string> {
     false, ['sign'],
   );
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(reservationId));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return shortToken(sig);
 }
 
 export default async function handler(req: Request): Promise<Response> {

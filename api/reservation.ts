@@ -127,6 +127,21 @@ async function getListingDetails(accessToken: string, listingId: string): Promis
   return { doorCode: '', wifiPassword: '' };
 }
 
+// Encode the first 8 bytes of an HMAC into exactly 6 base62 chars.
+// 62^6 ≈ 5.68e10 (~36 bits) — short enough for a tidy URL, large enough that
+// the token endpoint stays infeasible to brute-force even without rate limiting.
+// Must stay byte-for-byte identical to the copy in magic-link.ts.
+const TOKEN_B62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function shortToken(sig: ArrayBuffer): string {
+  const bytes = new Uint8Array(sig);
+  let num = 0n;
+  for (let i = 0; i < 8; i++) num = (num << 8n) | BigInt(bytes[i]);
+  num %= 62n ** 6n;
+  let out = '';
+  for (let i = 0; i < 6; i++) { out = TOKEN_B62[Number(num % 62n)] + out; num /= 62n; }
+  return out;
+}
+
 // Generate a deterministic, unforgeable token from reservationId using HMAC-SHA256.
 // Web Crypto API is available in Vercel Edge Runtime (no Node crypto needed).
 async function generateToken(reservationId: string): Promise<string> {
@@ -139,7 +154,7 @@ async function generateToken(reservationId: string): Promise<string> {
     false, ['sign'],
   );
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(reservationId));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return shortToken(sig);
 }
 
 async function verifyToken(reservationId: string, token: string): Promise<boolean> {
