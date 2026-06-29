@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const GuestGuide = lazy(() => import("./pages/GuestGuide"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminApp = lazy(() => import("./pages/admin/AdminApp"));
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
+            <Route path="/admin/*" element={<AdminApp />} />
             <Route path="/:slug" element={<GuestGuide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

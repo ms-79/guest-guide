@@ -1,6 +1,20 @@
+import { getKnowledgeBundle, renderSystemPrompt, supabaseConfigured } from './_lib/supabase-rest';
+import { substituteTokens } from '../src/lib/knowledge';
+
 export const config = { runtime: 'edge' };
 
 const env = (name: string): string => (process.env[name] || '').replace(/^﻿/, '').trim();
+
+// Generic, property-agnostic fallback used ONLY if the CMS is unreachable or has
+// no prompt for the property. The real, editable prompts live in Supabase
+// (chatbot_prompts). Tokens are substituted at runtime.
+const FALLBACK_PROMPT = `Du bist der digitale Concierge der Unterkunft {{property_name}} im Allgäu. Du duzt die Gäste, antwortest freundlich und knapp und sprichst den Gast nur mit Vornamen an.
+
+SPRACHE: Erkenne die Sprache der Nachricht und antworte IMMER in derselben Sprache. Antworte ausschließlich anhand der bereitgestellten Informationen. Erfinde niemals Codes, Passwörter, Preise oder Zeiten.
+
+Wenn du etwas nicht weißt, biete den WhatsApp-Kontakt an: {{whatsapp_url}}.
+
+FORMATIERUNG: Markdown, ### (h3) Überschriften mit Emoji, **fett** für wichtige Werte, Aufzählungen für Schritte.`;
 
 const INVOICE_TOOL = {
   name: 'send_invoice_request',
@@ -17,145 +31,11 @@ const INVOICE_TOOL = {
   },
 };
 
-const SYSTEM_PROMPT = `Du bist der digitale Concierge des Ferienhauses ACHZEIT im Allgäu (Fischen im Allgäu, Achweg 5a). Du antwortest freundlich, persönlich und locker – du duzt die Gäste immer. Sprich den Gast NUR mit dem Vornamen an (z. B. „Hallo Christian!" statt „Hallo Christian Rhiel!"). Halte deine Antworten knapp und hilfreich.
-
-SPRACHE: Erkenne automatisch die Sprache der Nachricht des Gastes und antworte IMMER in derselben Sprache. Antworte ausschließlich basierend auf den folgenden Informationen.
-
-Wenn du etwas nicht weißt, sage zum Beispiel: „Das weiß ich leider nicht – aber du kannst das Team von ACHZEIT jederzeit per [WhatsApp kontaktieren](https://wa.me/4915679656368)."
-
-FORMATIERUNG:
-- Nutze Markdown für deine Antworten.
-- Verwende ### für thematische Überschriften mit passendem Emoji davor, z. B. "### 🗑️ Müllentsorgung".
-- Verwende IMMER ### (h3) für Überschriften, NIEMALS #### (h4) oder andere.
-- Verwende **fett** für wichtige Infos wie Codes, Zeiten, Temperaturen.
-- Nutze Aufzählungen (- oder •) für einzelne Schritte oder Punkte.
-- Verlinke Orte immer mit Google Maps.
-- Halte Antworten kurz und übersichtlich.
-
-ANREISE & ZUGANG:
-- Check-in ab 16:00 Uhr
-- Schlüssel in der Schlüsselbox (Code: siehe individuelle Gästedaten unten, falls vorhanden)
-- Schlüssel nach Entnahme wieder sicher verschließen
-- Beim Check-out Schlüssel zurück in die Box und Code verdrehen
-- Stellplatz direkt am Haus; weitere Parkplätze auf der Straße vorhanden
-- Fahrräder: vor der Haustür überdacht Platz für 2–3 Räder; alternativ auf die umzäunte Terrasse
-
-WLAN:
-- Highspeed WLAN, 500+ Mbps
-- Netzwerkname: ACHZEIT
-- Passwort: siehe individuelle Gästedaten unten (falls vorhanden)
-- Router im Keller unter der Treppe
-- Bei Problemen: Kurz vom Strom trennen (30 Sek.) und neu verbinden
-
-SCHLAFZIMMER:
-- Schlafzimmer 1: Doppelbett 200×200 cm, Arbeitsbereich, eigenes Bad
-- Schlafzimmer 2: Doppelbett 200×200 cm
-- Schlafzimmer 3: Etagenbett (90×200 cm) + Einzelbett (80×180 cm) – ideal für Kinder & Jugendliche
-- Kapazität: bis zu 7 Gäste, komfortabel 6 Erwachsene
-- Balkon im Dachgeschoss mit Bergblick
-
-FAMILIE:
-- Hochstuhl im Keller unter der Treppe (gerne vorab melden – dann stellen wir ihn bereit)
-- Reisebett auf Anfrage
-- Wickelunterlage im Schrank im Kinderzimmer (bitte Handtuch unterlegen)
-- Rausfallschutz im Kinderzimmer in der Schublade unter dem Etagenbett
-- Kindergeschirr in der unteren Küchenschublade
-- Spiele & Bücher im Wohnbereich
-
-WÄSCHE:
-- Waschmaschine & Wäschetrockner im Keller
-
-AUSSTATTUNG:
-- Safe im Haus vorhanden (Code beim Gastgeber erfragen)
-- Föhn im Bad
-- Bügeleisen & Bügelbrett vorhanden
-- Wäscheständer vorhanden
-- Extra Kissen & Decken im Schrank
-- Verdunkelungsvorhänge in allen Schlafzimmern
-- Smart TV im Wohnzimmer
-- Soundsystem vorhanden
-- Terrasse & Garten mit Lounge und Esstisch (Erdgeschoss)
-- Balkon im Dachgeschoss mit Bergblick
-
-KÜCHE & GERÄTE:
-- BORA-Kochfeld mit integriertem Abzug: Am Hauptschalter (rechte Seite) einschalten, Kochzone durch +-Symbol aktivieren, Absaugung startet automatisch.
-- Backofen & Geschirrspüler unter der Arbeitsplatte
-- Mikrowelle vorhanden
-- Toaster vorhanden
-- Kühlschrank & Gefrierfach vorhanden
-- Nespresso: Knopf oben einschalten, Kapsel einlegen, Tasse unterstellen, Größe wählen.
-- Geschirrspüler: Tab in Fach einlegen, Tür schließen, Eco oder Auto empfohlen.
-- Mülltrennung unter der Spüle (Restmüll, Bio, Gelber Sack)
-- Geschirrspüler vor Abreise starten
-
-SAUNA:
-- Einschalten: Power-Taste oben rechts am Bedienfeld ca. 3 Sekunden gedrückt halten, bis der Ladekreis voll ist
-- Läuft automatisch maximal 3 Stunden, dann automatische Abschaltung
-- Abschalten: Power-Taste kurz drücken. Das Licht bleibt noch 30 Minuten an.
-- Temperatur: Drehregler drehen → Menü öffnet sich → „Temperatur" auswählen → Regler drehen → Regler drücken zum Bestätigen (empfohlen: 70–85 °C)
-- Aufheizzeit ca. 30–45 Minuten
-- Immer auf einem Handtuch sitzen
-
-KAMIN:
-- Kaminzufuhr (Hebel unten) vollständig öffnen
-- Starterset mit Anzünder, Anfeuerholz und Holz als Erstausstattung vorhanden
-- Von oben nach unten anzünden
-- Nach ca. 15 Min. größere Scheite nachlegen
-- Zufuhr nach dem Anbrennen halb schließen
-
-HEIZUNG:
-- Fußbodenheizung wird zentral gesteuert
-- Thermostat im Wohnbereich einstellen
-- Änderungen wirken nach ca. 1–2 Stunden
-- Nicht über 23 °C einstellen
-
-EINKAUFEN:
-- EDEKA Fischen: 11 Min. zu Fuß / 2 Min. Auto
-- Bäckerei Härle (Tipp! Handarbeit, auch sonntags): 11 Min. zu Fuß / 3 Min. Auto
-- Metzgerei Hubert Schmid: 12 Min. zu Fuß / 2 Min. Auto
-- Feneberg Oberstdorf: 9 Min. Auto
-- V-Markt (zwischen Fischen & Oberstdorf): 5 Min. Auto
-
-RESTAURANTS:
-- Gaisbock (Fischen, Top-Empfehlung): 10 Min. zu Fuß / 3 Min. Auto
-- Ondersch (Oberstdorf, Sterne-Niveau): 12 Min. Auto
-- Alte Sennküche (Oberstdorf, Traditionell): 13 Min. Auto
-
-AUSFLÜGE:
-- Stinesser Lifte (Fischen, Familienskigebiet): 9 Min. zu Fuß / 2 Min. Auto
-- Breitachklamm (Tiefenbach, Top-Ausflug): 12 Min. Auto
-- Nebelhorn 2.224m (400-Gipfel-Blick): 13 Min. Auto
-- Fellhorn/Kanzelwand: 18 Min. Auto
-
-CHECK-OUT:
-- Check-out bis 11:00 Uhr
-- Spülmaschine anmachen
-- Gelber Sack in die mit gelbem Symbol markierte Tonne im Keller
-- Restmüll, Altpapier und Biomüll in die Tonnen vor der Haustür
-- Alle Lichter ausschalten, Fenster schließen
-- Schlüssel zurück in die Schlüsselbox
-
-NOTFALL:
-- Notruf: 112
-- Ärztl. Bereitschaftsdienst: 116 117
-- Erste-Hilfe-Set im Badezimmerschrank
-
-RECHNUNG / QUITTUNG:
-- Wenn ein Gast eine Rechnung oder Quittung möchte, frage nacheinander nach:
-  1. Auf wen soll die Rechnung ausgestellt werden? (Name der Person oder Firmenname)
-  2. Wie lautet der Name des Ansprechpartners? (nur bei Firmen – falls Privatperson, überspringen)
-  3. Vollständige Anschrift (Straße + Hausnr., PLZ, Ort, Land)
-  4. Gibt es eine Umsatzsteuer-ID? (optional – nur nachfragen, falls noch nicht genannt)
-- Sobald du alle erforderlichen Angaben hast, rufe das Tool send_invoice_request auf.
-- Bestätige dem Gast anschließend kurz, dass die Anfrage an den Gastgeber weitergeleitet wurde.
-
-KONTAKT TEAM ACHZEIT:
-- WhatsApp: [Team ACHZEIT kontaktieren](https://wa.me/4915679656368)`;
-
 async function sendInvoiceEmail(
   input: { full_name: string; address: string; contact_person?: string; vat_id?: string },
   guestName: string,
   resendKey: string,
+  recipient: string,
 ): Promise<void> {
   const lines = [
     `Neue Rechnungsanfrage über den Gäste-Chatbot`,
@@ -174,7 +54,7 @@ async function sendInvoiceEmail(
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'info@allgaeu-stays.com',
-      to: 'markus.siegmann@gmail.com',
+      to: recipient,
       subject: `Rechnungsanfrage – ${guestName}`,
       text: lines.join('\n'),
     }),
@@ -197,10 +77,41 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   try {
-    const { messages, context } = await req.json();
+    const { messages, context, property, locale } = await req.json();
     const apiKey = env('ANTHROPIC_API_KEY');
     const resendKey = env('RESEND_API_KEY');
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not configured');
+
+    // ── Load the property-specific knowledge from the CMS ─────────────────────
+    // Falls back to a generic prompt only if the CMS is unreachable or the
+    // property has no prompt, so the chatbot keeps working during rollout.
+    const propertySlug: string = property || '';
+    const lang: string = locale || 'de';
+    let basePrompt = '';
+    let invoiceRecipient = env('INVOICE_RECIPIENT_EMAIL') || 'markus.siegmann@gmail.com';
+    let whatsappUrl = '';
+    let propertyName = 'der Unterkunft';
+
+    if (propertySlug && supabaseConfigured()) {
+      try {
+        const bundle = await getKnowledgeBundle(propertySlug, lang);
+        if (bundle) {
+          basePrompt = renderSystemPrompt(bundle);
+          propertyName = bundle.propertyName;
+          if (bundle.invoiceRecipientEmail) invoiceRecipient = bundle.invoiceRecipientEmail;
+          if (bundle.whatsappNumber) whatsappUrl = `https://wa.me/${bundle.whatsappNumber}`;
+        }
+      } catch (err) {
+        console.error('chat: CMS knowledge fetch failed, using fallback prompt', err);
+      }
+    }
+
+    if (!basePrompt) {
+      basePrompt = substituteTokens(FALLBACK_PROMPT, {
+        property_name: propertyName,
+        whatsapp_url: whatsappUrl,
+      });
+    }
 
     let guestContext = '';
     const guestName: string = context?.guestName || 'Gast';
@@ -208,7 +119,7 @@ export default async function handler(req: Request): Promise<Response> {
     if (context?.boxCode) guestContext += `\nDer Schlüsselbox-Code für diesen Gast lautet: **${context.boxCode}**`;
     if (context?.guestName) guestContext += `\nDer Gast heißt: ${context.guestName}`;
 
-    const systemContent = SYSTEM_PROMPT + (guestContext ? `\n\nINDIVIDUELLE GÄSTEDATEN:${guestContext}` : '');
+    const systemContent = basePrompt + (guestContext ? `\n\nINDIVIDUELLE GÄSTEDATEN:${guestContext}` : '');
     const systemBlock = [{ type: 'text', text: systemContent, cache_control: { type: 'ephemeral' } }];
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -307,7 +218,7 @@ export default async function handler(req: Request): Promise<Response> {
             if (tool.name === 'send_invoice_request') {
               try {
                 const input = JSON.parse(tool.inputJson || '{}');
-                await sendInvoiceEmail(input, guestName, resendKey);
+                await sendInvoiceEmail(input, guestName, resendKey, invoiceRecipient);
                 toolResults.push({ type: 'tool_result', tool_use_id: tool.id, content: 'Email erfolgreich versendet.' });
               } catch (e) {
                 toolResults.push({ type: 'tool_result', tool_use_id: tool.id, content: `Fehler beim Versenden: ${e instanceof Error ? e.message : 'Unbekannt'}`, is_error: true });

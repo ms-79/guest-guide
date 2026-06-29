@@ -275,9 +275,19 @@ HOSTAWAY_CLIENT_ID       # OAuth2 client ID (163024 for ACHZEIT)
 HOSTAWAY_API_TOKEN       # OAuth2 client secret
 HOSTAWAY_BASE_URL        # https://api.hostaway.com/v1
 ANTHROPIC_API_KEY        # Claude API — server-side only, never expose
+SUPABASE_URL             # CMS project URL — used by Edge api/ routes
+SUPABASE_ANON_KEY        # CMS anon key — RLS enforces published/approved-only reads
+INVOICE_RECIPIENT_EMAIL  # optional fallback invoice recipient (per-property value lives in CMS)
 ```
 
-Never hardcode. Never expose to frontend. All used in `api/` routes only.
+Frontend admin (Vite — must be `VITE_`-prefixed to reach the bundle):
+```
+VITE_SUPABASE_URL        # same CMS project URL
+VITE_SUPABASE_ANON_KEY   # anon key for the admin client (Supabase Auth + RLS)
+```
+
+Never hardcode. The `VITE_*` anon key is RLS-scoped and safe in the bundle.
+Server-only keys (`ANTHROPIC_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, Hostaway) stay in `api/`.
 
 ---
 
@@ -289,7 +299,45 @@ No Node.js built-ins (`fs`, `crypto`, `path`, etc.) — Web APIs only.
 | File | Purpose |
 |---|---|
 | `reservation.ts` | Hostaway OAuth, PIN/token lookup, returns booking + door/WiFi |
-| `guest-guide-chat.ts` | Claude Haiku streaming chatbot, Anthropic→OpenAI SSE |
+| `guest-guide-chat.ts` | Claude Haiku streaming chatbot, Anthropic→OpenAI SSE; system prompt now loaded from the CMS per property |
+| `chat-knowledge.ts` | Public read API: assembled, locale-resolved knowledge (base prompt + approved facts + published FAQ) per property |
+| `_lib/supabase-rest.ts` | Edge-safe Supabase REST helper (no SDK in Edge functions); `_`-prefixed → not deployed as an endpoint |
+
+Pure, testable knowledge logic lives in `src/lib/knowledge.ts` (+ `src/lib/cms-types.ts`)
+and is shared by the Edge routes and Vitest (`src/lib/knowledge.test.ts`).
+
+---
+
+## Multi-Property CMS (Supabase)
+
+An internal Mini-CMS stores **stable content only** — guest-guide content, FAQ,
+chatbot prompts, and approved AI facts. **Reservation data is never stored here**;
+Hostaway remains the source of truth via `reservation.ts`.
+
+- **Schema & seed:** `supabase/migrations/0001_init.sql` (tables + RLS) and
+  `0002_seed.sql` (brands, properties, topics, default + ACHZEIT chatbot prompt,
+  mirroring `src/config/properties.ts`). See `supabase/README.md` for setup.
+  *(Note: the pre-existing `supabase/functions/` Deno edge functions are legacy
+  and unrelated to this CMS.)*
+- **Tables:** `brands`, `properties`, `topics`, `content_entries`, `faqs`,
+  `ai_facts` (approval workflow), `chatbot_prompts`, `audit_log`, `profiles`.
+  Multilingual text is JSONB keyed by locale (`{de,en,...}`), mirroring `t()`.
+- **Global vs property:** `property_id NULL` = global; property rows merge with
+  globals (`mergeForProperty` in `src/lib/knowledge.ts`). Resolution: published
+  prompts only; approved facts only; published + `expose_to_chatbot` FAQ only.
+- **RLS:** anon reads published/approved/active only; authenticated staff (a row
+  in `profiles` → `is_staff()`) get full read/write; service role bypasses RLS.
+- **Admin UI:** `/admin/*` (lazy-loaded `src/pages/admin/AdminApp.tsx`),
+  Supabase Auth login, property selector, AI-Facts CRUD + approval, FAQ CRUD,
+  chatbot-prompt editor. Intended to be served on its own subdomain (same Vercel
+  project); access is gated by Supabase Auth, not by host.
+- **Chatbot wiring:** `GuestGuideChatbot.tsx` sends `property` (slug) + `locale`
+  to `guest-guide-chat.ts`, which builds the system prompt from the CMS. If the
+  CMS is unreachable it falls back to a generic prompt so the bot keeps working.
+
+**Rule:** new property-specific content goes in the CMS, not in components.
+Keep prompt token placeholders (`{{property_name}}`, `{{whatsapp_url}}`,
+`{{whatsapp_number}}`) intact — they are substituted at runtime.
 
 ---
 
@@ -326,6 +374,13 @@ Before shipping any auth or data flow change, verify:
 ## Testing & Verification
 
 **Build:** `npm run build` must succeed with no type errors.
+**Unit tests:** `npm run test` — covers CMS knowledge resolution (`src/lib/knowledge.test.ts`).
+
+**CMS checklist:**
+- [ ] Migrations applied; seed shows 4 properties, 3 brands, ACHZEIT prompt
+- [ ] `/admin` login works; AI-Fact draft → pending → approved
+- [ ] Approved fact appears via `/api/chat-knowledge?property=<slug>&locale=de`; drafts do not
+- [ ] Chatbot answers ACHZEIT-specific (prompt from CMS); a property without its own prompt uses the global default
 
 **Manual flow checklist:**
 - [ ] `/guide/achzeit` loads without errors

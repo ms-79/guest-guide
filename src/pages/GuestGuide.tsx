@@ -260,7 +260,7 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
       <GuestGuideStickyNav activeSection={activeSection} onNavClick={handleNavClick} />
       <GuestGuideContent guestData={guestData} activeSection={activeSection} onSectionChange={setActiveSection} property={property} />
 
-      <GuestGuideChatbot guestData={guestData} logo={property.logo} propertyName={property.displayName} />
+      <GuestGuideChatbot guestData={guestData} logo={property.logo} propertyName={property.displayName} propertySlug={property.slug} />
 
       <div className="max-w-3xl mx-auto px-6 text-center mt-16 pb-12 pt-8 border-t border-border">
         <img src={property.logo} alt={property.displayName} className="w-20 mx-auto mb-3 opacity-30" />
