@@ -302,7 +302,7 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
               "inset-0 rounded-none border-none",
               "sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-[540px] sm:w-full sm:max-h-[80dvh] sm:rounded-2xl sm:border sm:border-border/50"
             )}
-            style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+            style={viewportHeight ? { height: `${viewportHeight}px`, bottom: 'auto' } : undefined}
           >
             <DialogPrimitive.Title className="sr-only">ACHZEIT Concierge</DialogPrimitive.Title>
           <div className="px-5 py-3 bg-[hsl(222,20%,14%)] shrink-0 flex items-center justify-between rounded-t-none sm:rounded-t-2xl">
@@ -437,6 +437,7 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onFocus={() => textareaRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })}
                 placeholder={t.chatPlaceholder[locale]}
                 disabled={isLoading}
                 rows={1}
