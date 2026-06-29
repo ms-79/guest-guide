@@ -485,7 +485,9 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
                 placeholder={t.chatPlaceholder[locale]}
                 disabled={isLoading}
                 rows={1}
-                className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none disabled:opacity-50 resize-none leading-relaxed max-h-[150px]"
+                /* text-base (16px) on mobile prevents iOS Safari from auto-zooming
+                   into the field on focus (which left the whole page zoomed/shifted) */
+                className="flex-1 min-w-0 bg-transparent text-base sm:text-sm text-foreground placeholder:text-muted-foreground outline-none disabled:opacity-50 resize-none leading-relaxed max-h-[150px]"
               />
               {/* Mic button – shown when input is empty */}
               {!input.trim() && (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition)) && (
