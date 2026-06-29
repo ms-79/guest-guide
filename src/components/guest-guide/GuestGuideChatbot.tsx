@@ -63,19 +63,26 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
   const [isListening, setIsListening] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(() =>
+    typeof window !== 'undefined' && window.visualViewport ? window.visualViewport.height : null
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const autoOpenRef = useRef(false);
 
   // Track visual viewport height for iOS keyboard handling
+  // iOS fires 'scroll' instead of 'resize' when keyboard opens on some versions
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visualViewport) return;
     const vv = window.visualViewport;
     const update = () => setViewportHeight(vv.height);
     vv.addEventListener('resize', update);
-    return () => vv.removeEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
   }, []);
 
   const handleNewChat = useCallback(() => {
@@ -437,7 +444,12 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                onFocus={() => textareaRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })}
+                onFocus={() => {
+                  // On iOS, keyboard open fires after ~300ms; read vv.height again then
+                  setTimeout(() => {
+                    if (window.visualViewport) setViewportHeight(window.visualViewport.height);
+                  }, 350);
+                }}
                 placeholder={t.chatPlaceholder[locale]}
                 disabled={isLoading}
                 rows={1}
