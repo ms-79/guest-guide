@@ -63,20 +63,39 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
   const [isListening, setIsListening] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
-  const [viewportHeight, setViewportHeight] = useState<number | null>(() =>
-    typeof window !== 'undefined' && window.visualViewport ? window.visualViewport.height : null
+  const [viewport, setViewport] = useState<{ height: number; offsetTop: number } | null>(() =>
+    typeof window !== 'undefined' && window.visualViewport
+      ? { height: window.visualViewport.height, offsetTop: window.visualViewport.offsetTop }
+      : null
+  );
+  // Matches the Tailwind `sm:` breakpoint (640px) where the dialog switches
+  // from full-screen (mobile) to a centered modal (desktop). The viewport
+  // pinning below must only apply on the full-screen mobile layout.
+  const [isNarrow, setIsNarrow] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 640 : true
   );
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const autoOpenRef = useRef(false);
 
-  // Track visual viewport height for iOS keyboard handling
-  // iOS fires 'scroll' instead of 'resize' when keyboard opens on some versions
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(max-width: 639px)');
+    const onChange = () => setIsNarrow(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
+  // Track visual viewport for iOS keyboard handling.
+  // On iOS, position:fixed is relative to the layout viewport, so when the
+  // keyboard opens the visual viewport shrinks AND shifts (offsetTop). We must
+  // pin the dialog to the visible area using both height and offsetTop.
+  // iOS fires 'scroll' instead of 'resize' on some versions.
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visualViewport) return;
     const vv = window.visualViewport;
-    const update = () => setViewportHeight(vv.height);
+    const update = () => setViewport({ height: vv.height, offsetTop: vv.offsetTop });
     vv.addEventListener('resize', update);
     vv.addEventListener('scroll', update);
     return () => {
@@ -149,7 +168,7 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, viewportHeight]);
+  }, [messages, viewport]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -309,7 +328,18 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
               "inset-0 rounded-none border-none",
               "sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-[540px] sm:w-full sm:max-h-[80dvh] sm:rounded-2xl sm:border sm:border-border/50"
             )}
-            style={viewportHeight ? { height: `${viewportHeight}px`, bottom: 'auto' } : undefined}
+            style={
+              isNarrow && viewport
+                ? {
+                    height: `${viewport.height}px`,
+                    top: 0,
+                    bottom: 'auto',
+                    // Pin to the visible (visual) viewport: when the iOS keyboard
+                    // opens, the visual viewport shifts down by offsetTop.
+                    transform: `translateY(${viewport.offsetTop}px)`,
+                  }
+                : undefined
+            }
           >
             <DialogPrimitive.Title className="sr-only">ACHZEIT Concierge</DialogPrimitive.Title>
           <div className="px-5 py-3 bg-[hsl(222,20%,14%)] shrink-0 flex items-center justify-between rounded-t-none sm:rounded-t-2xl">
@@ -445,9 +475,11 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 onFocus={() => {
-                  // On iOS, keyboard open fires after ~300ms; read vv.height again then
+                  // On iOS, keyboard open settles after ~300ms; re-read the
+                  // visual viewport then in case the resize/scroll event was missed.
                   setTimeout(() => {
-                    if (window.visualViewport) setViewportHeight(window.visualViewport.height);
+                    const vv = window.visualViewport;
+                    if (vv) setViewport({ height: vv.height, offsetTop: vv.offsetTop });
                   }, 350);
                 }}
                 placeholder={t.chatPlaceholder[locale]}

@@ -29,3 +29,7 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Local tooling & guest data — never commit (may contain PII)
+.claude/
+scripts/
