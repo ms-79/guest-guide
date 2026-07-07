@@ -235,12 +235,10 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             )}
 
             {/* Kurtaxe */}
-            {property.kurtaxePerPersonPerNight != null && (
+            {property.showKurtaxe && (
               <div>
                 <h4 className="font-display text-base text-foreground mb-2">{t.faqKurtaxeTitle[locale]}</h4>
-                <p className="text-sm">
-                  {t.faqKurtaxeBody[locale].replace('{amount}', property.kurtaxePerPersonPerNight.toFixed(2).replace('.', ','))}
-                </p>
+                <p className="text-sm">{t.faqKurtaxeBody[locale]}</p>
               </div>
             )}
 

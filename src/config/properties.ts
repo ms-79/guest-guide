@@ -23,8 +23,8 @@ export interface PropertyConfig {
   coffeeType: 'nespresso' | 'filter' | 'vollautomat';
   /** Whether dishwasher tabs are stocked */
   dishwasherTabsIncluded: boolean;
-  /** Kurtaxe per adult per night in EUR; undefined = no kurtaxe section shown */
-  kurtaxePerPersonPerNight?: number;
+  /** Show the Kurtaxe/tourist-tax section; amounts live in translations.ts. undefined/false = hidden */
+  showKurtaxe?: boolean;
   /** Google Analytics Measurement ID (e.g. 'G-XXXXXXXXXX'); undefined = no GA */
   googleAnalyticsId?: string;
 }
@@ -45,7 +45,7 @@ const PROPERTIES: Record<string, PropertyConfig> = {
     grillAvailable: true,
     coffeeType: 'nespresso',
     dishwasherTabsIncluded: true,
-    kurtaxePerPersonPerNight: 3.80,
+    showKurtaxe: true,
     googleAnalyticsId: 'G-ZT13CVSF52',
   },
   '464732-felders-boutique-appartement': {

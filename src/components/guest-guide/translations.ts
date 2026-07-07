@@ -625,12 +625,12 @@ export const translations = {
 
   faqKurtaxeTitle: t('Kurtaxe', 'Tourist Tax', 'Tasa turística', 'Tassa di soggiorno', 'Taxe de séjour', 'Toeristenbelasting'),
   faqKurtaxeBody: t(
-    '{amount} € pro Person/Nacht ab 14 Jahren, 1,90 € für Kinder von 6–13 Jahren, bis einschließlich 5 Jahre frei. Die Kurtaxe ist nicht im Übernachtungspreis enthalten – du erhältst einen Zahlungslink vom Gastgeber.',
-    '{amount} € per person/night from age 14, 1.90 € for children aged 6–13, free up to and including age 5. The tourist tax is not included in the accommodation price – you\'ll receive a payment link from the host.',
-    '{amount} € por persona/noche a partir de 14 años, 1,90 € para niños de 6–13 años, gratis hasta los 5 años inclusive. La tasa turística no está incluida en el precio – recibirás un enlace de pago del anfitrión.',
-    '{amount} € per persona/notte dai 14 anni, 1,90 € per bambini dai 6 ai 13 anni, gratis fino a 5 anni compresi. La tassa di soggiorno non è inclusa nel prezzo – riceverai un link di pagamento dall\'host.',
-    '{amount} € par personne/nuit à partir de 14 ans, 1,90 € pour les enfants de 6 à 13 ans, gratuit jusqu\'à 5 ans inclus. La taxe de séjour n\'est pas incluse dans le prix – vous recevrez un lien de paiement de l\'hôte.',
-    '{amount} € per persoon/nacht vanaf 14 jaar, 1,90 € voor kinderen van 6–13 jaar, gratis tot en met 5 jaar. De toeristenbelasting is niet inbegrepen in de prijs – je ontvangt een betaallink van de gastheer.',
+    '3,80 € pro Person/Nacht ab 14 Jahren, 1,90 € für Kinder von 6–13 Jahren, bis einschließlich 5 Jahre frei. Die Kurtaxe ist nicht im Übernachtungspreis enthalten – du erhältst einen Zahlungslink vom Gastgeber.',
+    '3.80 € per person/night from age 14, 1.90 € for children aged 6–13, free up to and including age 5. The tourist tax is not included in the accommodation price – you\'ll receive a payment link from the host.',
+    '3,80 € por persona/noche a partir de 14 años, 1,90 € para niños de 6–13 años, gratis hasta los 5 años inclusive. La tasa turística no está incluida en el precio – recibirás un enlace de pago del anfitrión.',
+    '3,80 € per persona/notte dai 14 anni, 1,90 € per bambini dai 6 ai 13 anni, gratis fino a 5 anni compresi. La tassa di soggiorno non è inclusa nel prezzo – riceverai un link di pagamento dall\'host.',
+    '3,80 € par personne/nuit à partir de 14 ans, 1,90 € pour les enfants de 6 à 13 ans, gratuit jusqu\'à 5 ans inclus. La taxe de séjour n\'est pas incluse dans le prix – vous recevrez un lien de paiement de l\'hôte.',
+    '3,80 € per persoon/nacht vanaf 14 jaar, 1,90 € voor kinderen van 6–13 jaar, gratis tot en met 5 jaar. De toeristenbelasting is niet inbegrepen in de prijs – je ontvangt een betaallink van de gastheer.',
   ),
 
   faqInvoiceTitle: t('Rechnung / Quittung', 'Invoice / Receipt', 'Factura / Recibo', 'Fattura / Ricevuta', 'Facture / Reçu', 'Factuur / Kwitantie'),
