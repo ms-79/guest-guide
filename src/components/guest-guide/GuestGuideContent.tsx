@@ -145,7 +145,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             </div>
 
             <ul className="space-y-2 text-sm">
-              {[t.familyItems.crib, t.familyItems.changingMat, t.familyItems.bedGuard, t.familyItems.dishes, t.familyItems.games].map((item, i) => (
+              {[t.familyItems.crib, t.familyItems.changingMat, t.familyItems.bedGuard, t.familyItems.games].map((item, i) => (
                 <li key={i} className="flex gap-2"><span className="shrink-0">•</span><span>{item[locale]}</span></li>
               ))}
             </ul>
@@ -235,12 +235,10 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             )}
 
             {/* Kurtaxe */}
-            {property.kurtaxePerPersonPerNight != null && (
+            {property.showKurtaxe && (
               <div>
                 <h4 className="font-display text-base text-foreground mb-2">{t.faqKurtaxeTitle[locale]}</h4>
-                <p className="text-sm">
-                  {t.faqKurtaxeBody[locale].replace('{amount}', property.kurtaxePerPersonPerNight.toFixed(2).replace('.', ','))}
-                </p>
+                <p className="text-sm">{t.faqKurtaxeBody[locale]}</p>
               </div>
             )}
 
