@@ -32,4 +32,9 @@ dist-ssr
 
 # Local tooling & guest data — never commit (may contain PII)
 .claude/
-scripts/
+# Keep local scripts out of git, but the content generator is build-critical.
+scripts/*
+!scripts/generate-content.ts
+
+# Generated at build time by scripts/generate-content.ts — do not commit or edit.
+src/generated/

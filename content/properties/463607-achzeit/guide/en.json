@@ -1,0 +1,25 @@
+{
+  "propertySlug": "463607-achzeit",
+  "locale": "en",
+  "sourceLocale": "de",
+  "sections": [
+    {
+      "key": "wifi",
+      "title": "Wi-Fi",
+      "bodyMd": "The Wi-Fi network is called **ACHZEIT**. You'll find the password in your personal access details. The router is in the cellar under the stairs – if there are problems, unplug it briefly and reconnect.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 10,
+      "translationStatus": "reviewed"
+    },
+    {
+      "key": "sauna",
+      "title": "Sauna",
+      "bodyMd": "The sauna is in the cellar. Please switch it off after use and air the room briefly. Always sit on a towel.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 20,
+      "translationStatus": "reviewed"
+    }
+  ]
+}

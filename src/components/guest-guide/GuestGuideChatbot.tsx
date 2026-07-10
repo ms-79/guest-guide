@@ -51,9 +51,10 @@ interface GuestGuideChatbotProps {
   guestData: ChatGuestData;
   logo: string;
   propertyName: string;
+  propertySlug: string;
 }
 
-const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, propertyName }) => {
+const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, propertyName, propertySlug }) => {
   const { locale } = useGuestGuideLocale();
   const t = translations;
   const [open, setOpen] = useState(false);
@@ -207,6 +208,8 @@ const GuestGuideChatbot: React.FC<GuestGuideChatbotProps> = ({ guestData, logo, 
             wifiPassword: guestData.wifiPassword,
             boxCode: guestData.boxCode,
             guestName: guestData.guestName,
+            propertySlug,
+            locale,
           },
         }),
       });

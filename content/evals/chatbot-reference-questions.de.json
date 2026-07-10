@@ -1,0 +1,32 @@
+{
+  "description": "Referenzfragen zum manuellen Vorher/Nachher-Vergleich des Gäste-Chatbots. Vor und nach einer Änderung an den Property-Facts jede Frage stellen und die Antworten vergleichen: bleiben Fakten korrekt, property-spezifisch und ohne Halluzination? Später kann daraus ein automatischer Test werden.",
+  "propertySlug": "463607-achzeit",
+  "locale": "de",
+  "questions": [
+    "Wie komme ich ins Haus?",
+    "Wann ist Check-in?",
+    "Wann muss ich auschecken?",
+    "Wie lautet der WLAN-Name?",
+    "Das WLAN geht nicht, was kann ich tun?",
+    "Wie funktioniert die Sauna?",
+    "Wie stelle ich die Sauna-Temperatur ein?",
+    "Wie mache ich den Kamin an?",
+    "Wie funktioniert das BORA-Kochfeld?",
+    "Wie benutze ich die Nespresso-Maschine?",
+    "Wo ist der Müll und wie trenne ich ihn?",
+    "Was muss ich bei der Abreise machen?",
+    "Gibt es einen Grill?",
+    "Wo kann ich parken?",
+    "Wo kann ich mein Fahrrad abstellen?",
+    "Wo kann ich einkaufen?",
+    "Gibt es eine Bäckerei in der Nähe?",
+    "Welche Restaurants könnt ihr empfehlen?",
+    "Welche Ausflüge lohnen sich?",
+    "Gibt es ein Babybett oder einen Hochstuhl?",
+    "Ist eine Wickelmöglichkeit vorhanden?",
+    "Wie viele Personen passen ins Haus?",
+    "Wie stelle ich die Heizung ein?",
+    "Wo finde ich Waschmaschine und Trockner?",
+    "Was mache ich im Notfall?"
+  ]
+}
