@@ -185,6 +185,38 @@ Vor und nach einer Änderung an den Facts jede Frage im Chatbot stellen und die
 Antworten manuell vergleichen (bleiben Fakten korrekt, property-spezifisch, ohne
 Halluzination?). Ein automatischer Test kann später darauf aufbauen.
 
+## Admin-Bereich (Phase 2 — Read-only)
+
+Unter `/admin` gibt es eine **passwortgeschützte Nur-Lese-Ansicht** des
+Property-Contents. Sie schreibt nichts — Bearbeiten + Pull-Request-Erstellung
+folgen in Phase 3.
+
+**Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Chatbot-Facts,
+Gästemappen-Sektionen und Empfehlungen ansehen → Abmelden.
+
+**Auth (Edge-safe, ohne Datenbank):**
+- Login `POST /api/admin/login` prüft den Zugangscode konstant-zeitig und setzt
+  ein **HttpOnly**-Session-Cookie (`SameSite=Strict`, `Secure` außer auf
+  localhost), das mit HMAC-SHA256 (Web Crypto) signiert ist und nach 12 h
+  abläuft. Zugangscode und Secret werden nie geloggt.
+- `POST /api/admin/logout` löscht das Cookie.
+- `GET /api/admin/content` (Property-Liste) und
+  `GET /api/admin/content?propertySlug=…` (Content-Bundle) liefern **nur mit
+  gültiger Session** Daten, sonst `401`. Der Content stammt aus dem generierten
+  Modul (kein Dateisystemzugriff, `internal`-Inhalte bereits entfernt). Es gibt
+  **keinen Schreibpfad und keine GitHub-Logik** im Frontend.
+- Ein einfacher In-Memory-Limiter bremst Brute-Force auf den Zugangscode.
+
+**Benötigte Environment-Variablen (nur serverseitig):**
+
+| Variable | Zweck |
+|---|---|
+| `ADMIN_PASSCODE` | Zugangscode für den Admin-Login. |
+| `ADMIN_SESSION_SECRET` | Zufälliges Secret zum Signieren des Session-Cookies. |
+
+Ohne diese beiden Variablen antwortet der Admin-Login mit „nicht konfiguriert".
+Beide gehören in die Vercel-Projekt-Env, niemals ins Frontend-Bundle oder ins Repo.
+
 ## Für später vorbereitet (nicht Teil von Phase 1)
 
 - `GET /api/guide-content?propertySlug=…&locale=…`: liefert später nur `public`
