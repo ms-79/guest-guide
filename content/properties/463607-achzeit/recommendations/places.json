@@ -1,0 +1,32 @@
+{
+  "propertySlug": "463607-achzeit",
+  "places": [
+    {
+      "id": "gaisbock",
+      "category": "restaurant",
+      "name": "Gaisbock",
+      "mapsUrl": "https://maps.google.com/?q=Gaisbock+Fischen+im+Allgäu",
+      "distanceText": "10 Min. zu Fuß / 3 Min. Auto",
+      "sortOrder": 10,
+      "visibility": "guest"
+    },
+    {
+      "id": "edeka-fischen",
+      "category": "grocery",
+      "name": "EDEKA Fischen",
+      "mapsUrl": "https://maps.google.com/?q=EDEKA+Fischen+im+Allgäu",
+      "distanceText": "11 Min. zu Fuß / 2 Min. Auto",
+      "sortOrder": 20,
+      "visibility": "guest"
+    },
+    {
+      "id": "breitachklamm",
+      "category": "excursion",
+      "name": "Breitachklamm",
+      "mapsUrl": "https://maps.google.com/?q=Breitachklamm",
+      "distanceText": "12 Min. Auto",
+      "sortOrder": 30,
+      "visibility": "guest"
+    }
+  ]
+}

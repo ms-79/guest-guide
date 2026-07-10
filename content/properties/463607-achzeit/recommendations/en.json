@@ -1,0 +1,23 @@
+{
+  "propertySlug": "463607-achzeit",
+  "locale": "en",
+  "items": [
+    {
+      "placeId": "gaisbock",
+      "descriptionMd": "Cosy restaurant in Fischen with regional cuisine.",
+      "tipMd": "Our top pick for a relaxed evening after a day out.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "edeka-fischen",
+      "descriptionMd": "Well-stocked supermarket for groceries during your stay.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "breitachklamm",
+      "descriptionMd": "Impressive gorge near Tiefenbach – the deepest rocky ravine in Central Europe.",
+      "tipMd": "Wear sturdy shoes and bring a jacket if it might rain.",
+      "translationStatus": "reviewed"
+    }
+  ]
+}

@@ -1,6 +1,11 @@
 export const config = { runtime: 'edge' };
 
-const env = (name: string): string => (process.env[name] || '').replace(/^﻿/, '').trim();
+// Property content is generated at build time (scripts/generate-content.ts)
+// into a plain-data module. Edge runtime cannot read the filesystem, so we
+// import the validated content instead of reading content/**  at request time.
+import { getChatbotFacts, propertyMeta } from '../src/generated/content';
+
+const env = (name: string): string => (process.env[name] || '').replace(/^\uFEFF/, '').trim();
 
 const INVOICE_TOOL = {
   name: 'send_invoice_request',
@@ -17,11 +22,15 @@ const INVOICE_TOOL = {
   },
 };
 
-const SYSTEM_PROMPT = `Du bist der digitale Concierge des Ferienhauses ACHZEIT im Allgäu (Fischen im Allgäu, Achweg 5a). Du antwortest freundlich, persönlich und locker – du duzt die Gäste immer. Sprich den Gast NUR mit dem Vornamen an (z. B. „Hallo Christian!" statt „Hallo Christian Rhiel!"). Halte deine Antworten knapp und hilfreich.
+// ── Block A: globales, property-unabhängiges Assistant-Gerüst ──────────────
+// Enthält nur Rolle, Ton, Sicherheits- und Formatierungsregeln sowie den
+// Rechnungs-Flow. KEINE property-spezifischen Fakten — die kommen als Block B
+// aus den generierten Property-Facts (content/properties/**).
+const GLOBAL_SCAFFOLD = `Du bist der digitale Concierge einer Ferienunterkunft im Allgäu. Du antwortest freundlich, persönlich und locker – du duzt die Gäste immer. Sprich den Gast NUR mit dem Vornamen an (z. B. „Hallo Christian!" statt „Hallo Christian Rhiel!"). Halte deine Antworten knapp und hilfreich.
 
-SPRACHE: Erkenne automatisch die Sprache der Nachricht des Gastes und antworte IMMER in derselben Sprache. Antworte ausschließlich basierend auf den folgenden Informationen.
+SPRACHE: Erkenne automatisch die Sprache der Nachricht des Gastes und antworte IMMER in derselben Sprache.
 
-Wenn du etwas nicht weißt, sage zum Beispiel: „Das weiß ich leider nicht – aber du kannst das Team von ACHZEIT jederzeit per [WhatsApp kontaktieren](https://wa.me/4915679656368)."
+WICHTIG – NICHT HALLUZINIEREN: Antworte ausschließlich auf Basis der unten stehenden PROPERTY-FAKTEN und der individuellen Gästedaten. Erfinde niemals hausspezifische Details (Codes, Ausstattung, Zeiten, Preise, Hausregeln). Wenn eine Information nicht in den PROPERTY-FAKTEN steht, sage ehrlich, dass du es nicht sicher weißt.
 
 FORMATIERUNG:
 - Nutze Markdown für deine Antworten.
@@ -29,116 +38,8 @@ FORMATIERUNG:
 - Verwende IMMER ### (h3) für Überschriften, NIEMALS #### (h4) oder andere.
 - Verwende **fett** für wichtige Infos wie Codes, Zeiten, Temperaturen.
 - Nutze Aufzählungen (- oder •) für einzelne Schritte oder Punkte.
-- Verlinke Orte immer mit Google Maps.
+- Verlinke Orte, wenn möglich, mit Google Maps.
 - Halte Antworten kurz und übersichtlich.
-
-ANREISE & ZUGANG:
-- Check-in ab 16:00 Uhr
-- Schlüssel in der Schlüsselbox (Code: siehe individuelle Gästedaten unten, falls vorhanden)
-- Schlüssel nach Entnahme wieder sicher verschließen
-- Beim Check-out Schlüssel zurück in die Box und Code verdrehen
-- Stellplatz direkt am Haus; weitere Parkplätze auf der Straße vorhanden
-- Fahrräder: vor der Haustür überdacht Platz für 2–3 Räder; alternativ auf die umzäunte Terrasse
-
-WLAN:
-- Highspeed WLAN, 500+ Mbps
-- Netzwerkname: ACHZEIT
-- Passwort: siehe individuelle Gästedaten unten (falls vorhanden)
-- Router im Keller unter der Treppe
-- Bei Problemen: Kurz vom Strom trennen (30 Sek.) und neu verbinden
-
-SCHLAFZIMMER:
-- Schlafzimmer 1: Doppelbett 200×200 cm, Arbeitsbereich, eigenes Bad
-- Schlafzimmer 2: Doppelbett 200×200 cm
-- Schlafzimmer 3: Etagenbett (90×200 cm) + Einzelbett (80×180 cm) – ideal für Kinder & Jugendliche
-- Kapazität: bis zu 7 Gäste, komfortabel 6 Erwachsene
-- Balkon im Dachgeschoss mit Bergblick
-
-FAMILIE:
-- Hochstuhl im Keller unter der Treppe (gerne vorab melden – dann stellen wir ihn bereit)
-- Reisebett auf Anfrage
-- Wickelunterlage im Schrank im Kinderzimmer (bitte Handtuch unterlegen)
-- Rausfallschutz im Kinderzimmer in der Schublade unter dem Etagenbett
-- Kindergeschirr in der unteren Küchenschublade
-- Spiele & Bücher im Wohnbereich
-
-WÄSCHE:
-- Waschmaschine & Wäschetrockner im Keller
-
-AUSSTATTUNG:
-- Safe im Haus vorhanden (Code beim Gastgeber erfragen)
-- Föhn im Bad
-- Bügeleisen & Bügelbrett vorhanden
-- Wäscheständer vorhanden
-- Extra Kissen & Decken im Schrank
-- Verdunkelungsvorhänge in allen Schlafzimmern
-- Smart TV im Wohnzimmer
-- Soundsystem vorhanden
-- Terrasse & Garten mit Lounge und Esstisch (Erdgeschoss)
-- Balkon im Dachgeschoss mit Bergblick
-
-KÜCHE & GERÄTE:
-- BORA-Kochfeld mit integriertem Abzug: Am Hauptschalter (rechte Seite) einschalten, Kochzone durch +-Symbol aktivieren, Absaugung startet automatisch.
-- Backofen & Geschirrspüler unter der Arbeitsplatte
-- Mikrowelle vorhanden
-- Toaster vorhanden
-- Kühlschrank & Gefrierfach vorhanden
-- Nespresso: Knopf oben einschalten, Kapsel einlegen, Tasse unterstellen, Größe wählen.
-- Geschirrspüler: Tab in Fach einlegen, Tür schließen, Eco oder Auto empfohlen.
-- Mülltrennung unter der Spüle (Restmüll, Bio, Gelber Sack)
-- Geschirrspüler vor Abreise starten
-
-SAUNA:
-- Einschalten: Power-Taste oben rechts am Bedienfeld ca. 3 Sekunden gedrückt halten, bis der Ladekreis voll ist
-- Läuft automatisch maximal 3 Stunden, dann automatische Abschaltung
-- Abschalten: Power-Taste kurz drücken. Das Licht bleibt noch 30 Minuten an.
-- Temperatur: Drehregler drehen → Menü öffnet sich → „Temperatur" auswählen → Regler drehen → Regler drücken zum Bestätigen (empfohlen: 70–85 °C)
-- Aufheizzeit ca. 30–45 Minuten
-- Immer auf einem Handtuch sitzen
-
-KAMIN:
-- Kaminzufuhr (Hebel unten) vollständig öffnen
-- Starterset mit Anzünder, Anfeuerholz und Holz als Erstausstattung vorhanden
-- Von oben nach unten anzünden
-- Nach ca. 15 Min. größere Scheite nachlegen
-- Zufuhr nach dem Anbrennen halb schließen
-
-HEIZUNG:
-- Fußbodenheizung wird zentral gesteuert
-- Thermostat im Wohnbereich einstellen
-- Änderungen wirken nach ca. 1–2 Stunden
-- Nicht über 23 °C einstellen
-
-EINKAUFEN:
-- EDEKA Fischen: 11 Min. zu Fuß / 2 Min. Auto
-- Bäckerei Härle (Tipp! Handarbeit, auch sonntags): 11 Min. zu Fuß / 3 Min. Auto
-- Metzgerei Hubert Schmid: 12 Min. zu Fuß / 2 Min. Auto
-- Feneberg Oberstdorf: 9 Min. Auto
-- V-Markt (zwischen Fischen & Oberstdorf): 5 Min. Auto
-
-RESTAURANTS:
-- Gaisbock (Fischen, Top-Empfehlung): 10 Min. zu Fuß / 3 Min. Auto
-- Ondersch (Oberstdorf, Sterne-Niveau): 12 Min. Auto
-- Alte Sennküche (Oberstdorf, Traditionell): 13 Min. Auto
-
-AUSFLÜGE:
-- Stinesser Lifte (Fischen, Familienskigebiet): 9 Min. zu Fuß / 2 Min. Auto
-- Breitachklamm (Tiefenbach, Top-Ausflug): 12 Min. Auto
-- Nebelhorn 2.224m (400-Gipfel-Blick): 13 Min. Auto
-- Fellhorn/Kanzelwand: 18 Min. Auto
-
-CHECK-OUT:
-- Check-out bis 11:00 Uhr
-- Spülmaschine anmachen
-- Gelber Sack in die mit gelbem Symbol markierte Tonne im Keller
-- Restmüll, Altpapier und Biomüll in die Tonnen vor der Haustür
-- Alle Lichter ausschalten, Fenster schließen
-- Schlüssel zurück in die Schlüsselbox
-
-NOTFALL:
-- Notruf: 112
-- Ärztl. Bereitschaftsdienst: 116 117
-- Erste-Hilfe-Set im Badezimmerschrank
 
 RECHNUNG / QUITTUNG:
 - Wenn ein Gast eine Rechnung oder Quittung möchte, frage nacheinander nach:
@@ -147,10 +48,30 @@ RECHNUNG / QUITTUNG:
   3. Vollständige Anschrift (Straße + Hausnr., PLZ, Ort, Land)
   4. Gibt es eine Umsatzsteuer-ID? (optional – nur nachfragen, falls noch nicht genannt)
 - Sobald du alle erforderlichen Angaben hast, rufe das Tool send_invoice_request auf.
-- Bestätige dem Gast anschließend kurz, dass die Anfrage an den Gastgeber weitergeleitet wurde.
+- Bestätige dem Gast anschließend kurz, dass die Anfrage an den Gastgeber weitergeleitet wurde.`;
 
-KONTAKT TEAM ACHZEIT:
-- WhatsApp: [Team ACHZEIT kontaktieren](https://wa.me/4915679656368)`;
+/**
+ * Builds the cacheable system text (Block A + Block B) for a property.
+ * Block A is the global scaffold, Block B are the property-specific facts
+ * loaded from the generated content (with de → en fallback). If no facts are
+ * available, a safe fallback tells the assistant not to invent house details.
+ * Guest context (Block C) is added separately and is NOT part of this text.
+ */
+function buildSystemText(propertySlug: string, locale: string): string {
+  const meta = propertyMeta[propertySlug];
+  const displayName = meta?.displayName ?? 'dieser Unterkunft';
+  const wa = meta?.whatsappNumber;
+  const contactHint = wa
+    ? `Verweise den Gast bei Unsicherheit oder Problemen an den Gastgeber per [WhatsApp](https://wa.me/${wa}).`
+    : `Verweise den Gast bei Unsicherheit oder Problemen an den Gastgeber bzw. das Team von Allgäu Stays.`;
+
+  const facts = getChatbotFacts(propertySlug, locale);
+  const factsBlock = facts
+    ? `PROPERTY-FAKTEN (${displayName}):\n\n${facts.markdown}`
+    : `PROPERTY-FAKTEN: Für ${displayName} liegen dir gerade keine spezifischen Hausinformationen vor. Erfinde KEINE hausspezifischen Details. Wenn der Gast nach konkreten Hausinfos fragt, sage freundlich, dass du die Information gerade nicht sicher abrufen kannst.`;
+
+  return `${GLOBAL_SCAFFOLD}\n\n${contactHint}\n\n${factsBlock}`;
+}
 
 async function sendInvoiceEmail(
   input: { full_name: string; address: string; contact_person?: string; vat_id?: string },
@@ -208,8 +129,17 @@ export default async function handler(req: Request): Promise<Response> {
     if (context?.boxCode) guestContext += `\nDer Schlüsselbox-Code für diesen Gast lautet: **${context.boxCode}**`;
     if (context?.guestName) guestContext += `\nDer Gast heißt: ${context.guestName}`;
 
-    const systemContent = SYSTEM_PROMPT + (guestContext ? `\n\nINDIVIDUELLE GÄSTEDATEN:${guestContext}` : '');
-    const systemBlock = [{ type: 'text', text: systemContent, cache_control: { type: 'ephemeral' } }];
+    // Property-aware prompt: Block A (scaffold) + Block B (property facts) are
+    // cacheable; Block C (guest context) is a separate, NON-cached block so no
+    // per-guest/sensitive data ends up in the prompt cache.
+    const propertySlug: string = context?.propertySlug || '';
+    const locale: string = context?.locale || 'de';
+    const systemBlock: Array<Record<string, unknown>> = [
+      { type: 'text', text: buildSystemText(propertySlug, locale), cache_control: { type: 'ephemeral' } },
+    ];
+    if (guestContext) {
+      systemBlock.push({ type: 'text', text: `INDIVIDUELLE GÄSTEDATEN:${guestContext}` });
+    }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

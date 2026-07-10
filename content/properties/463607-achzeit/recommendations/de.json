@@ -1,0 +1,23 @@
+{
+  "propertySlug": "463607-achzeit",
+  "locale": "de",
+  "items": [
+    {
+      "placeId": "gaisbock",
+      "descriptionMd": "Gemütliches Restaurant in Fischen mit regionaler Küche.",
+      "tipMd": "Unsere Top-Empfehlung für einen entspannten Abend nach einem Ausflug.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "edeka-fischen",
+      "descriptionMd": "Gut sortierter Supermarkt für den Einkauf während deines Aufenthalts.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "breitachklamm",
+      "descriptionMd": "Beeindruckende Klamm bei Tiefenbach – die tiefste Felsenschlucht Mitteleuropas.",
+      "tipMd": "Feste Schuhe anziehen und bei Regen an eine Jacke denken.",
+      "translationStatus": "source"
+    }
+  ]
+}

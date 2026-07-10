@@ -1,0 +1,25 @@
+{
+  "propertySlug": "463607-achzeit",
+  "locale": "de",
+  "sourceLocale": "de",
+  "sections": [
+    {
+      "key": "wifi",
+      "title": "WLAN",
+      "bodyMd": "Das WLAN heißt **ACHZEIT**. Das Passwort findest du in deinen persönlichen Zugangsdaten. Der Router steht im Keller unter der Treppe – bei Problemen kurz vom Strom trennen und neu verbinden.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 10,
+      "translationStatus": "source"
+    },
+    {
+      "key": "sauna",
+      "title": "Sauna",
+      "bodyMd": "Die Sauna befindet sich im Keller. Bitte nach der Nutzung ausschalten und kurz lüften. Immer auf einem Handtuch sitzen.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 20,
+      "translationStatus": "source"
+    }
+  ]
+}
