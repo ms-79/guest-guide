@@ -61,9 +61,14 @@ in der Gästemappen-UI genutzt (die UI läuft weiter über `translations.ts` /
 `visibility`, `sortOrder`, `translationStatus`.
 
 ### B. Chatbot Facts (`chatbot/facts.<locale>.md`)
-**Der Kern von Phase 1.** Freies Markdown mit property- und sprach-spezifischen
-Fakten in thematischen Blöcken (nicht überatomisiert). Werden serverseitig in den
+**Der Kern von Phase 1.** Freies Markdown mit property-spezifischen Fakten in
+thematischen Blöcken (nicht überatomisiert). Werden serverseitig in den
 Chatbot-Prompt geladen. Enthalten **keine** sensiblen Daten.
+
+**Nur auf Deutsch pflegen:** Es gibt bewusst nur `facts.de.md` pro Property. Der
+Chatbot erkennt die Gastsprache und **übersetzt seine Antwort live** – die
+deutschen Fakten reichen also für alle Sprachen. Zusätzliche `facts.<locale>.md`
+sind möglich (Fallback `de` → `en`), aber nicht nötig.
 
 ### C. Recommendations (`recommendations/`)
 Normalisiert: `places.json` hält stabile Basisdaten (id, Kategorie, Name, URL,
