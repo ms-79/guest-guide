@@ -4,19 +4,32 @@
   "items": [
     {
       "placeId": "gaisbock",
-      "descriptionMd": "Gemütliches Restaurant in Fischen mit regionaler Küche.",
-      "tipMd": "Unsere Top-Empfehlung für einen entspannten Abend nach einem Ausflug.",
+      "categoryLabel": "Regionale Küche",
+      "descriptionMd": "Traditionelle Allgäuer Gastlichkeit mit modernen Akzenten. Regionale Küche mit besten Zutaten aus der Heimat – gemütlich und herzlich.",
       "translationStatus": "source"
     },
     {
-      "placeId": "edeka-fischen",
-      "descriptionMd": "Gut sortierter Supermarkt für den Einkauf während deines Aufenthalts.",
+      "placeId": "ondersch",
+      "categoryLabel": "Fine Dining",
+      "descriptionMd": "Zwei Konzepte unter einem Dach – gehobene Küche und entspannte Genusswirtschaft. Perfekt für einen besonderen Abend.",
       "translationStatus": "source"
     },
     {
-      "placeId": "breitachklamm",
-      "descriptionMd": "Beeindruckende Klamm bei Tiefenbach – die tiefste Felsenschlucht Mitteleuropas.",
-      "tipMd": "Feste Schuhe anziehen und bei Regen an eine Jacke denken.",
+      "placeId": "alte-sennkueche",
+      "categoryLabel": "Traditionell bayerisch",
+      "descriptionMd": "Gemütliche Stuben, deftige Schmankerl und gut gezapftes Bier – bodenständig und authentisch Oberstdorf.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "wilde-maennle",
+      "categoryLabel": "Traditionsgaststätte",
+      "descriptionMd": "Institution in der Fußgängerzone seit 1937. Hier trifft sich Jung und Alt – urgemütlich mit Brauereiausschank.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "bei-alberto",
+      "categoryLabel": "Italienisch",
+      "descriptionMd": "Familienbetrieb in zweiter Generation – Pizza, Pasta und italienisches Lebensgefühl mit großer Sonnenterrasse.",
       "translationStatus": "source"
     }
   ]

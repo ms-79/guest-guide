@@ -1,0 +1,36 @@
+{
+  "propertySlug": "463607-achzeit",
+  "locale": "fr",
+  "items": [
+    {
+      "placeId": "gaisbock",
+      "categoryLabel": "Regional Cuisine",
+      "descriptionMd": "Hospitalité traditionnelle de l'Allgäu avec des touches modernes. Cuisine régionale avec les meilleurs ingrédients locaux.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "ondersch",
+      "categoryLabel": "Fine Dining",
+      "descriptionMd": "Deux concepts sous un toit – cuisine raffinée et décontractée. Parfait pour une soirée spéciale.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "alte-sennkueche",
+      "categoryLabel": "Traditional Bavarian",
+      "descriptionMd": "Salles chaleureuses, cuisine bavaroise copieuse et bière pression – authentique Oberstdorf.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "wilde-maennle",
+      "categoryLabel": "Traditional Inn",
+      "descriptionMd": "Institution dans la zone piétonne depuis 1937. Où jeunes et moins jeunes se retrouvent – très chaleureux.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "bei-alberto",
+      "categoryLabel": "Italian",
+      "descriptionMd": "Entreprise familiale de deuxième génération – pizza, pasta et art de vivre italien avec grande terrasse.",
+      "translationStatus": "reviewed"
+    }
+  ]
+}

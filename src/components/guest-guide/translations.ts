@@ -367,47 +367,8 @@ export const translations = {
     'Alle restaurants zijn in 3–13 minuten met de auto bereikbaar.',
   ),
 
-  // Restaurant descriptions
-  gaisbockDesc: t(
-    'Traditionelle Allgäuer Gastlichkeit mit modernen Akzenten. Regionale Küche mit besten Zutaten aus der Heimat – gemütlich und herzlich.',
-    'Traditional Allgäu hospitality with modern touches. Regional cuisine with the best local ingredients – cozy and warm.',
-    'Hospitalidad tradicional del Allgäu con toques modernos. Cocina regional con los mejores ingredientes locales.',
-    'Ospitalità tradizionale dell\'Allgäu con tocchi moderni. Cucina regionale con i migliori ingredienti locali.',
-    'Hospitalité traditionnelle de l\'Allgäu avec des touches modernes. Cuisine régionale avec les meilleurs ingrédients locaux.',
-    'Traditionele Allgäuer gastvrijheid met moderne accenten. Regionale keuken met de beste lokale ingrediënten.',
-  ),
-  onderschDesc: t(
-    'Zwei Konzepte unter einem Dach – gehobene Küche und entspannte Genusswirtschaft. Perfekt für einen besonderen Abend.',
-    'Two concepts under one roof – fine dining and relaxed cuisine. Perfect for a special evening.',
-    'Dos conceptos bajo un techo – alta cocina y cocina relajada. Perfecto para una velada especial.',
-    'Due concetti sotto un tetto – cucina raffinata e rilassata. Perfetto per una serata speciale.',
-    'Deux concepts sous un toit – cuisine raffinée et décontractée. Parfait pour une soirée spéciale.',
-    'Twee concepten onder één dak – fine dining en ontspannen keuken. Perfect voor een bijzondere avond.',
-  ),
-  alteSennkuecheDesc: t(
-    'Gemütliche Stuben, deftige Schmankerl und gut gezapftes Bier – bodenständig und authentisch Oberstdorf.',
-    'Cozy parlors, hearty Bavarian food and well-tapped beer – down-to-earth and authentic Oberstdorf.',
-    'Salones acogedores, comida bávara abundante y cerveza de barril – auténtico Oberstdorf.',
-    'Sale accoglienti, cucina bavarese abbondante e birra alla spina – autentico Oberstdorf.',
-    'Salles chaleureuses, cuisine bavaroise copieuse et bière pression – authentique Oberstdorf.',
-    'Gezellige kamers, stevige Beierse kost en getapt bier – nuchter en authentiek Oberstdorf.',
-  ),
-  wildeMaennleDesc: t(
-    'Institution in der Fußgängerzone seit 1937. Hier trifft sich Jung und Alt – urgemütlich mit Brauereiausschank.',
-    'Institution in the pedestrian zone since 1937. Where young and old meet – very cozy with brewery tap.',
-    'Institución en la zona peatonal desde 1937. Donde jóvenes y mayores se encuentran – acogedor con cerveza de la casa.',
-    'Istituzione nella zona pedonale dal 1937. Dove giovani e anziani si incontrano – accogliente con birra alla spina.',
-    'Institution dans la zone piétonne depuis 1937. Où jeunes et moins jeunes se retrouvent – très chaleureux.',
-    'Instituut in de voetgangerszone sinds 1937. Waar jong en oud elkaar ontmoet – oergezellig met brouwerijbier.',
-  ),
-  beiAlbertoDesc: t(
-    'Familienbetrieb in zweiter Generation – Pizza, Pasta und italienisches Lebensgefühl mit großer Sonnenterrasse.',
-    'Family-run for two generations – pizza, pasta and Italian lifestyle with a large sun terrace.',
-    'Negocio familiar de segunda generación – pizza, pasta y estilo de vida italiano con gran terraza.',
-    'Attività familiare di seconda generazione – pizza, pasta e stile di vita italiano con ampia terrazza.',
-    'Entreprise familiale de deuxième génération – pizza, pasta et art de vivre italien avec grande terrasse.',
-    'Familiebedrijf in de tweede generatie – pizza, pasta en Italiaans levensgevoel met groot zonneterras.',
-  ),
+  // Restaurant descriptions migrated to content/properties/**/recommendations
+  // (see docs/content-architecture.md, Phase 4).
 
   // Shopping
   shoppingIntro: t(
