@@ -38,10 +38,11 @@ const api = (path: string, init?: RequestInit) =>
   fetch(`/api/admin/${path}`, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } });
 
 // Where content goes live: merging an open content PR triggers the Vercel deploy.
-// Content PR titles always end with "for <displayName>" (see api/admin/content/pr.ts),
-// so an in:title search scopes the pulls list to a single property.
-const pullsUrlForProperty = (displayName: string): string =>
-  `https://github.com/ms-79/guest-guide/pulls?q=${encodeURIComponent(`is:pr is:open in:title ${displayName}`)}`;
+// The admin write-flow always branches as `content/<slug>-…` (see api/admin/content/pr.ts),
+// so a head-branch prefix search scopes the pulls list to this property's CONTENT PRs
+// only — feature PRs (on `claude/…` branches) are excluded.
+const contentPullsUrl = (slug: string): string =>
+  `https://github.com/ms-79/guest-guide/pulls?q=${encodeURIComponent(`is:pr is:open head:content/${slug}`)}`;
 
 // ---------------------------------------------------------------------------
 // Login screen
@@ -439,8 +440,6 @@ const Admin = () => {
     return <LoginScreen onSuccess={loadProperties} />;
   }
 
-  const selectedDisplayName = properties.find((p) => p.slug === selected)?.displayName ?? '';
-
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -459,14 +458,13 @@ const Admin = () => {
             >
               <Eye className="mr-1.5 h-4 w-4" /> Vorschau
             </Button>
-            {/* Veröffentlichen: offene Pull Requests DIESER Property → mergen → Vercel deployt live. */}
+            {/* Veröffentlichen: offene Content-Pull-Requests DIESER Property → mergen → Vercel deployt live. */}
             <Button
               variant="outline"
               size="sm"
-              disabled={!selectedDisplayName}
+              disabled={!selected}
               onClick={() =>
-                selectedDisplayName &&
-                window.open(pullsUrlForProperty(selectedDisplayName), '_blank', 'noopener,noreferrer')
+                selected && window.open(contentPullsUrl(selected), '_blank', 'noopener,noreferrer')
               }
             >
               <UploadCloud className="mr-1.5 h-4 w-4" /> Veröffentlichen
