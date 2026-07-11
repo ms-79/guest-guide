@@ -37,6 +37,39 @@ const CarIcon = ({ size = 14 }: { size?: number }) => (
   </svg>
 );
 
+// Shared card list for recommendations (restaurants, shopping, excursions …).
+// Data comes from the Git-backed content layer (getRecommendations); the card
+// links to Google Maps and shows an optional badge + localised text.
+const RecommendationList = ({ slug, category }: { slug: string; category: string }) => {
+  const { locale } = useGuestGuideLocale();
+  const t = translations;
+  const items = getRecommendations(slug, locale, category);
+  if (items.length === 0) return null;
+  return (
+    <div className="space-y-4">
+      {items.map((r) => (
+        <a key={r.id} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h4 className="font-display text-base text-foreground">{r.name}</h4>
+              <p className="text-xs text-muted-foreground mt-0.5">{[r.locationLabel, r.categoryLabel].filter(Boolean).join(' · ')}</p>
+            </div>
+            {r.badge && (
+              <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
+                <Star size={12} className="fill-alpine-wood" /> {r.badge === 'top' ? t.topRecommendation[locale] : t.starLevel[locale]}
+              </span>
+            )}
+          </div>
+          {r.descriptionMd && <p className="text-sm mt-2">{r.descriptionMd}</p>}
+          <div className="flex justify-end mt-2">
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+};
+
 interface Props {
   guestData: GuestData;
   activeSection: string;
@@ -293,27 +326,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-5">
             <p className="text-sm">{t.restaurantsIntro[locale]}</p>
 
-            <div className="space-y-4">
-              {getRecommendations(property.slug, locale, 'restaurant').map((r) => (
-                <a key={r.id} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h4 className="font-display text-base text-foreground">{r.name}</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">{[r.locationLabel, r.categoryLabel].filter(Boolean).join(' · ')}</p>
-                    </div>
-                    {r.badge && (
-                      <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                        <Star size={12} className="fill-alpine-wood" /> {r.badge === 'top' ? t.topRecommendation[locale] : t.starLevel[locale]}
-                      </span>
-                    )}
-                  </div>
-                  {r.descriptionMd && <p className="text-sm mt-2">{r.descriptionMd}</p>}
-                  <div className="flex justify-end mt-2">
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span>
-                  </div>
-                </a>
-              ))}
-            </div>
+            <RecommendationList slug={property.slug} category="restaurant" />
 
             <p className="text-xs text-muted-foreground italic pt-1 flex items-center gap-1.5">
               <MapPin size={12} /> {t.allRestaurantsNote[locale]}
@@ -332,79 +345,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
           <AccordionContent className="text-muted-foreground leading-relaxed space-y-5">
             <p className="text-sm">{t.shoppingIntro[locale]}</p>
 
-            <div className="space-y-4">
-              <a href="https://maps.google.com/?q=EDEKA+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">EDEKA</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Fischen · {locale === 'de' ? 'Supermarkt' : 'Supermarket'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.edekaDesc[locale]}</p>
-                <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 2 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=Bäckerei+Härle+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Bäckerei Härle <span className="text-xs font-medium text-alpine-wood">{t.ourTip[locale]}</span></h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Fischen · {locale === 'de' ? 'Traditionelle Handwerksbäckerei' : 'Traditional Bakery'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.haerleDesc[locale]}</p>
-                <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=Metzgerei+Hubert+Schmid+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Metzgerei Hubert Schmid</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Fischen · {locale === 'de' ? 'Fleisch & Wurst' : 'Butcher'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.schmidDesc[locale]}</p>
-                <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 12 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 2 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=Feneberg+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Feneberg</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Supermarkt' : 'Supermarket'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.fenebergDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 9 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=V-Markt+Fischen+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">V-Markt</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">{locale === 'de' ? 'Zwischen Fischen & Oberstdorf · Verbrauchermarkt' : 'Between Fischen & Oberstdorf · Consumer Market'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.vmarktDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 5 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=Kur-Apotheke+Färberhaus+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Kur-Apotheke Färberhaus</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Fischen · {locale === 'de' ? 'Apotheke' : 'Pharmacy'}</p>
-                  </div>
-                  <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-1" />
-                </div>
-                <p className="text-sm mt-2">{t.apothekenDesc[locale]}</p>
-                <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
-              </a>
-            </div>
+            <RecommendationList slug={property.slug} category="shopping" />
 
             <p className="text-xs text-muted-foreground italic pt-1 flex items-center gap-1.5">
               <MapPin size={12} /> {t.allShopsNote[locale]}

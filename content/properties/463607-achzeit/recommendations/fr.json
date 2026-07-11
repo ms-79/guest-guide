@@ -31,6 +31,42 @@
       "categoryLabel": "Italian",
       "descriptionMd": "Entreprise familiale de deuxième génération – pizza, pasta et art de vivre italien avec grande terrasse.",
       "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "edeka",
+      "categoryLabel": "Supermarket",
+      "descriptionMd": "Supermarché complet au village. Bien approvisionné en produits régionaux.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "baeckerei-haerle",
+      "categoryLabel": "Traditional Bakery",
+      "descriptionMd": "Tout encore fait main – petits pains frais, pain et pâtisseries. Ouvert aussi le dimanche.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "metzgerei-schmid",
+      "categoryLabel": "Butcher",
+      "descriptionMd": "Viandes et charcuteries régionales du boucher local.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "feneberg",
+      "categoryLabel": "Supermarket",
+      "descriptionMd": "Grand supermarché de l'Allgäu avec large choix.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "vmarkt",
+      "categoryLabel": "Consumer Market",
+      "descriptionMd": "Grand marché avec un vaste choix – des courses ménagères aux produits alimentaires.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "kur-apotheke",
+      "categoryLabel": "Pharmacy",
+      "descriptionMd": "Pharmacie au centre de Fischen.",
+      "translationStatus": "reviewed"
     }
   ]
 }
