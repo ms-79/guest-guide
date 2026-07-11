@@ -15,8 +15,7 @@ export interface GithubConfig {
 }
 
 export interface CreatePrInput {
-  path: string; // repo-relative file path
-  content: string; // new file content (UTF-8)
+  files: Array<{ path: string; content: string }>; // repo-relative path + UTF-8 content
   branch: string; // new branch name
   commitMessage: string;
   prTitle: string;
@@ -91,23 +90,24 @@ export async function createContentPr(cfg: GithubConfig, input: CreatePrInput): 
   });
   if (branchRes.status !== 201) throw ghError('branch create', branchRes);
 
-  // 3. Look up the existing file SHA on the base branch (needed to update it).
-  const existing = await gh<{ sha?: string }>(
-    cfg,
-    'GET',
-    `/repos/${cfg.owner}/${cfg.repo}/contents/${input.path}?ref=${encodeURIComponent(cfg.baseBranch)}`,
-  );
-  const existingSha: string | undefined =
-    existing.status === 200 && typeof existing.data?.sha === 'string' ? existing.data.sha : undefined;
+  // 3+4. Write each file on the new branch (look up its base SHA first to update).
+  for (const file of input.files) {
+    const existing = await gh<{ sha?: string }>(
+      cfg,
+      'GET',
+      `/repos/${cfg.owner}/${cfg.repo}/contents/${file.path}?ref=${encodeURIComponent(cfg.baseBranch)}`,
+    );
+    const existingSha: string | undefined =
+      existing.status === 200 && typeof existing.data?.sha === 'string' ? existing.data.sha : undefined;
 
-  // 4. Write the file on the new branch.
-  const put = await gh(cfg, 'PUT', `/repos/${cfg.owner}/${cfg.repo}/contents/${input.path}`, {
-    message: input.commitMessage,
-    content: base64Utf8(input.content),
-    branch: input.branch,
-    ...(existingSha ? { sha: existingSha } : {}),
-  });
-  if (put.status !== 200 && put.status !== 201) throw ghError('file write', put);
+    const put = await gh(cfg, 'PUT', `/repos/${cfg.owner}/${cfg.repo}/contents/${file.path}`, {
+      message: input.commitMessage,
+      content: base64Utf8(file.content),
+      branch: input.branch,
+      ...(existingSha ? { sha: existingSha } : {}),
+    });
+    if (put.status !== 200 && put.status !== 201) throw ghError(`file write (${file.path})`, put);
+  }
 
   // 5. Open the pull request.
   const pr = await gh<{ html_url?: string; number?: number }>(cfg, 'POST', `/repos/${cfg.owner}/${cfg.repo}/pulls`, {
