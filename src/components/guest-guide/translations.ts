@@ -379,27 +379,8 @@ export const translations = {
     'Tout le nécessaire au quotidien – à Fischen ou à quelques minutes.',
     'Alles voor de dagelijkse boodschappen – in Fischen of op een paar minuten afstand.',
   ),
-  edekaDesc: t('Vollsortiment direkt im Ort. Gut sortiert mit regionalen Produkten.', 'Full-range supermarket in the village. Well-stocked with regional products.', 'Supermercado completo en el pueblo. Bien surtido con productos regionales.', 'Supermercato completo nel paese. Ben fornito con prodotti regionali.', 'Supermarché complet au village. Bien approvisionné en produits régionaux.', 'Volledig assortiment in het dorp. Goed gesorteerd met regionale producten.'),
-  haerleDesc: t(
-    'Hier wird noch alles von Hand gemacht – frische Semmeln, Brot und Gebäck. Auch sonntags geöffnet.',
-    'Everything still handmade – fresh rolls, bread and pastries. Also open on Sundays.',
-    'Todo hecho a mano – panecillos frescos, pan y bollería. También abierto los domingos.',
-    'Tutto ancora fatto a mano – panini freschi, pane e dolci. Aperto anche la domenica.',
-    'Tout encore fait main – petits pains frais, pain et pâtisseries. Ouvert aussi le dimanche.',
-    'Alles nog handgemaakt – verse broodjes, brood en gebak. Ook op zondag open.',
-  ),
-  ourTip: t('★ Unser Tipp', '★ Our Tip', '★ Nuestro consejo', '★ Il nostro consiglio', '★ Notre conseil', '★ Onze tip'),
-  schmidDesc: t('Regionale Fleisch- und Wurstwaren vom Allgäuer Metzger.', 'Regional meat and sausages from the local butcher.', 'Carnes y embutidos regionales del carnicero local.', 'Carne e salumi regionali dal macellaio locale.', 'Viandes et charcuteries régionales du boucher local.', 'Regionaal vlees en worst van de plaatselijke slager.'),
-  fenebergDesc: t('Großer Allgäuer Supermarkt mit breiter Auswahl.', 'Large Allgäu supermarket with a wide selection.', 'Gran supermercado del Allgäu con amplia selección.', 'Grande supermercato dell\'Allgäu con ampia selezione.', 'Grand supermarché de l\'Allgäu avec large choix.', 'Grote Allgäuer supermarkt met breed assortiment.'),
-  vmarktDesc: t(
-    'Großer Verbrauchermarkt mit riesiger Auswahl – von Lebensmitteln bis Haushalt.',
-    'Large consumer market with a huge selection – from groceries to household goods.',
-    'Gran mercado con enorme selección – desde alimentos hasta artículos para el hogar.',
-    'Grande mercato con vasta selezione – dagli alimentari ai casalinghi.',
-    'Grand marché avec un vaste choix – des courses ménagères aux produits alimentaires.',
-    'Grote consumentenmarkt met enorm assortiment – van boodschappen tot huishouden.',
-  ),
-  apothekenDesc: t('Apotheke im Ortszentrum von Fischen.', 'Pharmacy in the center of Fischen.', 'Farmacia en el centro de Fischen.', 'Farmacia nel centro di Fischen.', 'Pharmacie au centre de Fischen.', 'Apotheek in het centrum van Fischen.'),
+  // Shopping descriptions migrated to content/properties/**/recommendations
+  // (see docs/content-architecture.md, Phase 4).
   allShopsNote: t(
     'Alle Geschäfte sind fußläufig oder in wenigen Minuten mit dem Auto erreichbar.',
     'All shops are within walking distance or a few minutes by car.',

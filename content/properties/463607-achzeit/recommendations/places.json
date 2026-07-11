@@ -47,6 +47,60 @@
       "locationLabel": "Oberstdorf",
       "sortOrder": 50,
       "visibility": "guest"
+    },
+    {
+      "id": "edeka",
+      "category": "shopping",
+      "name": "EDEKA",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=EDEKA%20Fischen%20im%20Allg%C3%A4u",
+      "locationLabel": "Fischen",
+      "sortOrder": 60,
+      "visibility": "guest"
+    },
+    {
+      "id": "baeckerei-haerle",
+      "category": "shopping",
+      "name": "Bäckerei Härle",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=B%C3%A4ckerei%20H%C3%A4rle%20Fischen%20im%20Allg%C3%A4u",
+      "locationLabel": "Fischen",
+      "sortOrder": 70,
+      "visibility": "guest"
+    },
+    {
+      "id": "metzgerei-schmid",
+      "category": "shopping",
+      "name": "Metzgerei Hubert Schmid",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Metzgerei%20Hubert%20Schmid%20Fischen%20im%20Allg%C3%A4u",
+      "locationLabel": "Fischen",
+      "sortOrder": 80,
+      "visibility": "guest"
+    },
+    {
+      "id": "feneberg",
+      "category": "shopping",
+      "name": "Feneberg",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Feneberg%20Oberstdorf",
+      "locationLabel": "Oberstdorf",
+      "sortOrder": 90,
+      "visibility": "guest"
+    },
+    {
+      "id": "vmarkt",
+      "category": "shopping",
+      "name": "V-Markt",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=V-Markt%20Fischen%20Oberstdorf",
+      "locationLabel": "Zwischen Fischen & Oberstdorf",
+      "sortOrder": 100,
+      "visibility": "guest"
+    },
+    {
+      "id": "kur-apotheke",
+      "category": "shopping",
+      "name": "Kur-Apotheke Färberhaus",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Kur-Apotheke%20F%C3%A4rberhaus%20Fischen%20im%20Allg%C3%A4u",
+      "locationLabel": "Fischen",
+      "sortOrder": 110,
+      "visibility": "guest"
     }
   ]
 }

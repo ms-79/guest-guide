@@ -31,6 +31,42 @@
       "categoryLabel": "Italienisch",
       "descriptionMd": "Familienbetrieb in zweiter Generation – Pizza, Pasta und italienisches Lebensgefühl mit großer Sonnenterrasse.",
       "translationStatus": "source"
+    },
+    {
+      "placeId": "edeka",
+      "categoryLabel": "Supermarkt",
+      "descriptionMd": "Vollsortiment direkt im Ort. Gut sortiert mit regionalen Produkten.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "baeckerei-haerle",
+      "categoryLabel": "Traditionelle Handwerksbäckerei",
+      "descriptionMd": "Hier wird noch alles von Hand gemacht – frische Semmeln, Brot und Gebäck. Auch sonntags geöffnet.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "metzgerei-schmid",
+      "categoryLabel": "Fleisch & Wurst",
+      "descriptionMd": "Regionale Fleisch- und Wurstwaren vom Allgäuer Metzger.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "feneberg",
+      "categoryLabel": "Supermarkt",
+      "descriptionMd": "Großer Allgäuer Supermarkt mit breiter Auswahl.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "vmarkt",
+      "categoryLabel": "Verbrauchermarkt",
+      "descriptionMd": "Großer Verbrauchermarkt mit riesiger Auswahl – von Lebensmitteln bis Haushalt.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "kur-apotheke",
+      "categoryLabel": "Apotheke",
+      "descriptionMd": "Apotheke im Ortszentrum von Fischen.",
+      "translationStatus": "source"
     }
   ]
 }

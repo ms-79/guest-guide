@@ -31,6 +31,42 @@
       "categoryLabel": "Italian",
       "descriptionMd": "Familiebedrijf in de tweede generatie – pizza, pasta en Italiaans levensgevoel met groot zonneterras.",
       "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "edeka",
+      "categoryLabel": "Supermarket",
+      "descriptionMd": "Volledig assortiment in het dorp. Goed gesorteerd met regionale producten.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "baeckerei-haerle",
+      "categoryLabel": "Traditional Bakery",
+      "descriptionMd": "Alles nog handgemaakt – verse broodjes, brood en gebak. Ook op zondag open.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "metzgerei-schmid",
+      "categoryLabel": "Butcher",
+      "descriptionMd": "Regionaal vlees en worst van de plaatselijke slager.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "feneberg",
+      "categoryLabel": "Supermarket",
+      "descriptionMd": "Grote Allgäuer supermarkt met breed assortiment.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "vmarkt",
+      "categoryLabel": "Consumer Market",
+      "descriptionMd": "Grote consumentenmarkt met enorm assortiment – van boodschappen tot huishouden.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "kur-apotheke",
+      "categoryLabel": "Pharmacy",
+      "descriptionMd": "Apotheek in het centrum van Fischen.",
+      "translationStatus": "reviewed"
     }
   ]
 }
