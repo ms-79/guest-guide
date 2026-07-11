@@ -1,5 +1,11 @@
 # CLAUDE.md — Digital Guest Guide
 
+> **Aktueller Umsetzungsstand, Entscheidungen & nächste Schritte:**
+> siehe [`docs/project-status.md`](docs/project-status.md) (Memory) und
+> [`docs/content-architecture.md`](docs/content-architecture.md).
+> Die „Current State vs. Planned"-Tabelle unten ist teils überholt — der
+> Status im Memory-Dokument hat Vorrang.
+
 ## Product Vision
 
 The Digital Guest Guide is a **mobile-first, multilingual, property-specific digital guestbook** for vacation rentals. It supports guests before and during their stay by surfacing relevant house information, local recommendations, and step-by-step instructions — reducing repetitive host inquiries and delivering a premium, warm guest experience.

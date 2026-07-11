@@ -286,15 +286,20 @@ export function getRecommendations(slug: string, locale: string, category?: stri
   const propPlaces = places[slug] || [];
   const byLocale = recommendations[slug] || {};
   const order = [locale as Locale, ...REC_FALLBACKS];
-  const items = (order.map((l) => byLocale[l]).find((x) => x && x.length) || []) as RecommendationItem[];
-  const copyById = new Map(items.map((it) => [it.placeId, it]));
+  // Per-place fallback: use the requested locale's copy, else de, else en.
+  // Lets German-only content still show (in German) to guests in any language.
+  const maps = order.map((l) => new Map(((byLocale[l] || []) as RecommendationItem[]).map((it) => [it.placeId, it])));
+  const copyFor = (id: string): RecommendationItem | undefined => {
+    for (const m of maps) { const c = m.get(id); if (c) return c; }
+    return undefined;
+  };
   const now = Date.now();
   return propPlaces
     .filter((p) => (category ? p.category === category : true))
     .filter((p) => !p.showUntil || now <= new Date(p.showUntil + 'T23:59:59').getTime())
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((p) => {
-      const c = copyById.get(p.id);
+      const c = copyFor(p.id);
       return { ...p, categoryLabel: c?.categoryLabel, badge: c?.badge, descriptionMd: c?.descriptionMd, tipMd: c?.tipMd };
     });
 }
