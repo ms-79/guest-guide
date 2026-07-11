@@ -5,10 +5,8 @@
       "id": "gaisbock",
       "category": "restaurant",
       "name": "Gaisbock",
-      "url": "https://www.dorfalpe.de/gaisbock/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Gaisbock%20Fischen%20im%20Allg%C3%A4u",
       "locationLabel": "Fischen im Allgäu",
-      "walkMin": 10,
-      "carMin": 3,
       "badge": "top",
       "sortOrder": 10,
       "visibility": "guest"
@@ -17,9 +15,8 @@
       "id": "ondersch",
       "category": "restaurant",
       "name": "Ondersch",
-      "url": "https://ondersch.de/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Ondersch%20Oberstdorf",
       "locationLabel": "Oberstdorf",
-      "carMin": 12,
       "badge": "star",
       "sortOrder": 20,
       "visibility": "guest"
@@ -28,9 +25,8 @@
       "id": "alte-sennkueche",
       "category": "restaurant",
       "name": "Alte Sennküche",
-      "url": "https://altesennkueche.de/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Alte%20Sennk%C3%BCche%20Oberstdorf",
       "locationLabel": "Oberstdorf",
-      "carMin": 13,
       "sortOrder": 30,
       "visibility": "guest"
     },
@@ -38,9 +34,8 @@
       "id": "wilde-maennle",
       "category": "restaurant",
       "name": "Zum wilde Männle",
-      "url": "https://wilde-maennle.de/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Zum%20wilde%20M%C3%A4nnle%20Oberstdorf",
       "locationLabel": "Oberstdorf",
-      "carMin": 13,
       "sortOrder": 40,
       "visibility": "guest"
     },
@@ -48,9 +43,8 @@
       "id": "bei-alberto",
       "category": "restaurant",
       "name": "Bei Alberto",
-      "url": "https://pizzeria-beialberto.de/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Bei%20Alberto%20Oberstdorf",
       "locationLabel": "Oberstdorf",
-      "carMin": 13,
       "sortOrder": 50,
       "visibility": "guest"
     }

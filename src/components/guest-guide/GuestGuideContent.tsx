@@ -295,11 +295,11 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
 
             <div className="space-y-4">
               {getRecommendations(property.slug, locale, 'restaurant').map((r) => (
-                <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a key={r.id} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h4 className="font-display text-base text-foreground">{r.name}</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">{r.locationLabel} · {r.categoryLabel}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{[r.locationLabel, r.categoryLabel].filter(Boolean).join(' · ')}</p>
                     </div>
                     {r.badge && (
                       <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
@@ -307,10 +307,9 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                       </span>
                     )}
                   </div>
-                  <p className="text-sm mt-2">{r.descriptionMd}</p>
-                  <div className="flex justify-end mt-2 gap-3">
-                    {r.walkMin != null && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> {r.walkMin} Min.</span>}
-                    {r.carMin != null && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> {r.carMin} Min.</span>}
+                  {r.descriptionMd && <p className="text-sm mt-2">{r.descriptionMd}</p>}
+                  <div className="flex justify-end mt-2">
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span>
                   </div>
                 </a>
               ))}
