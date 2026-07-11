@@ -76,17 +76,12 @@ export const placeSchema = z.object({
   id: z.string().min(1),
   category: z.string().min(1),
   name: z.string().min(1),
+  /** Google Maps link (guest taps it for navigation + live distance/time). */
   mapsUrl: z.string().url().optional(),
-  /** External website (distinct from a maps link), e.g. the restaurant's own site. */
-  url: z.string().url().optional(),
   /** Town/area line shown under the name, e.g. 'Oberstdorf' (not localised). */
   locationLabel: z.string().optional(),
-  /** Optional distances in minutes, rendered as walking / car badges. */
-  walkMin: z.number().optional(),
-  carMin: z.number().optional(),
-  /** Optional emphasis badge next to the name. */
+  /** Optional emphasis badge next to the name (manually maintained). */
   badge: z.enum(['top', 'star']).optional(),
-  distanceText: z.string().optional(),
   sortOrder: z.number(),
   visibility: visibilitySchema.default('guest'),
 });
