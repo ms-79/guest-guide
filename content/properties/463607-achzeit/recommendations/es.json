@@ -1,35 +1,35 @@
 {
   "propertySlug": "463607-achzeit",
-  "locale": "en",
+  "locale": "es",
   "items": [
     {
       "placeId": "gaisbock",
       "categoryLabel": "Regional Cuisine",
-      "descriptionMd": "Traditional Allgäu hospitality with modern touches. Regional cuisine with the best local ingredients – cozy and warm.",
+      "descriptionMd": "Hospitalidad tradicional del Allgäu con toques modernos. Cocina regional con los mejores ingredientes locales.",
       "translationStatus": "reviewed"
     },
     {
       "placeId": "ondersch",
       "categoryLabel": "Fine Dining",
-      "descriptionMd": "Two concepts under one roof – fine dining and relaxed cuisine. Perfect for a special evening.",
+      "descriptionMd": "Dos conceptos bajo un techo – alta cocina y cocina relajada. Perfecto para una velada especial.",
       "translationStatus": "reviewed"
     },
     {
       "placeId": "alte-sennkueche",
       "categoryLabel": "Traditional Bavarian",
-      "descriptionMd": "Cozy parlors, hearty Bavarian food and well-tapped beer – down-to-earth and authentic Oberstdorf.",
+      "descriptionMd": "Salones acogedores, comida bávara abundante y cerveza de barril – auténtico Oberstdorf.",
       "translationStatus": "reviewed"
     },
     {
       "placeId": "wilde-maennle",
       "categoryLabel": "Traditional Inn",
-      "descriptionMd": "Institution in the pedestrian zone since 1937. Where young and old meet – very cozy with brewery tap.",
+      "descriptionMd": "Institución en la zona peatonal desde 1937. Donde jóvenes y mayores se encuentran – acogedor con cerveza de la casa.",
       "translationStatus": "reviewed"
     },
     {
       "placeId": "bei-alberto",
       "categoryLabel": "Italian",
-      "descriptionMd": "Family-run for two generations – pizza, pasta and Italian lifestyle with a large sun terrace.",
+      "descriptionMd": "Negocio familiar de segunda generación – pizza, pasta y estilo de vida italiano con gran terraza.",
       "translationStatus": "reviewed"
     }
   ]

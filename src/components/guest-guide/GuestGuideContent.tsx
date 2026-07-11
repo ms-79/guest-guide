@@ -11,6 +11,7 @@ import type { PropertyConfig } from '@/config/properties';
 import GuestGuideEvents from './GuestGuideEvents';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
 import { translations, type GuestGuideLocale } from './translations';
+import { getRecommendations } from '@/generated/recommendations';
 
 function formatTime(time: string, locale: GuestGuideLocale): string {
   const [hStr, mStr = '00'] = time.split(':');
@@ -293,60 +294,26 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             <p className="text-sm">{t.restaurantsIntro[locale]}</p>
 
             <div className="space-y-4">
-              <a href="https://www.dorfalpe.de/gaisbock/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Gaisbock</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Fischen im Allgäu · {locale === 'de' ? 'Regionale Küche' : 'Regional Cuisine'}</p>
+              {getRecommendations(property.slug, locale, 'restaurant').map((r) => (
+                <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h4 className="font-display text-base text-foreground">{r.name}</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">{r.locationLabel} · {r.categoryLabel}</p>
+                    </div>
+                    {r.badge && (
+                      <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
+                        <Star size={12} className="fill-alpine-wood" /> {r.badge === 'top' ? t.topRecommendation[locale] : t.starLevel[locale]}
+                      </span>
+                    )}
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                    <Star size={12} className="fill-alpine-wood" /> {t.topRecommendation[locale]}
-                  </span>
-                </div>
-                <p className="text-sm mt-2">{t.gaisbockDesc[locale]}</p>
-                <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 10 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
-              </a>
-
-              <a href="https://ondersch.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Ondersch</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · Fine Dining</p>
+                  <p className="text-sm mt-2">{r.descriptionMd}</p>
+                  <div className="flex justify-end mt-2 gap-3">
+                    {r.walkMin != null && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> {r.walkMin} Min.</span>}
+                    {r.carMin != null && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> {r.carMin} Min.</span>}
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                    <Star size={12} className="fill-alpine-wood" /> {t.starLevel[locale]}
-                  </span>
-                </div>
-                <p className="text-sm mt-2">{t.onderschDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 12 Min.</span></div>
-              </a>
-
-              <a href="https://altesennkueche.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Alte Sennküche</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Traditionell bayerisch' : 'Traditional Bavarian'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.alteSennkuecheDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 13 Min.</span></div>
-              </a>
-
-              <a href="https://wilde-maennle.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Zum wilde Männle</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Traditionsgaststätte' : 'Traditional Inn'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.wildeMaennleDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 13 Min.</span></div>
-              </a>
-
-              <a href="https://pizzeria-beialberto.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Bei Alberto</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Italienisch' : 'Italian'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.beiAlbertoDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 13 Min.</span></div>
-              </a>
+                </a>
+              ))}
             </div>
 
             <p className="text-xs text-muted-foreground italic pt-1 flex items-center gap-1.5">

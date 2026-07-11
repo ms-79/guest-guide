@@ -66,9 +66,16 @@ Fakten in thematischen Blöcken (nicht überatomisiert). Werden serverseitig in 
 Chatbot-Prompt geladen. Enthalten **keine** sensiblen Daten.
 
 ### C. Recommendations (`recommendations/`)
-Normalisiert: `places.json` hält stabile Basisdaten (id, Kategorie, Name,
-Maps-Link, Distanz, Sichtbarkeit); `de.json`/`en.json` halten die
-sprach-spezifische Beschreibung/Tipp je `placeId`. In Phase 1 vorbereitet.
+Normalisiert: `places.json` hält stabile Basisdaten (id, Kategorie, Name, URL,
+Ort, Distanzen, Badge, Sichtbarkeit); `<locale>.json` hält die sprach-spezifische
+Kategorie-Bezeichnung + Beschreibung/Tipp je `placeId`.
+
+**Phase 4 (live):** Die **Restaurant-Liste** der Gästemappe wird aus diesen
+Dateien gerendert (ACHZEIT, alle 6 Sprachen) statt aus hartkodiertem JSX. Die
+Frontend-Datenquelle ist das generierte, **facts-freie** Modul
+`src/generated/recommendations.ts` (via `getRecommendations(slug, locale, category)`);
+Chatbot-Facts landen so nicht im Client-Bundle. Weitere Blöcke (Einkaufen,
+Ausflüge, …) sind noch hartkodiert und folgen schrittweise.
 
 ### Sichtbarkeiten
 | Wert | Bedeutung |

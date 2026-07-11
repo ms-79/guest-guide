@@ -77,6 +77,15 @@ export const placeSchema = z.object({
   category: z.string().min(1),
   name: z.string().min(1),
   mapsUrl: z.string().url().optional(),
+  /** External website (distinct from a maps link), e.g. the restaurant's own site. */
+  url: z.string().url().optional(),
+  /** Town/area line shown under the name, e.g. 'Oberstdorf' (not localised). */
+  locationLabel: z.string().optional(),
+  /** Optional distances in minutes, rendered as walking / car badges. */
+  walkMin: z.number().optional(),
+  carMin: z.number().optional(),
+  /** Optional emphasis badge next to the name. */
+  badge: z.enum(['top', 'star']).optional(),
   distanceText: z.string().optional(),
   sortOrder: z.number(),
   visibility: visibilitySchema.default('guest'),
@@ -91,6 +100,8 @@ export type PlacesFile = z.infer<typeof placesFileSchema>;
 
 export const recommendationItemSchema = z.object({
   placeId: z.string().min(1),
+  /** Localised category label shown after the location, e.g. 'Regional Cuisine'. */
+  categoryLabel: z.string().optional(),
   descriptionMd: z.string().optional(),
   tipMd: z.string().optional(),
   translationStatus: translationStatusSchema,
