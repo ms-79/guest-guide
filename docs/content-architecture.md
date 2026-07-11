@@ -76,10 +76,21 @@ Aufenthaltsdaten und alle Reservierungsdaten kommen weiterhin live aus Hostaway
 bzw. der Guest-Session — nur die redaktionelle Copy liegt im Repo.
 
 ### A. Guide Sections (`guide/*.json`)
-Strukturierte Gästemappen-Sektionen. In Phase 1 **vorbereitet**, aber noch nicht
-in der Gästemappen-UI genutzt (die UI läuft weiter über `translations.ts` /
-`GuestGuideContent.tsx`). Felder: `key`, `title`, `bodyMd` (Markdown), `phase`,
-`visibility`, `sortOrder`, `translationStatus`.
+Strukturierte Gästemappen-Sektionen. Felder: `key`, `title`, `bodyMd` (Markdown),
+`phase`, `visibility`, `sortOrder`, `translationStatus`.
+
+**Im Admin editierbar** (Tab *Gästemappe*): Sektionen pro Sprache anlegen/bearbeiten/
+sortieren/entfernen, mit **KI-Button „Text aus Fakten erstellen"** je Sektion. Bekannte
+Standard-Sektionen (WLAN, Zugang, Check-in/out, Parken, Kontakt & Hilfe, Müll & Abreise)
+sind als Schnell-Hinzufügen hinterlegt. Speichern → Pull Request (`kind: 'guide'` →
+`guide/<locale>.json`). `bodyMd` darf dynamische Werte nur als Platzhalter aus der
+Whitelist enthalten (`{{wifiName}}` …). **Interne** Sektionen werden im Admin nicht
+angezeigt (der Generator strippt sie) und bleiben repo-seitig.
+
+**Noch offen:** Die Gästemappen-**UI rendert** die Sektionen noch nicht aus `guide/*.json`
+— sie läuft weiter über `translations.ts` / `GuestGuideContent.tsx`. Das Anbinden des
+Gäste-Frontends an die Content-Schicht ist der nächste Schritt (analog zum Hero, der bereits
+aus der Content-Schicht rendert).
 
 ### B. Chatbot Facts (`chatbot/facts.<locale>.md`)
 **Der Kern von Phase 1.** Freies Markdown mit property-spezifischen Fakten in

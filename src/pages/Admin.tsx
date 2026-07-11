@@ -172,13 +172,6 @@ const LoginScreen = ({ onSuccess }: { onSuccess: () => void }) => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// Read-only content viewer
-// ---------------------------------------------------------------------------
-const VisibilityBadge = ({ visibility }: { visibility: string }) => (
-  <Badge variant={visibility === 'public' ? 'default' : 'secondary'}>{visibility}</Badge>
-);
-
 // Editable chatbot-facts card: view rendered markdown, or edit and open a PR.
 const FactEditorCard = ({ slug, locale, initial }: { slug: string; locale: string; initial: string }) => {
   const [editing, setEditing] = useState(false);
@@ -460,9 +453,177 @@ const HeroEditor = ({ bundle }: { bundle: ContentBundle }) => {
   );
 };
 
+// Editable guide sections (per locale). Saving opens a PR writing guide/<locale>.json.
+// Reuses the AiAssist control ("Text aus Fakten erstellen") on each section body.
+type GuidePhase = 'pre_arrival' | 'stay' | 'departure' | 'post_stay';
+type GuideVisibility = 'public' | 'guest';
+type GuideEntry = {
+  uid: string; key: string; title: string; bodyMd: string;
+  phase: GuidePhase; visibility: GuideVisibility;
+};
+const PHASE_OPTIONS: { value: GuidePhase; label: string }[] = [
+  { value: 'pre_arrival', label: 'Vor Anreise' },
+  { value: 'stay', label: 'Aufenthalt' },
+  { value: 'departure', label: 'Abreise' },
+  { value: 'post_stay', label: 'Nach Aufenthalt' },
+];
+// Known standard sections (brief §6B) offered as quick-add with a sensible default.
+const STANDARD_SECTIONS: { key: string; title: string; phase: GuidePhase }[] = [
+  { key: 'wifi', title: 'WLAN', phase: 'stay' },
+  { key: 'zugang', title: 'Zugang', phase: 'pre_arrival' },
+  { key: 'checkin', title: 'Check-in', phase: 'pre_arrival' },
+  { key: 'checkout', title: 'Check-out', phase: 'departure' },
+  { key: 'parken', title: 'Parken', phase: 'pre_arrival' },
+  { key: 'kontakt', title: 'Kontakt & Hilfe', phase: 'stay' },
+  { key: 'entsorgung', title: 'Müll & Abreise', phase: 'departure' },
+];
+let guideUid = 0;
+
+const toGuideEntries = (sections: GuideSection[]): GuideEntry[] =>
+  [...sections]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((s) => ({
+      uid: 'g-' + ++guideUid, key: s.key, title: s.title, bodyMd: s.bodyMd,
+      phase: s.phase as GuidePhase,
+      visibility: (s.visibility === 'public' ? 'public' : 'guest') as GuideVisibility,
+    }));
+
+const GuideEditor = ({ bundle }: { bundle: ContentBundle }) => {
+  const present = Object.keys(bundle.guide) as Locale[];
+  const locales = ALL_LOCALES.filter((l) => l === 'de' || l === 'en' || present.includes(l));
+  const [locale, setLocale] = useState<Locale>('de');
+  const [entries, setEntries] = useState<GuideEntry[]>(() => toGuideEntries(bundle.guide.de || []));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [pr, setPr] = useState<{ url: string; number: number } | null>(null);
+
+  const switchLocale = (l: Locale) => {
+    setLocale(l);
+    setEntries(toGuideEntries(bundle.guide[l] || []));
+    setError(''); setPr(null);
+  };
+
+  const update = (i: number, patch: Partial<GuideEntry>) =>
+    setEntries((es) => es.map((e, idx) => (idx === i ? { ...e, ...patch } : e)));
+  const remove = (i: number) => setEntries((es) => es.filter((_, idx) => idx !== i));
+  const move = (i: number, dir: -1 | 1) => setEntries((es) => {
+    const j = i + dir; if (j < 0 || j >= es.length) return es;
+    const c = es.slice(); [c[i], c[j]] = [c[j], c[i]]; return c;
+  });
+  const addBlank = () => setEntries((es) => [...es, { uid: 'g-' + ++guideUid, key: '', title: '', bodyMd: '', phase: 'stay', visibility: 'guest' }]);
+  const addStandard = (key: string) => {
+    const tmpl = STANDARD_SECTIONS.find((s) => s.key === key);
+    if (!tmpl) return;
+    setEntries((es) => [...es, { uid: 'g-' + ++guideUid, key: tmpl.key, title: tmpl.title, bodyMd: '', phase: tmpl.phase, visibility: 'guest' }]);
+  };
+
+  const save = async () => {
+    setError(''); setPr(null);
+    const seen = new Set<string>();
+    const sections: Record<string, unknown>[] = [];
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i];
+      if (!e.title.trim()) { setError(`Sektion ${i + 1}: Titel fehlt.`); return; }
+      if (!e.bodyMd.trim()) { setError(`Sektion ${i + 1} (${e.title}): Text fehlt.`); return; }
+      const base = (e.key.trim() || slugify(e.title) || 'sektion');
+      let key = base; let n = 2;
+      while (seen.has(key)) key = `${base}-${n++}`;
+      seen.add(key);
+      sections.push({
+        key, title: e.title.trim(), bodyMd: e.bodyMd.trim(), phase: e.phase,
+        visibility: e.visibility, sortOrder: (i + 1) * 10,
+        translationStatus: locale === 'de' ? 'source' : 'reviewed',
+      });
+    }
+    setBusy(true);
+    try {
+      const res = await api('content/pr', { method: 'POST', body: JSON.stringify({ propertySlug: bundle.slug, kind: 'guide', locale, sections }) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) setPr({ url: data.url, number: data.number });
+      else setError(data.error || 'Pull Request konnte nicht erstellt werden.');
+    } catch { setError('Netzwerkfehler.'); } finally { setBusy(false); }
+  };
+
+  return (
+    <section className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base font-semibold">Gästemappen-Sektionen</h2>
+        <div className="w-40">
+          <Select value={locale} onValueChange={(v) => switchLocale(v as Locale)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{locales.map((l) => <SelectItem key={l} value={l}>{LOCALE_LABELS[l]}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Bearbeiten pro Sprache → „Als Pull Request speichern" (schreibt <code>guide/{locale}.json</code>).
+        Dynamische Werte nur als Platzhalter, z. B. <code>{'{{wifiName}}'}</code>. Interne Sektionen
+        werden hier nicht angezeigt und bleiben repo-seitig.
+      </p>
+      {pr && (
+        <p className="text-sm">✅ Pull Request erstellt:{' '}
+          <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">#{pr.number}</a>{' '}— nach Prüfung der Preview mergen.</p>
+      )}
+
+      {entries.map((e, i) => (
+        <Card key={e.uid} className="p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="ghost" onClick={() => move(i, -1)} disabled={i === 0} aria-label="nach oben">↑</Button>
+              <Button size="sm" variant="ghost" onClick={() => move(i, 1)} disabled={i === entries.length - 1} aria-label="nach unten">↓</Button>
+            </div>
+            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => remove(i)}>Entfernen</Button>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-1"><Label>Titel</Label><Input value={e.title} onChange={(ev) => update(i, { title: ev.target.value })} /></div>
+            <div className="space-y-1"><Label>Phase</Label>
+              <Select value={e.phase} onValueChange={(v) => update(i, { phase: v as GuidePhase })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{PHASE_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <Label>Text</Label>
+            <Textarea rows={4} value={e.bodyMd} onChange={(ev) => update(i, { bodyMd: ev.target.value })} placeholder="Markdown erlaubt. Dynamische Werte als {{platzhalter}}." />
+            <AiAssist slug={bundle.slug} locale={locale} target={`Gästemappen-Sektion „${e.title || 'Abschnitt'}"`} currentText={e.bodyMd} onAccept={(t) => update(i, { bodyMd: t })} />
+          </div>
+          <details className="text-xs text-muted-foreground">
+            <summary className="cursor-pointer">Weitere Einstellungen</summary>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              <div className="space-y-1"><Label>Schlüssel (key)</Label><Input value={e.key} onChange={(ev) => update(i, { key: ev.target.value })} placeholder="wird aus dem Titel abgeleitet" /></div>
+              <div className="space-y-1"><Label>Sichtbarkeit</Label>
+                <Select value={e.visibility} onValueChange={(v) => update(i, { visibility: v as GuideVisibility })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="guest">Nur mit Gast-Login</SelectItem>
+                    <SelectItem value="public">Öffentlich</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </details>
+        </Card>
+      ))}
+      {entries.length === 0 && <p className="text-sm text-muted-foreground">Noch keine Sektionen für diese Sprache – füge eine hinzu.</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Button size="sm" variant="outline" onClick={addBlank}>+ Sektion</Button>
+        <div className="w-52">
+          <Select value="" onValueChange={addStandard}>
+            <SelectTrigger><SelectValue placeholder="+ Standard-Sektion…" /></SelectTrigger>
+            <SelectContent>{STANDARD_SECTIONS.map((s) => <SelectItem key={s.key} value={s.key}>{s.title}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <Button size="sm" onClick={save} disabled={busy}>{busy ? 'Erstelle PR…' : 'Als Pull Request speichern'}</Button>
+      </div>
+    </section>
+  );
+};
+
 const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
   const factLocales = Object.keys(bundle.facts) as Locale[];
-  const guideLocales = Object.keys(bundle.guide) as Locale[];
 
   return (
     <Tabs defaultValue="facts" className="space-y-6">
@@ -483,39 +644,10 @@ const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
         </div>
       </TabsContent>
 
-      {/* Gästemappe — hero (editable) + guide sections (read-only for now) */}
+      {/* Gästemappe — hero + editable guide sections (with AI assist) */}
       <TabsContent value="guide" className="space-y-8">
         <HeroEditor bundle={bundle} />
-
-        <section className="space-y-3">
-          <h2 className="text-base font-semibold">Gästemappen-Sektionen</h2>
-          {guideLocales.length === 0 && <p className="text-sm text-muted-foreground">Keine Sektionen hinterlegt.</p>}
-          {guideLocales.map((loc) => (
-            <Card key={loc} className="p-4">
-              <div className="mb-3 flex items-center gap-2">
-                <Badge variant="outline" className="uppercase">{loc}</Badge>
-                <span className="text-xs text-muted-foreground">guide/{loc}.json</span>
-              </div>
-              <div className="space-y-3">
-                {(bundle.guide[loc] || []).map((s) => (
-                  <div key={s.key} className="rounded-md border border-border p-3">
-                    <div className="mb-1 flex flex-wrap items-center gap-2">
-                      <span className="font-medium">{s.title}</span>
-                      <code className="text-xs text-muted-foreground">{s.key}</code>
-                      <VisibilityBadge visibility={s.visibility} />
-                      <Badge variant="outline">{s.phase}</Badge>
-                      <span className="text-xs text-muted-foreground">#{s.sortOrder}</span>
-                      <Badge variant="outline">{s.translationStatus}</Badge>
-                    </div>
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      <ReactMarkdown>{s.bodyMd}</ReactMarkdown>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          ))}
-        </section>
+        <GuideEditor bundle={bundle} />
       </TabsContent>
 
       {/* Empfehlungen — editable (German) */}
