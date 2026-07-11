@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Eye, UploadCloud } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +36,9 @@ type AuthState = 'checking' | 'unauthenticated' | 'authenticated';
 
 const api = (path: string, init?: RequestInit) =>
   fetch(`/api/admin/${path}`, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } });
+
+// Where content goes live: merging an open content PR triggers the Vercel deploy.
+const PULLS_URL = 'https://github.com/ms-79/guest-guide/pulls';
 
 // ---------------------------------------------------------------------------
 // Login screen
@@ -435,12 +439,31 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>
             <h1 className="text-base font-semibold">Content-Admin</h1>
-            <p className="text-xs text-muted-foreground">Nur-Lese-Ansicht (Phase 2)</p>
+            <p className="text-xs text-muted-foreground">Bearbeiten &amp; per Pull Request veröffentlichen</p>
           </div>
-          <Button variant="outline" size="sm" onClick={logout}>Abmelden</Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Vorschau: opens the selected property's live guest guide (/:slug). */}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!selected}
+              onClick={() => selected && window.open(`/${selected}`, '_blank', 'noopener,noreferrer')}
+            >
+              <Eye className="mr-1.5 h-4 w-4" /> Vorschau
+            </Button>
+            {/* Veröffentlichen: offene Pull Requests mergen → Vercel deployt live. */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(PULLS_URL, '_blank', 'noopener,noreferrer')}
+            >
+              <UploadCloud className="mr-1.5 h-4 w-4" /> Veröffentlichen
+            </Button>
+            <Button variant="outline" size="sm" onClick={logout}>Abmelden</Button>
+          </div>
         </div>
       </header>
 
