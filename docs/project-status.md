@@ -32,37 +32,39 @@
   behebt den früheren „alle Properties teilen den ACHZEIT-Prompt"-Bug. Facts für alle 4
   Properties vorhanden (nur `facts.de.md`).
 - **Admin `/admin`:** passwortgeschützt (HttpOnly-Session-Cookie, `ADMIN_PASSCODE` +
-  `ADMIN_SESSION_SECRET`). **Facts-Editor** live: bearbeiten → Pull Request (via
-  `GITHUB_TOKEN`). Read-only-Ansicht für Guide-Sektionen & Empfehlungen.
+  `ADMIN_SESSION_SECRET`).
+  - **Facts-Editor** live: bearbeiten → Pull Request (via `GITHUB_TOKEN`).
+  - **Empfehlungen-Editor** live (deutsch-only): pro Property hinzufügen/bearbeiten/
+    entfernen/sortieren (Name · Maps-Link · Kategorie · optional Ort/Unterzeile/Badge/
+    `showUntil`/Text) → Pull Request schreibt `places.json` + `de.json` (PR #12).
+  - **Header-Buttons** (PR #13): **Vorschau** öffnet die Live-Gästemappe der gewählten
+    Property (`/:slug`); **Veröffentlichen** öffnet die offenen **Content-PRs genau dieser
+    Property** (GitHub-Suche `head:content/<slug>`, blendet Feature-PRs aus). Beide
+    deaktiviert, solange keine Property gewählt ist.
 - **Empfehlungen migriert:** Restaurants, Einkaufen, Ausflüge kommen aus der Content-Schicht
-  (schlankes Modell, alle 6 Sprachen erhalten, pflegbare Badges, `showUntil`).
+  (schlankes Modell, alle 6 Sprachen erhalten, pflegbare Badges, `showUntil`). Pro-Eintrag-
+  Fallback auf Deutsch (PR #11). **E-Ladesäulen** optisch aufs Maps-Link-Modell umgestellt
+  (PR #13, noch hartkodiert — Daten nicht migriert).
 
 ## Offener PR
 
-- **#11** — Pro-Eintrag-Fallback auf Deutsch (Grundlage für „nur Deutsch pflegen"). Klein,
-  ohne sichtbaren Effekt bis deutsch-only-Content existiert. → mergen.
+- Keiner. Letzter Merge: **#13** (Admin-Header-Buttons + E-Ladesäulen-Restyle).
 
 ## Nächste Schritte (priorisiert)
 
-1. **Empfehlungen-Editor im `/admin` (deutsch-only)** — der eigentliche „Punkt 2":
-   - Formular pro Property: Empfehlungen hinzufügen/bearbeiten/entfernen/sortieren mit
-     Feldern **Name · Maps-Link · Kategorie · Badge (optional) · deutscher Text (optional) ·
-     `showUntil` (optional)**.
-   - **Speichern → Pull Request.** Server schreibt `places.json` + `de.json`.
-   - Bausteine: (a) GitHub-Helper `src/server/github.ts` auf **mehrere Dateien pro PR**
-     erweitern; (b) PR-Route `api/admin/content/pr.ts` um `kind: 'recommendations'`
-     (Zod-validiert); (c) Editor-Formular in `src/pages/Admin.tsx`.
-2. **KI-Übersetzung beim Speichern** (später): deutscher Text/Badge → 5 Sprachen via
-   Anthropic, in denselben PR geschrieben, markiert als `machine_translated`.
-3. **Restliche Guide-Blöcke** ins schlanke Modell ziehen: **E-Ladesäulen** und **Parken**
-   (noch hartkodiert in `GuestGuideContent.tsx`, nutzen noch Distanzen/`WalkingIcon`/
-   `CarIcon`).
-4. **Gästemappen-Sektionen** (Zugang, WLAN, Küche, Sauna …) aus `translations.ts` /
+1. **KI-Übersetzung beim Speichern** (der eigentliche nächste große Schritt): deutscher
+   Text/Badge → 5 Sprachen via Anthropic, in denselben PR geschrieben, markiert als
+   `machine_translated`. Bis dahin greift der Pro-Eintrag-Fallback auf Deutsch.
+2. **Restliche Guide-Blöcke** ins schlanke Modell ziehen: **Parken** (noch hartkodiert in
+   `GuestGuideContent.tsx`, nutzt noch Distanzen). Die E-Ladesäulen sind optisch schon
+   umgestellt, aber die **Daten** liegen noch hartkodiert im Component — bei Bedarf in die
+   Content-Schicht ziehen.
+3. **Gästemappen-Sektionen** (Zugang, WLAN, Küche, Sauna …) aus `translations.ts` /
    `GuestGuideContent.tsx` in `guide/*.json` lösen (größerer Umbau; UI-Strings bleiben in
    `translations.ts`).
-5. **Cleanup:** veraltete `supabase/functions/` entfernen; ggf. `allShopsNote`/
+4. **Cleanup:** veraltete `supabase/functions/` entfernen; ggf. `allShopsNote`/
    `allExcursionsNote` (erwähnen noch Distanzen) überdenken.
-6. **Kleinkram:** WhatsApp-Nummern für Felder's House/Appartement & Phils Apartment in
+5. **Kleinkram:** WhatsApp-Nummern für Felder's House/Appartement & Phils Apartment in
    `src/config/properties.ts` (aktuell leer) — Chatbot-Kontakt fällt sonst generisch aus.
 
 ## Environment-Variablen (nur serverseitig, Vercel)
