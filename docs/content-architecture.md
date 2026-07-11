@@ -148,6 +148,10 @@ npm-Scripts:
 - Recommendation-`placeId` referenziert einen existierenden Place.
 - Hero: `eyebrow` + `introMd` nicht leer; wenn eine Property Hero-Content hat,
   sind `de` **und** `en` Pflicht (Source + Pflicht-Fallback).
+- **Platzhalter-Whitelist:** Hero- und Guide-Texte dürfen dynamische Werte nur über
+  Platzhalter aus `src/content/placeholders.ts` referenzieren (`{{wifiName}}`,
+  `{{accessPin}}`, `{{checkInTime}}` …). Unbekannte `{{token}}` lassen den Build
+  fehlschlagen — so landen Tippfehler oder erfundene Felder nicht im Live-Content.
 - Chatbot-Facts enthalten keine offensichtlich verbotenen Begriffe (Türcode,
   Door Code, PIN, Zahlungsstatus, Payment Status, Gastdaten, IBAN, Kreditkarte).
   **Nur ein zusätzlicher Guard — ersetzt keine manuelle Prüfung.**
@@ -233,6 +237,27 @@ drei Tabs: **Fakten**, **Gästemappe**, **Empfehlungen**.
 
 **Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Tab wählen →
 bearbeiten → „Als Pull Request speichern" → PR prüfen/mergen.
+
+### KI-Redaktionshilfe: „Text aus Fakten erstellen"
+
+Der Hero-Editor (später auch die Gästemappen-Sektionen) hat KI-Aktionen:
+**Text aus Fakten erstellen** (neuer Vorschlag), **Mit KI verbessern** und
+**Kürzen**. Ablauf: Klick → **Vorschau** des Vorschlags → **Übernehmen /
+Erneut generieren / Abbrechen**. Der Vorschlag wird **nie** ohne „Übernehmen" in
+das Feld geschrieben und **nie** automatisch veröffentlicht (Speichern läuft
+weiterhin nur über den PR-Button).
+
+- Endpoint: `POST /api/admin/ai/generate` (Edge, **session-geschützt**). Baut den
+  Prompt aus Marken-Ton + **denselben Property-Facts** wie der Chatbot
+  (`getChatbotFacts`, Fallback `de` → `en`) + Zielsprache + erlaubter
+  Platzhalter-Whitelist. Es gibt **keine zweite Faktenquelle** — Chatbot und
+  KI-Generierung teilen sich die Facts.
+- **Guards:** Die KI darf nur Platzhalter aus der Whitelist verwenden und keine
+  sensiblen Begriffe ausgeben — der Vorschlag wird sonst **abgelehnt** (fail
+  closed). Keine Live-Generierung beim Gästezugriff; die KI ist reine
+  Redaktionshilfe im Admin. Ein-/Ausgaben werden **nicht geloggt**.
+- Nutzt `ANTHROPIC_API_KEY` (bereits für den Chatbot vorhanden), Modell
+  `claude-haiku-4-5`, nicht-streamend.
 
 **Auth (Edge-safe, ohne Datenbank):**
 - Login `POST /api/admin/login` prüft den Zugangscode konstant-zeitig und setzt

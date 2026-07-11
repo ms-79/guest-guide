@@ -46,6 +46,13 @@
   - **Hero-Editor** (Phase 2) live unter *Gästemappe*: Claim/Eyebrow + Begrüßungstext
     (+ optional Subline/Concierge-Hinweis) **pro Property & Sprache** → Pull Request
     (`kind: 'hero'` → `content/<slug>/hero/<locale>.json`).
+  - **KI-Redaktionshilfe „Text aus Fakten erstellen"** im Hero-Editor: Buttons
+    *Text aus Fakten erstellen / Mit KI verbessern / Kürzen* → Vorschau →
+    *Übernehmen / Erneut / Abbrechen*. Endpoint `POST /api/admin/ai/generate`
+    (session-geschützt) nutzt **dieselben Facts** wie der Chatbot + Marken-Ton +
+    Platzhalter-Whitelist (`src/content/placeholders.ts`); Vorschläge mit unzulässigen
+    Begriffen/Platzhaltern werden abgelehnt. Reine Redaktionshilfe, keine Auto-Veröffentlichung.
+    Gemeinsame Basis, die die Guide-Sektionen-Phase wiederverwendet.
 - **Hero nicht mehr hartkodiert** (Phase 2): `content/properties/463607-achzeit/hero/*.json`
   (alle 6 Sprachen, aus `translations.ts` übernommen). Frontend liest über das
   facts-freie `src/generated/hero.ts` (`getHero(slug, locale)`, Fallback Locale → de → en);
@@ -69,11 +76,9 @@
 > die Content-Schicht, der property-aware Chatbot, der Facts-Editor, der Empfehlungs-Editor
 > und (neu) die **Hero-Pflege + Tab-Struktur**. **Noch NICHT gebaut** — nach Priorität:
 
-1. **KI „Text aus Fakten erstellen"** (Kern des Zielbilds): Im Admin pro Gästemappen-Sektion
-   ein Button, der aus den ausgewählten Facts + Brand-Ton einen **Textvorschlag** via
-   Anthropic erzeugt (server-seitig, `ANTHROPIC_API_KEY`). Vorschau → *Übernehmen /
-   Neu generieren / Abbrechen*. **Nie** ungefragt bestehende Texte überschreiben, **nie**
-   Hostaway-Werte erfinden, **nie** live beim Gästezugriff generieren (nur Redaktionshilfe im Admin).
+1. **KI „Text aus Fakten erstellen"** — Grundgerüst **erledigt** (`POST /api/admin/ai/generate`
+   + `AiAssist`-UI, zunächst im Hero-Editor). **Offen:** dieselben Buttons an die
+   Gästemappen-Sektionen hängen (kommt mit Punkt 3) und optional an die Empfehlungen.
 2. **Strukturierte Fakten-Tabelle** (ersetzt die heutige `chatbot/facts.de.md`-Freitext-Pflege):
    Facts als Einträge mit `name`, `category`, `description`, `source` (manual|hostaway),
    `hostawayField`, `active`, `chatbotEnabled`. Defaults aus Kategorien ableiten (siehe Auftrag

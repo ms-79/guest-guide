@@ -3,6 +3,7 @@ export const config = { runtime: 'edge' };
 import { hasValidSession } from '../../../src/server/session';
 import { createContentPr, type GithubConfig } from '../../../src/server/github';
 import { findForbiddenFactMatches } from '../../../src/content/facts-guard';
+import { findUnknownPlaceholders } from '../../../src/content/placeholders';
 import { heroContentSchema, placesFileSchema, recommendationsFileSchema } from '../../../src/content/schemas';
 import { propertyMeta } from '../../../src/generated/content';
 
@@ -78,6 +79,8 @@ export default async function handler(req: Request): Promise<Response> {
     const combined = [hero.eyebrow, hero.introMd, hero.subline, hero.conciergeHint].filter(Boolean).join(' ');
     const hits = findForbiddenFactMatches(combined);
     if (hits.length) return json({ error: `Text enthält unzulässige Begriffe (${hits.join(', ')}).` }, 400);
+    const badPh = findUnknownPlaceholders(combined);
+    if (badPh.length) return json({ error: `Text nutzt unbekannte Platzhalter (${badPh.map((t) => `{{${t}}}`).join(', ')}).` }, 400);
 
     const fileBody = {
       propertySlug,
