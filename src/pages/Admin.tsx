@@ -38,7 +38,10 @@ const api = (path: string, init?: RequestInit) =>
   fetch(`/api/admin/${path}`, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } });
 
 // Where content goes live: merging an open content PR triggers the Vercel deploy.
-const PULLS_URL = 'https://github.com/ms-79/guest-guide/pulls';
+// Content PR titles always end with "for <displayName>" (see api/admin/content/pr.ts),
+// so an in:title search scopes the pulls list to a single property.
+const pullsUrlForProperty = (displayName: string): string =>
+  `https://github.com/ms-79/guest-guide/pulls?q=${encodeURIComponent(`is:pr is:open in:title ${displayName}`)}`;
 
 // ---------------------------------------------------------------------------
 // Login screen
@@ -436,6 +439,8 @@ const Admin = () => {
     return <LoginScreen onSuccess={loadProperties} />;
   }
 
+  const selectedDisplayName = properties.find((p) => p.slug === selected)?.displayName ?? '';
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -454,11 +459,15 @@ const Admin = () => {
             >
               <Eye className="mr-1.5 h-4 w-4" /> Vorschau
             </Button>
-            {/* Veröffentlichen: offene Pull Requests mergen → Vercel deployt live. */}
+            {/* Veröffentlichen: offene Pull Requests DIESER Property → mergen → Vercel deployt live. */}
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(PULLS_URL, '_blank', 'noopener,noreferrer')}
+              disabled={!selectedDisplayName}
+              onClick={() =>
+                selectedDisplayName &&
+                window.open(pullsUrlForProperty(selectedDisplayName), '_blank', 'noopener,noreferrer')
+              }
             >
               <UploadCloud className="mr-1.5 h-4 w-4" /> Veröffentlichen
             </Button>
