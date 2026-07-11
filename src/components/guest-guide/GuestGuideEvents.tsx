@@ -17,7 +17,7 @@ const GuestGuideEvents = () => {
         href={CALENDAR_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between bg-muted rounded-lg p-4 hover:bg-accent transition-colors w-full"
+        className="flex items-center justify-between bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition w-full"
       >
         <div>
           <h4 className="font-display text-base text-foreground">
