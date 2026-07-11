@@ -16,9 +16,9 @@ import {
 } from '@/components/ui/select';
 import type { GuideSection, Place, RecommendationItem, Locale } from '@/content/schemas';
 
-// Phase 3: chatbot facts can be edited here; saving opens a GitHub pull request
-// via the server-side /api/admin/content/pr endpoint (never a direct commit to
-// the base branch). Guide sections & recommendations remain read-only for now.
+// Chatbot facts and recommendations (German) can be edited here; saving opens a
+// GitHub pull request via the server-side /api/admin/content/pr endpoint (never a
+// direct commit to the base branch). Guide sections remain read-only for now.
 
 type PropertyListItem = { slug: string; displayName: string };
 
@@ -187,10 +187,128 @@ const FactEditorCard = ({ slug, locale, initial }: { slug: string; locale: strin
   );
 };
 
+// German-only recommendations editor. Saving opens a PR writing places.json +
+// de.json; other locales are added later (translation). Category/badge/text are
+// maintained in German; the Google Maps link replaces manual distances.
+type RecEntry = {
+  key: string; id: string; category: string; name: string; mapsUrl: string;
+  locationLabel: string; showUntil: string; categoryLabel: string; badge: string; descriptionMd: string;
+};
+
+const slugify = (s: string) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/['’´`]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+const CATEGORY_OPTIONS = [
+  { value: 'restaurant', label: 'Restaurant' },
+  { value: 'shopping', label: 'Einkaufen' },
+  { value: 'excursion', label: 'Ausflug' },
+];
+let recUid = 0;
+
+const RecommendationsEditor = ({ bundle }: { bundle: ContentBundle }) => {
+  const deItems = new Map((bundle.recommendations.de || []).map((i) => [i.placeId, i]));
+  const [entries, setEntries] = useState<RecEntry[]>(() =>
+    bundle.places.map((p) => {
+      const d = deItems.get(p.id);
+      return {
+        key: p.id, id: p.id, category: p.category, name: p.name, mapsUrl: p.mapsUrl || '',
+        locationLabel: p.locationLabel || '', showUntil: p.showUntil || '',
+        categoryLabel: d?.categoryLabel || '', badge: d?.badge || '', descriptionMd: d?.descriptionMd || '',
+      };
+    }),
+  );
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [pr, setPr] = useState<{ url: string; number: number } | null>(null);
+
+  const update = (i: number, patch: Partial<RecEntry>) => setEntries((es) => es.map((e, idx) => (idx === i ? { ...e, ...patch } : e)));
+  const remove = (i: number) => setEntries((es) => es.filter((_, idx) => idx !== i));
+  const add = () => setEntries((es) => [...es, { key: 'new-' + ++recUid, id: '', category: 'restaurant', name: '', mapsUrl: '', locationLabel: '', showUntil: '', categoryLabel: '', badge: '', descriptionMd: '' }]);
+  const move = (i: number, dir: -1 | 1) => setEntries((es) => {
+    const j = i + dir; if (j < 0 || j >= es.length) return es;
+    const c = es.slice(); [c[i], c[j]] = [c[j], c[i]]; return c;
+  });
+
+  const save = async () => {
+    setError(''); setPr(null);
+    const seen = new Set<string>();
+    const places: Record<string, unknown>[] = [];
+    const items: Record<string, unknown>[] = [];
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i];
+      if (!e.name.trim()) { setError(`Eintrag ${i + 1}: Name fehlt.`); return; }
+      if (!e.mapsUrl.trim()) { setError(`Eintrag ${i + 1} (${e.name}): Google-Maps-Link fehlt.`); return; }
+      const base = e.id || slugify(e.name) || 'ort';
+      let id = base; let n = 2;
+      while (seen.has(id)) id = `${base}-${n++}`;
+      seen.add(id);
+      const place: Record<string, unknown> = { id, category: e.category, name: e.name.trim(), mapsUrl: e.mapsUrl.trim(), sortOrder: (i + 1) * 10, visibility: 'guest' };
+      if (e.locationLabel.trim()) place.locationLabel = e.locationLabel.trim();
+      if (e.showUntil.trim()) place.showUntil = e.showUntil.trim();
+      places.push(place);
+      const item: Record<string, unknown> = { placeId: id, translationStatus: 'source' };
+      if (e.categoryLabel.trim()) item.categoryLabel = e.categoryLabel.trim();
+      if (e.badge.trim()) item.badge = e.badge.trim();
+      if (e.descriptionMd.trim()) item.descriptionMd = e.descriptionMd.trim();
+      if (item.categoryLabel || item.badge || item.descriptionMd) items.push(item);
+    }
+    setBusy(true);
+    try {
+      const res = await api('content/pr', { method: 'POST', body: JSON.stringify({ propertySlug: bundle.slug, kind: 'recommendations', places, items }) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) setPr({ url: data.url, number: data.number });
+      else setError(data.error || 'Pull Request konnte nicht erstellt werden.');
+    } catch { setError('Netzwerkfehler.'); } finally { setBusy(false); }
+  };
+
+  return (
+    <section className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-base font-semibold">Empfehlungen (Deutsch)</h2>
+        <Button size="sm" variant="outline" onClick={add}>+ Empfehlung</Button>
+      </div>
+      <p className="text-xs text-muted-foreground">Nur Deutsch pflegen. „Speichern" legt einen Pull Request an (places.json + de.json); Übersetzungen folgen später.</p>
+      {pr && (
+        <p className="text-sm">✅ Pull Request erstellt:{' '}
+          <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">#{pr.number}</a>{' '}— nach Prüfung der Preview mergen.</p>
+      )}
+      {entries.map((e, i) => (
+        <Card key={e.key} className="p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="ghost" onClick={() => move(i, -1)} disabled={i === 0} aria-label="nach oben">↑</Button>
+              <Button size="sm" variant="ghost" onClick={() => move(i, 1)} disabled={i === entries.length - 1} aria-label="nach unten">↓</Button>
+            </div>
+            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => remove(i)}>Entfernen</Button>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-1"><Label>Name</Label><Input value={e.name} onChange={(ev) => update(i, { name: ev.target.value })} /></div>
+            <div className="space-y-1"><Label>Kategorie</Label>
+              <Select value={e.category} onValueChange={(v) => update(i, { category: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{CATEGORY_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1 sm:col-span-2"><Label>Google-Maps-Link</Label><Input value={e.mapsUrl} onChange={(ev) => update(i, { mapsUrl: ev.target.value })} placeholder="https://www.google.com/maps/..." /></div>
+            <div className="space-y-1"><Label>Ort (optional)</Label><Input value={e.locationLabel} onChange={(ev) => update(i, { locationLabel: ev.target.value })} placeholder="Oberstdorf" /></div>
+            <div className="space-y-1"><Label>Unterzeile (optional)</Label><Input value={e.categoryLabel} onChange={(ev) => update(i, { categoryLabel: ev.target.value })} placeholder="Regionale Küche" /></div>
+            <div className="space-y-1"><Label>Badge (optional)</Label><Input value={e.badge} onChange={(ev) => update(i, { badge: ev.target.value })} placeholder="Top-Empfehlung" /></div>
+            <div className="space-y-1"><Label>Sichtbar bis (optional)</Label><Input type="date" value={e.showUntil} onChange={(ev) => update(i, { showUntil: ev.target.value })} /></div>
+            <div className="space-y-1 sm:col-span-2"><Label>Tipp / Beschreibung (optional)</Label><Textarea rows={2} value={e.descriptionMd} onChange={(ev) => update(i, { descriptionMd: ev.target.value })} /></div>
+          </div>
+        </Card>
+      ))}
+      {entries.length === 0 && <p className="text-sm text-muted-foreground">Noch keine Empfehlungen – füge eine hinzu.</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button size="sm" onClick={save} disabled={busy}>{busy ? 'Erstelle PR…' : 'Als Pull Request speichern'}</Button>
+    </section>
+  );
+};
+
 const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
   const factLocales = Object.keys(bundle.facts) as Locale[];
   const guideLocales = Object.keys(bundle.guide) as Locale[];
-  const recLocales = Object.keys(bundle.recommendations) as Locale[];
 
   return (
     <div className="space-y-8">
@@ -236,58 +354,8 @@ const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
         ))}
       </section>
 
-      {/* Recommendations */}
-      <section className="space-y-3">
-        <h2 className="text-base font-semibold">Empfehlungen</h2>
-        {bundle.places.length === 0 && <p className="text-sm text-muted-foreground">Keine Orte hinterlegt.</p>}
-        {bundle.places.length > 0 && (
-          <Card className="p-4">
-            <div className="mb-3 text-xs text-muted-foreground">recommendations/places.json</div>
-            <div className="space-y-2">
-              {bundle.places.map((p) => (
-                <div key={p.id} className="flex flex-wrap items-center gap-2 border-b border-border pb-2 last:border-0 last:pb-0">
-                  <span className="font-medium">{p.name}</span>
-                  <code className="text-xs text-muted-foreground">{p.id}</code>
-                  <Badge variant="outline">{p.category}</Badge>
-                  <VisibilityBadge visibility={p.visibility} />
-                  {p.distanceText && <span className="text-xs text-muted-foreground">{p.distanceText}</span>}
-                  {p.mapsUrl && (
-                    <a href={p.mapsUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
-                      Karte
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
-        {recLocales.map((loc) => (
-          <Card key={loc} className="p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <Badge variant="outline" className="uppercase">{loc}</Badge>
-              <span className="text-xs text-muted-foreground">recommendations/{loc}.json</span>
-            </div>
-            <div className="space-y-3">
-              {(bundle.recommendations[loc] || []).map((item) => (
-                <div key={item.placeId} className="rounded-md border border-border p-3">
-                  <div className="mb-1 flex items-center gap-2">
-                    <code className="text-xs text-muted-foreground">{item.placeId}</code>
-                    <Badge variant="outline">{item.translationStatus}</Badge>
-                  </div>
-                  {item.descriptionMd && (
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      <ReactMarkdown>{item.descriptionMd}</ReactMarkdown>
-                    </div>
-                  )}
-                  {item.tipMd && (
-                    <p className="mt-1 text-sm text-muted-foreground">💡 {item.tipMd}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </section>
+      {/* Recommendations — editable (German) */}
+      <RecommendationsEditor bundle={bundle} />
     </div>
   );
 };
