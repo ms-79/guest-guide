@@ -6,13 +6,15 @@
       "placeId": "gaisbock",
       "categoryLabel": "Regional Cuisine",
       "descriptionMd": "Traditional Allgäu hospitality with modern touches. Regional cuisine with the best local ingredients – cozy and warm.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Top Pick"
     },
     {
       "placeId": "ondersch",
       "categoryLabel": "Fine Dining",
       "descriptionMd": "Two concepts under one roof – fine dining and relaxed cuisine. Perfect for a special evening.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Star Level"
     },
     {
       "placeId": "alte-sennkueche",
@@ -42,7 +44,8 @@
       "placeId": "baeckerei-haerle",
       "categoryLabel": "Traditional Bakery",
       "descriptionMd": "Everything still handmade – fresh rolls, bread and pastries. Also open on Sundays.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Our Tip"
     },
     {
       "placeId": "metzgerei-schmid",
@@ -66,6 +69,51 @@
       "placeId": "kur-apotheke",
       "categoryLabel": "Pharmacy",
       "descriptionMd": "Pharmacy in the center of Fischen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "stinesser-lifte",
+      "categoryLabel": "Family Ski Area",
+      "badge": "Right in Town",
+      "descriptionMd": "Small ski area at the edge of town – ideal for beginners and families. With evening toboggan run and cozy lift bar.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "breitachklamm",
+      "categoryLabel": "Natural Wonder",
+      "badge": "Top Excursion",
+      "descriptionMd": "The deepest and one of the most impressive rock gorges in Central Europe. Thundering waterfalls in summer, magical ice formations in winter.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "nebelhorn",
+      "categoryLabel": "Cable Car & Panorama",
+      "badge": "400 Peaks View",
+      "descriptionMd": "By gondola to 2,224 m – 400 peaks in view. North face trail and panoramic loop. Excellent ski area in winter.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "fellhorn-kanzelwand",
+      "categoryLabel": "Hiking & Skiing",
+      "descriptionMd": "Flower-rich mountain meadows in summer, first-class ski area in winter. The two-country hike (DE/AT) is a highlight.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "sturmannshoehle",
+      "categoryLabel": "Stalactite Cave",
+      "descriptionMd": "The only accessible cave in the Allgäu – impressive stalactite formations deep in the mountain. Great experience for kids too.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "soellereck",
+      "categoryLabel": "Family Mountain",
+      "descriptionMd": "The family mountain: summer toboggan run, short hiking trails and great panorama. Ideal with kids.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "christlessee",
+      "categoryLabel": "Mountain Lake",
+      "descriptionMd": "Crystal-clear mountain lake with turquoise water – a hidden gem. Easy hike from the Trettachtal parking lot.",
       "translationStatus": "reviewed"
     }
   ]

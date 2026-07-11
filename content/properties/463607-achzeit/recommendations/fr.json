@@ -6,13 +6,15 @@
       "placeId": "gaisbock",
       "categoryLabel": "Regional Cuisine",
       "descriptionMd": "Hospitalité traditionnelle de l'Allgäu avec des touches modernes. Cuisine régionale avec les meilleurs ingrédients locaux.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Recommandé"
     },
     {
       "placeId": "ondersch",
       "categoryLabel": "Fine Dining",
       "descriptionMd": "Deux concepts sous un toit – cuisine raffinée et décontractée. Parfait pour une soirée spéciale.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Niveau étoilé"
     },
     {
       "placeId": "alte-sennkueche",
@@ -42,7 +44,8 @@
       "placeId": "baeckerei-haerle",
       "categoryLabel": "Traditional Bakery",
       "descriptionMd": "Tout encore fait main – petits pains frais, pain et pâtisseries. Ouvert aussi le dimanche.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Notre conseil"
     },
     {
       "placeId": "metzgerei-schmid",
@@ -66,6 +69,51 @@
       "placeId": "kur-apotheke",
       "categoryLabel": "Pharmacy",
       "descriptionMd": "Pharmacie au centre de Fischen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "stinesser-lifte",
+      "categoryLabel": "Family Ski Area",
+      "badge": "Dans le village",
+      "descriptionMd": "Petit domaine skiable en bordure du village – idéal pour débutants et familles.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "breitachklamm",
+      "categoryLabel": "Natural Wonder",
+      "badge": "Excursion top",
+      "descriptionMd": "La plus profonde et l'une des gorges les plus impressionnantes d'Europe centrale. Cascades en été, formations de glace en hiver.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "nebelhorn",
+      "categoryLabel": "Cable Car & Panorama",
+      "badge": "Vue 400 sommets",
+      "descriptionMd": "En télécabine à 2 224 m – 400 sommets en vue. Sentier panoramique. Excellente station de ski en hiver.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "fellhorn-kanzelwand",
+      "categoryLabel": "Hiking & Skiing",
+      "descriptionMd": "Prairies de montagne fleuries en été, domaine skiable de premier ordre en hiver.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "sturmannshoehle",
+      "categoryLabel": "Stalactite Cave",
+      "descriptionMd": "La seule grotte accessible de l'Allgäu – impressionnantes formations de stalactites. Super expérience pour les enfants aussi.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "soellereck",
+      "categoryLabel": "Family Mountain",
+      "descriptionMd": "La montagne familiale : piste de luge d'été, courtes randonnées et superbe panorama. Idéal avec les enfants.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "christlessee",
+      "categoryLabel": "Mountain Lake",
+      "descriptionMd": "Lac de montagne cristallin aux eaux turquoise – un secret bien gardé. Randonnée facile depuis le parking de Trettachtal.",
       "translationStatus": "reviewed"
     }
   ]

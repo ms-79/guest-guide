@@ -6,13 +6,15 @@
       "placeId": "gaisbock",
       "categoryLabel": "Regional Cuisine",
       "descriptionMd": "Traditionele Allgäuer gastvrijheid met moderne accenten. Regionale keuken met de beste lokale ingrediënten.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Topaanrader"
     },
     {
       "placeId": "ondersch",
       "categoryLabel": "Fine Dining",
       "descriptionMd": "Twee concepten onder één dak – fine dining en ontspannen keuken. Perfect voor een bijzondere avond.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Sterrenniveau"
     },
     {
       "placeId": "alte-sennkueche",
@@ -42,7 +44,8 @@
       "placeId": "baeckerei-haerle",
       "categoryLabel": "Traditional Bakery",
       "descriptionMd": "Alles nog handgemaakt – verse broodjes, brood en gebak. Ook op zondag open.",
-      "translationStatus": "reviewed"
+      "translationStatus": "reviewed",
+      "badge": "Onze tip"
     },
     {
       "placeId": "metzgerei-schmid",
@@ -66,6 +69,51 @@
       "placeId": "kur-apotheke",
       "categoryLabel": "Pharmacy",
       "descriptionMd": "Apotheek in het centrum van Fischen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "stinesser-lifte",
+      "categoryLabel": "Family Ski Area",
+      "badge": "In het dorp",
+      "descriptionMd": "Klein skigebied aan de rand van het dorp – ideaal voor beginners en gezinnen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "breitachklamm",
+      "categoryLabel": "Natural Wonder",
+      "badge": "Topuitstapje",
+      "descriptionMd": "De diepste en meest indrukwekkende rotskloof van Midden-Europa. Bruisende watervallen in de zomer, magische ijsformaties in de winter.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "nebelhorn",
+      "categoryLabel": "Cable Car & Panorama",
+      "badge": "400 toppen uitzicht",
+      "descriptionMd": "Per gondel naar 2.224 m – 400 toppen in het zicht. Panoramisch wandelpad. Geweldig skigebied in de winter.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "fellhorn-kanzelwand",
+      "categoryLabel": "Hiking & Skiing",
+      "descriptionMd": "Bloemrijke bergweiden in de zomer, eersteklas skigebied in de winter.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "sturmannshoehle",
+      "categoryLabel": "Stalactite Cave",
+      "descriptionMd": "De enige toegankelijke grot in de Allgäu – indrukwekkende druipsteenformaties. Geweldige ervaring voor kinderen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "soellereck",
+      "categoryLabel": "Family Mountain",
+      "descriptionMd": "De familieberg: zomerrodelbaan, korte wandelpaden en geweldig panorama. Ideaal met kinderen.",
+      "translationStatus": "reviewed"
+    },
+    {
+      "placeId": "christlessee",
+      "categoryLabel": "Mountain Lake",
+      "descriptionMd": "Kristalhelder bergmeer met turquoise water – een verborgen parel. Makkelijke wandeling vanaf de parkeerplaats Trettachtal.",
       "translationStatus": "reviewed"
     }
   ]
