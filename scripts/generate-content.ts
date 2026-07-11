@@ -273,26 +273,29 @@ ${recEntries}
 };
 
 /** A place merged with its localised copy for rendering. */
-export type Recommendation = Place & { categoryLabel?: string; descriptionMd?: string; tipMd?: string };
+export type Recommendation = Place & { categoryLabel?: string; badge?: string; descriptionMd?: string; tipMd?: string };
 
 const REC_FALLBACKS: Locale[] = ['de', 'en'];
 
 /**
  * Merge a property's places with their per-locale copy (falling back de → en),
- * optionally filtered by category, sorted by sortOrder.
+ * optionally filtered by category, sorted by sortOrder. Places whose showUntil
+ * date has passed are dropped (seasonal content).
  */
 export function getRecommendations(slug: string, locale: string, category?: string): Recommendation[] {
   const propPlaces = places[slug] || [];
   const byLocale = recommendations[slug] || {};
   const order = [locale as Locale, ...REC_FALLBACKS];
-  let items = (order.map((l) => byLocale[l]).find((x) => x && x.length) || []) as RecommendationItem[];
+  const items = (order.map((l) => byLocale[l]).find((x) => x && x.length) || []) as RecommendationItem[];
   const copyById = new Map(items.map((it) => [it.placeId, it]));
+  const now = Date.now();
   return propPlaces
     .filter((p) => (category ? p.category === category : true))
+    .filter((p) => !p.showUntil || now <= new Date(p.showUntil + 'T23:59:59').getTime())
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((p) => {
       const c = copyById.get(p.id);
-      return { ...p, categoryLabel: c?.categoryLabel, descriptionMd: c?.descriptionMd, tipMd: c?.tipMd };
+      return { ...p, categoryLabel: c?.categoryLabel, badge: c?.badge, descriptionMd: c?.descriptionMd, tipMd: c?.tipMd };
     });
 }
 `;

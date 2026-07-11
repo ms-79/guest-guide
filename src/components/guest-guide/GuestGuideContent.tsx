@@ -42,7 +42,6 @@ const CarIcon = ({ size = 14 }: { size?: number }) => (
 // links to Google Maps and shows an optional badge + localised text.
 const RecommendationList = ({ slug, category }: { slug: string; category: string }) => {
   const { locale } = useGuestGuideLocale();
-  const t = translations;
   const items = getRecommendations(slug, locale, category);
   if (items.length === 0) return null;
   return (
@@ -56,7 +55,7 @@ const RecommendationList = ({ slug, category }: { slug: string; category: string
             </div>
             {r.badge && (
               <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                <Star size={12} className="fill-alpine-wood" /> {r.badge === 'top' ? t.topRecommendation[locale] : t.starLevel[locale]}
+                <Star size={12} className="fill-alpine-wood" /> {r.badge}
               </span>
             )}
           </div>
@@ -367,85 +366,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             <div className="space-y-4">
               <GuestGuideEvents />
 
-              {new Date() <= new Date('2026-03-08T23:59:59') && (
-                <a href="https://www.stinesser-lifte.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h4 className="font-display text-base text-foreground">Stinesser Lifte</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">Fischen im Allgäu · {locale === 'de' ? 'Familienskigebiet' : 'Family Ski Area'}</p>
-                    </div>
-                    <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                      <Star size={12} className="fill-alpine-wood" /> {t.directInOrt[locale]}
-                    </span>
-                  </div>
-                  <p className="text-sm mt-2">{t.stinesserDesc[locale]}</p>
-                  <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 9 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 2 Min.</span></div>
-                </a>
-              )}
-
-              <a href="https://www.breitachklamm.com/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Breitachklamm</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Tiefenbach · {locale === 'de' ? 'Naturwunder' : 'Natural Wonder'}</p>
-                  </div>
-                  <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                    <Star size={12} className="fill-alpine-wood" /> {t.topExcursion[locale]}
-                  </span>
-                </div>
-                <p className="text-sm mt-2">{t.breitachklammDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 12 Min.</span></div>
-              </a>
-
-              <a href="https://www.ok-bergbahnen.com/nebelhorn" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-display text-base text-foreground">Nebelhorn (2.224 m)</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Bergbahn & Panorama' : 'Cable Car & Panorama'}</p>
-                  </div>
-                  <span className="flex items-center gap-1 text-xs text-alpine-wood whitespace-nowrap">
-                    <Star size={12} className="fill-alpine-wood" /> {t.gipfelblick[locale]}
-                  </span>
-                </div>
-                <p className="text-sm mt-2">{t.nebelhornDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 13 Min.</span></div>
-              </a>
-
-              <a href="https://www.ok-bergbahnen.com/fellhorn-kanzelwand" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Fellhorn / Kanzelwand</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Wandern & Skifahren' : 'Hiking & Skiing'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.fellhornDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 18 Min.</span></div>
-              </a>
-
-              <a href="https://www.sturmannshoehle.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Sturmannshöhle</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Obermaiselstein · {locale === 'de' ? 'Tropfsteinhöhle' : 'Stalactite Cave'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.sturmannDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 7 Min.</span></div>
-              </a>
-
-              <a href="https://www.ok-bergbahnen.com/soellereck" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Söllereck</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Familienberg' : 'Family Mountain'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.soellereckDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 9 Min.</span></div>
-              </a>
-
-              <a href="https://maps.google.com/?q=Christlessee+Trettachtal" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                <div>
-                  <h4 className="font-display text-base text-foreground">Christlessee</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Trettachtal · {locale === 'de' ? 'Bergsee' : 'Mountain Lake'}</p>
-                </div>
-                <p className="text-sm mt-2">{t.christleseeDesc[locale]}</p>
-                <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 19 Min.</span></div>
-              </a>
+              <RecommendationList slug={property.slug} category="excursion" />
             </div>
 
             <p className="text-xs text-muted-foreground italic pt-1 flex items-center gap-1.5">

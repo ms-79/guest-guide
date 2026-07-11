@@ -7,7 +7,6 @@
       "name": "Gaisbock",
       "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Gaisbock%20Fischen%20im%20Allg%C3%A4u",
       "locationLabel": "Fischen im Allgäu",
-      "badge": "top",
       "sortOrder": 10,
       "visibility": "guest"
     },
@@ -17,7 +16,6 @@
       "name": "Ondersch",
       "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Ondersch%20Oberstdorf",
       "locationLabel": "Oberstdorf",
-      "badge": "star",
       "sortOrder": 20,
       "visibility": "guest"
     },
@@ -100,6 +98,70 @@
       "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Kur-Apotheke%20F%C3%A4rberhaus%20Fischen%20im%20Allg%C3%A4u",
       "locationLabel": "Fischen",
       "sortOrder": 110,
+      "visibility": "guest"
+    },
+    {
+      "id": "stinesser-lifte",
+      "category": "excursion",
+      "name": "Stinesser Lifte",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Stinesser%20Lifte%20Fischen%20im%20Allg%C3%A4u",
+      "locationLabel": "Fischen im Allgäu",
+      "sortOrder": 210,
+      "visibility": "guest",
+      "showUntil": "2026-03-08"
+    },
+    {
+      "id": "breitachklamm",
+      "category": "excursion",
+      "name": "Breitachklamm",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Breitachklamm%20Tiefenbach",
+      "locationLabel": "Tiefenbach",
+      "sortOrder": 220,
+      "visibility": "guest"
+    },
+    {
+      "id": "nebelhorn",
+      "category": "excursion",
+      "name": "Nebelhorn (2.224 m)",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Nebelhorn%20Oberstdorf",
+      "locationLabel": "Oberstdorf",
+      "sortOrder": 230,
+      "visibility": "guest"
+    },
+    {
+      "id": "fellhorn-kanzelwand",
+      "category": "excursion",
+      "name": "Fellhorn / Kanzelwand",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Fellhorn%20Kanzelwand%20Oberstdorf",
+      "locationLabel": "Oberstdorf",
+      "sortOrder": 240,
+      "visibility": "guest"
+    },
+    {
+      "id": "sturmannshoehle",
+      "category": "excursion",
+      "name": "Sturmannshöhle",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Sturmannsh%C3%B6hle%20Obermaiselstein",
+      "locationLabel": "Obermaiselstein",
+      "sortOrder": 250,
+      "visibility": "guest"
+    },
+    {
+      "id": "soellereck",
+      "category": "excursion",
+      "name": "Söllereck",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=S%C3%B6llereck%20Oberstdorf",
+      "locationLabel": "Oberstdorf",
+      "sortOrder": 260,
+      "visibility": "guest"
+    },
+    {
+      "id": "christlessee",
+      "category": "excursion",
+      "name": "Christlessee",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Christlessee%20Trettachtal",
+      "locationLabel": "Trettachtal",
+      "sortOrder": 270,
       "visibility": "guest"
     }
   ]

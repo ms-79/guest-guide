@@ -6,13 +6,15 @@
       "placeId": "gaisbock",
       "categoryLabel": "Regionale Küche",
       "descriptionMd": "Traditionelle Allgäuer Gastlichkeit mit modernen Akzenten. Regionale Küche mit besten Zutaten aus der Heimat – gemütlich und herzlich.",
-      "translationStatus": "source"
+      "translationStatus": "source",
+      "badge": "Top-Empfehlung"
     },
     {
       "placeId": "ondersch",
       "categoryLabel": "Fine Dining",
       "descriptionMd": "Zwei Konzepte unter einem Dach – gehobene Küche und entspannte Genusswirtschaft. Perfekt für einen besonderen Abend.",
-      "translationStatus": "source"
+      "translationStatus": "source",
+      "badge": "Sterne-Niveau"
     },
     {
       "placeId": "alte-sennkueche",
@@ -42,7 +44,8 @@
       "placeId": "baeckerei-haerle",
       "categoryLabel": "Traditionelle Handwerksbäckerei",
       "descriptionMd": "Hier wird noch alles von Hand gemacht – frische Semmeln, Brot und Gebäck. Auch sonntags geöffnet.",
-      "translationStatus": "source"
+      "translationStatus": "source",
+      "badge": "Unser Tipp"
     },
     {
       "placeId": "metzgerei-schmid",
@@ -66,6 +69,51 @@
       "placeId": "kur-apotheke",
       "categoryLabel": "Apotheke",
       "descriptionMd": "Apotheke im Ortszentrum von Fischen.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "stinesser-lifte",
+      "categoryLabel": "Familienskigebiet",
+      "badge": "Direkt im Ort",
+      "descriptionMd": "Kleines Skigebiet am Ortsrand – ideal für Anfänger und Familien. Mit Abendrodelbahn und gemütlichem Liftstadl.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "breitachklamm",
+      "categoryLabel": "Naturwunder",
+      "badge": "Top-Ausflug",
+      "descriptionMd": "Die tiefste und eine der beeindruckendsten Felsschluchten Mitteleuropas. Im Sommer tosende Wasserfälle, im Winter magische Eisformationen.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "nebelhorn",
+      "categoryLabel": "Bergbahn & Panorama",
+      "badge": "400er Gipfelblick",
+      "descriptionMd": "Mit der Gondel auf 2.224 m – 400 Gipfel im Blick. Nordwandsteig und Panorama-Rundweg. Im Winter herrliches Skigebiet.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "fellhorn-kanzelwand",
+      "categoryLabel": "Wandern & Skifahren",
+      "descriptionMd": "Blumenreiche Bergwiesen im Sommer, erstklassiges Skigebiet im Winter. Die Zwei-Länder-Wanderung (DE/AT) ist ein Highlight.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "sturmannshoehle",
+      "categoryLabel": "Tropfsteinhöhle",
+      "descriptionMd": "Die einzige begehbare Höhle im Allgäu – beeindruckende Tropfsteinformationen tief im Berg. Tolles Erlebnis auch für Kinder.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "soellereck",
+      "categoryLabel": "Familienberg",
+      "descriptionMd": "Der Familienberg: Sommerrodelbahn, kurze Wanderwege und ein tolles Panorama. Ideal mit Kindern.",
+      "translationStatus": "source"
+    },
+    {
+      "placeId": "christlessee",
+      "categoryLabel": "Bergsee",
+      "descriptionMd": "Kristallklarer Bergsee mit türkisem Wasser – ein Geheimtipp zum Staunen. Leichte Wanderung ab Parkplatz Trettachtal.",
       "translationStatus": "source"
     }
   ]

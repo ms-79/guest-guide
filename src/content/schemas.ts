@@ -80,8 +80,8 @@ export const placeSchema = z.object({
   mapsUrl: z.string().url().optional(),
   /** Town/area line shown under the name, e.g. 'Oberstdorf' (not localised). */
   locationLabel: z.string().optional(),
-  /** Optional emphasis badge next to the name (manually maintained). */
-  badge: z.enum(['top', 'star']).optional(),
+  /** Hide from the guide after this date (ISO, e.g. seasonal '2026-03-08'). */
+  showUntil: z.string().optional(),
   sortOrder: z.number(),
   visibility: visibilitySchema.default('guest'),
 });
@@ -97,6 +97,8 @@ export const recommendationItemSchema = z.object({
   placeId: z.string().min(1),
   /** Localised category label shown after the location, e.g. 'Regional Cuisine'. */
   categoryLabel: z.string().optional(),
+  /** Localised emphasis badge next to the name, e.g. 'Top-Empfehlung' (editable). */
+  badge: z.string().optional(),
   descriptionMd: z.string().optional(),
   tipMd: z.string().optional(),
   translationStatus: translationStatusSchema,
