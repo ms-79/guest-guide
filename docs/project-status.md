@@ -41,6 +41,15 @@
     Property (`/:slug`); **Veröffentlichen** öffnet die offenen **Content-PRs genau dieser
     Property** (GitHub-Suche `head:content/<slug>`, blendet Feature-PRs aus). Beide
     deaktiviert, solange keine Property gewählt ist.
+  - **Tab-Struktur** (Phase 2): Admin gegliedert in **Fakten · Gästemappe · Empfehlungen**.
+  - **Hero-Editor** (Phase 2) live unter *Gästemappe*: Claim/Eyebrow + Begrüßungstext
+    (+ optional Subline/Concierge-Hinweis) **pro Property & Sprache** → Pull Request
+    (`kind: 'hero'` → `content/<slug>/hero/<locale>.json`).
+- **Hero nicht mehr hartkodiert** (Phase 2): `content/properties/463607-achzeit/hero/*.json`
+  (alle 6 Sprachen, aus `translations.ts` übernommen). Frontend liest über das
+  facts-freie `src/generated/hero.ts` (`getHero(slug, locale)`, Fallback Locale → de → en);
+  `GuestGuideHero` fällt auf `translations.ts` zurück, wenn eine Property (noch) keinen
+  Hero-Content hat. `"EURE ACHZEIT BEGINNT HIER."` + Begrüßungstext sind damit pflegbar.
 - **Empfehlungen migriert:** Restaurants, Einkaufen, Ausflüge kommen aus der Content-Schicht
   (schlankes Modell, alle 6 Sprachen erhalten, pflegbare Badges, `showUntil`). Pro-Eintrag-
   Fallback auf Deutsch (PR #11). **E-Ladesäulen** optisch aufs Maps-Link-Modell umgestellt
@@ -48,7 +57,8 @@
 
 ## Offener PR
 
-- Keiner. Letzter Merge: **#13** (Admin-Header-Buttons + E-Ladesäulen-Restyle).
+- Hero-Pflege (Phase 2): Tab-Struktur, Hero-Editor, `hero/*.json`, Frontend liest
+  aus der Content-Schicht. Letzter Merge davor: **#13**.
 
 ## Nächste Schritte (priorisiert)
 

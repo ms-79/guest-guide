@@ -3,7 +3,7 @@ export const config = { runtime: 'edge' };
 import { hasValidSession } from '../../../src/server/session';
 import { createContentPr, type GithubConfig } from '../../../src/server/github';
 import { findForbiddenFactMatches } from '../../../src/content/facts-guard';
-import { placesFileSchema, recommendationsFileSchema } from '../../../src/content/schemas';
+import { heroContentSchema, placesFileSchema, recommendationsFileSchema } from '../../../src/content/schemas';
 import { propertyMeta } from '../../../src/generated/content';
 
 const env = (name: string): string => (process.env[name] || '').replace(/^\uFEFF/, '').trim();
@@ -69,6 +69,29 @@ export default async function handler(req: Request): Promise<Response> {
     files = [{ path: `content/properties/${propertySlug}/chatbot/facts.${locale}.md`, content: content.endsWith('\n') ? content : content + '\n' }];
     title = `Update chatbot facts (${locale}) for ${displayName}`;
     branch = `content/${propertySlug}-${stampNow()}-facts-${locale}`;
+  } else if (kind === 'hero') {
+    const locale = typeof payload.locale === 'string' ? payload.locale : '';
+    if (!LOCALES.includes(locale)) return json({ error: 'Ungültige Sprache.' }, 400);
+    const heroParsed = heroContentSchema.safeParse(payload.hero);
+    if (!heroParsed.success) return json({ error: 'Ungültige Hero-Daten.', detail: heroParsed.error.issues.slice(0, 3) }, 400);
+    const hero = heroParsed.data;
+    const combined = [hero.eyebrow, hero.introMd, hero.subline, hero.conciergeHint].filter(Boolean).join(' ');
+    const hits = findForbiddenFactMatches(combined);
+    if (hits.length) return json({ error: `Text enthält unzulässige Begriffe (${hits.join(', ')}).` }, 400);
+
+    const fileBody = {
+      propertySlug,
+      locale,
+      sourceLocale: 'de',
+      translationStatus: locale === 'de' ? 'source' : 'reviewed',
+      hero,
+    };
+    const content = JSON.stringify(fileBody, null, 2) + '\n';
+    if (new TextEncoder().encode(content).length > MAX_CONTENT_BYTES) return json({ error: 'Inhalt ist zu groß.' }, 400);
+
+    files = [{ path: `content/properties/${propertySlug}/hero/${locale}.json`, content }];
+    title = `Update hero copy (${locale}) for ${displayName}`;
+    branch = `content/${propertySlug}-${stampNow()}-hero-${locale}`;
   } else if (kind === 'recommendations') {
     // German-only: client sends the full places list + the German items.
     const placesParsed = placesFileSchema.safeParse({ propertySlug, places: payload.places });

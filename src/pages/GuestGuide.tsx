@@ -256,7 +256,7 @@ const GuestGuideInner = ({ property }: { property: PropertyConfig }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <GuestGuideHero guestData={guestData} onNavClick={handleNavClick} logo={property.logo} displayName={property.displayName} />
+      <GuestGuideHero guestData={guestData} onNavClick={handleNavClick} logo={property.logo} displayName={property.displayName} propertySlug={property.slug} />
       <GuestGuideStickyNav activeSection={activeSection} onNavClick={handleNavClick} />
       <GuestGuideContent guestData={guestData} activeSection={activeSection} onSectionChange={setActiveSection} property={property} />
 

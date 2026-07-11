@@ -47,6 +47,34 @@ export const translationStatusSchema = z.enum([
 export type TranslationStatus = z.infer<typeof translationStatusSchema>;
 
 // ---------------------------------------------------------------------------
+// A0. Hero / welcome block (per property + locale)
+// ---------------------------------------------------------------------------
+// The guest-guide hero (claim + welcome text). Editable in the admin, rendered
+// on the guide. The dynamic greeting ("Willkommen {guestFirstName}"), stay dates
+// and reservation data stay in Hostaway / the guest session and are NOT stored
+// here — only the property's editorial copy lives in the content repo.
+export const heroContentSchema = z.object({
+  /** Eyebrow / claim above the greeting, e.g. "Eure ACHZEIT beginnt hier." */
+  eyebrow: z.string().min(1, 'hero.eyebrow must not be empty'),
+  /** Welcome paragraph. Markdown (**bold**) is rendered inline on the guide. */
+  introMd: z.string().min(1, 'hero.introMd must not be empty'),
+  /** Optional subtle line under the intro. */
+  subline: z.string().optional(),
+  /** Optional concierge hint (points guests at the chatbot). */
+  conciergeHint: z.string().optional(),
+});
+export type HeroContent = z.infer<typeof heroContentSchema>;
+
+export const heroFileSchema = z.object({
+  propertySlug: z.string().min(1),
+  locale: localeSchema,
+  sourceLocale: localeSchema.optional(),
+  translationStatus: translationStatusSchema.optional(),
+  hero: heroContentSchema,
+});
+export type HeroFile = z.infer<typeof heroFileSchema>;
+
+// ---------------------------------------------------------------------------
 // A. Guide sections
 // ---------------------------------------------------------------------------
 export const guideSectionSchema = z.object({

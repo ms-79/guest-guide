@@ -34,6 +34,9 @@ Phase 2 (read-only) und Phase 3 (write via PR).
 content/
   properties/
     463607-achzeit/
+      hero/
+        de.json            # Hero/Begrüßung (Claim + Intro, live)
+        en.json            # … alle 6 Sprachen
       guide/
         de.json            # Gästemappen-Sektionen (vorbereitet)
         en.json
@@ -53,6 +56,24 @@ Jede Property hat **einen eigenen Ordner** (Ordnername = Property-Slug aus
 globalen Dateien vermischt.
 
 ## Content-Typen & Sichtbarkeiten
+
+### A0. Hero / Begrüßung (`hero/<locale>.json`)
+**Phase 2 (live).** Die editorischen Hero-Texte der Gästemappe — Claim/Eyebrow
+und Begrüßungstext — pro Property **und Sprache**. Felder: `eyebrow` (Pflicht),
+`introMd` (Pflicht, Markdown inline, z. B. `**fett**`), `subline` (optional),
+`conciergeHint` (optional). Datei-Rahmen: `propertySlug`, `locale`,
+`sourceLocale`, `translationStatus`.
+
+Das Frontend liest die Texte über das generierte, **facts-freie** Modul
+`src/generated/hero.ts` (`getHero(slug, locale)`, Fallback Locale → `de` → `en`).
+Fehlt für eine Property Hero-Content, fällt `GuestGuideHero` auf die eingebauten
+`translations.ts`-Strings zurück — jede Gästemappe rendert also weiter. Damit ist
+`"EURE ACHZEIT BEGINNT HIER."` und der Begrüßungstext **nicht mehr hartkodiert**,
+sondern pro Property/Sprache im Admin pflegbar.
+
+**Dynamisch (nicht hier gespeichert):** Der Gruß „Willkommen {Gastname}", die
+Aufenthaltsdaten und alle Reservierungsdaten kommen weiterhin live aus Hostaway
+bzw. der Guest-Session — nur die redaktionelle Copy liegt im Repo.
 
 ### A. Guide Sections (`guide/*.json`)
 Strukturierte Gästemappen-Sektionen. In Phase 1 **vorbereitet**, aber noch nicht
@@ -125,6 +146,8 @@ npm-Scripts:
 - `key` eindeutig innerhalb Property + Locale.
 - `visibility`, `phase`, `sortOrder`, Titel/Body nicht leer.
 - Recommendation-`placeId` referenziert einen existierenden Place.
+- Hero: `eyebrow` + `introMd` nicht leer; wenn eine Property Hero-Content hat,
+  sind `de` **und** `en` Pflicht (Source + Pflicht-Fallback).
 - Chatbot-Facts enthalten keine offensichtlich verbotenen Begriffe (Türcode,
   Door Code, PIN, Zahlungsstatus, Payment Status, Gastdaten, IBAN, Kreditkarte).
   **Nur ein zusätzlicher Guard — ersetzt keine manuelle Prüfung.**
@@ -199,12 +222,17 @@ Halluzination?). Ein automatischer Test kann später darauf aufbauen.
 
 ## Admin-Bereich (`/admin`)
 
-Unter `/admin` gibt es einen **passwortgeschützten** Content-Admin. Chatbot-Facts
-lassen sich **bearbeiten** (Phase 3 — Speichern öffnet einen Pull Request);
-Gästemappen-Sektionen und Empfehlungen sind vorerst **read-only**.
+Unter `/admin` gibt es einen **passwortgeschützten** Content-Admin, gegliedert in
+drei Tabs: **Fakten**, **Gästemappe**, **Empfehlungen**.
 
-**Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Content
-ansehen → Facts bearbeiten → „Als Pull Request speichern" → PR prüfen/mergen.
+- **Fakten:** Chatbot-Facts pro Sprache bearbeiten → Pull Request.
+- **Gästemappe:** **Hero & Begrüßung** pro Sprache bearbeiten (Claim/Eyebrow,
+  Begrüßungstext, optional Subline + Concierge-Hinweis) → Pull Request. Darunter
+  die Gästemappen-Sektionen (vorerst **read-only**).
+- **Empfehlungen:** deutschsprachiger Empfehlungs-Editor → Pull Request.
+
+**Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Tab wählen →
+bearbeiten → „Als Pull Request speichern" → PR prüfen/mergen.
 
 **Auth (Edge-safe, ohne Datenbank):**
 - Login `POST /api/admin/login` prüft den Zugangscode konstant-zeitig und setzt
@@ -224,10 +252,12 @@ ansehen → Facts bearbeiten → „Als Pull Request speichern" → PR prüfen/m
   Base-Branch. Ablauf serverseitig: neuen Branch vom Base-Branch anlegen →
   geänderte Datei schreiben → Pull Request gegen den Base-Branch öffnen →
   PR-URL zurückgeben. Danach: Vercel-Preview prüfen → mergen = live.
-- Unterstützt aktuell `kind: 'facts'` — die Chatbot-Facts-Markdown pro Sprache.
-  Der Dateipfad wird **serverseitig** aus `propertySlug` + `locale` gebaut (kein
-  Path-Traversal); Slug/Locale werden validiert und der Facts-Guard läuft erneut
-  (keine sensiblen Begriffe).
+- Unterstützt aktuell `kind: 'facts'` (Chatbot-Facts-Markdown pro Sprache),
+  `kind: 'hero'` (Hero/Begrüßung pro Sprache → `hero/<locale>.json`) und
+  `kind: 'recommendations'` (Empfehlungen, Deutsch). Der Dateipfad wird
+  **serverseitig** aus `propertySlug` + `locale` gebaut (kein Path-Traversal);
+  Slug/Locale werden validiert, Payloads gegen die Zod-Schemas geprüft und der
+  Facts-Guard läuft auch über Hero-Texte (keine sensiblen Begriffe).
 - Das **GitHub-Token bleibt serverseitig** und wird nie ans Frontend gegeben.
   Branch-Name z. B. `content/463607-achzeit-20260711-facts-de`, PR-Titel z. B.
   „Update chatbot facts (de) for ACHZEIT Family & Friends Retreat".

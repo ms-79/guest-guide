@@ -15,7 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { GuideSection, Place, RecommendationItem, Locale } from '@/content/schemas';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { HeroContent, GuideSection, Place, RecommendationItem, Locale } from '@/content/schemas';
 
 // Chatbot facts and recommendations (German) can be edited here; saving opens a
 // GitHub pull request via the server-side /api/admin/content/pr endpoint (never a
@@ -27,10 +28,16 @@ interface ContentBundle {
   slug: string;
   displayName: string;
   facts: Partial<Record<Locale, string>>;
+  hero: Partial<Record<Locale, HeroContent>>;
   guide: Partial<Record<Locale, GuideSection[]>>;
   places: Place[];
   recommendations: Partial<Record<Locale, RecommendationItem[]>>;
 }
+
+const LOCALE_LABELS: Record<Locale, string> = {
+  de: 'Deutsch', en: 'English', es: 'Español', it: 'Italiano', fr: 'Français', nl: 'Nederlands',
+};
+const ALL_LOCALES: Locale[] = ['de', 'en', 'es', 'it', 'fr', 'nl'];
 
 type AuthState = 'checking' | 'unauthenticated' | 'authenticated';
 
@@ -314,14 +321,93 @@ const RecommendationsEditor = ({ bundle }: { bundle: ContentBundle }) => {
   );
 };
 
+// Hero / welcome editor (per locale). Saving opens a PR writing hero/<locale>.json.
+// The dynamic greeting ("Willkommen {name}"), dates and reservation data stay in
+// Hostaway and are NOT edited here — only the editorial copy.
+const HeroEditorCard = ({ slug, locale, initial }: { slug: string; locale: Locale; initial?: HeroContent }) => {
+  const [eyebrow, setEyebrow] = useState(initial?.eyebrow || '');
+  const [introMd, setIntroMd] = useState(initial?.introMd || '');
+  const [subline, setSubline] = useState(initial?.subline || '');
+  const [conciergeHint, setConciergeHint] = useState(initial?.conciergeHint || '');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [pr, setPr] = useState<{ url: string; number: number } | null>(null);
+
+  const save = async () => {
+    setError(''); setPr(null);
+    if (!eyebrow.trim()) { setError('Claim / Eyebrow darf nicht leer sein.'); return; }
+    if (!introMd.trim()) { setError('Begrüßungstext darf nicht leer sein.'); return; }
+    const hero: Record<string, string> = { eyebrow: eyebrow.trim(), introMd: introMd.trim() };
+    if (subline.trim()) hero.subline = subline.trim();
+    if (conciergeHint.trim()) hero.conciergeHint = conciergeHint.trim();
+    setBusy(true);
+    try {
+      const res = await api('content/pr', { method: 'POST', body: JSON.stringify({ propertySlug: slug, kind: 'hero', locale, hero }) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) setPr({ url: data.url, number: data.number });
+      else setError(data.error || 'Pull Request konnte nicht erstellt werden.');
+    } catch { setError('Netzwerkfehler.'); } finally { setBusy(false); }
+  };
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <Badge variant="outline" className="uppercase">{locale}</Badge>
+        <span className="text-sm font-medium">{LOCALE_LABELS[locale]}</span>
+        {!initial && <Badge variant="secondary">neu</Badge>}
+      </div>
+      {pr && (
+        <p className="text-sm">✅ Pull Request erstellt:{' '}
+          <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">#{pr.number}</a>{' '}— nach Prüfung der Preview mergen.</p>
+      )}
+      <div className="space-y-1"><Label>Claim / Eyebrow</Label>
+        <Input value={eyebrow} onChange={(e) => setEyebrow(e.target.value)} placeholder="Eure ACHZEIT beginnt hier." /></div>
+      <div className="space-y-1"><Label>Begrüßungstext</Label>
+        <Textarea rows={3} value={introMd} onChange={(e) => setIntroMd(e.target.value)} placeholder="Schön, dass ihr da seid …" />
+        <p className="text-xs text-muted-foreground">Markdown erlaubt (**fett**).</p></div>
+      <div className="space-y-1"><Label>Subline (optional)</Label>
+        <Input value={subline} onChange={(e) => setSubline(e.target.value)} /></div>
+      <div className="space-y-1"><Label>Concierge-Hinweis (optional)</Label>
+        <Textarea rows={2} value={conciergeHint} onChange={(e) => setConciergeHint(e.target.value)} placeholder="Habt ihr Fragen? Unser digitaler Concierge …" /></div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button size="sm" onClick={save} disabled={busy}>{busy ? 'Erstelle PR…' : 'Als Pull Request speichern'}</Button>
+    </Card>
+  );
+};
+
+const HeroEditor = ({ bundle }: { bundle: ContentBundle }) => {
+  // Always offer the required de + en, plus any other locale that already has copy.
+  const present = Object.keys(bundle.hero) as Locale[];
+  const locales = ALL_LOCALES.filter((l) => l === 'de' || l === 'en' || present.includes(l));
+  return (
+    <section className="space-y-3">
+      <div>
+        <h2 className="text-base font-semibold">Hero &amp; Begrüßung</h2>
+        <p className="text-xs text-muted-foreground">Claim und Begrüßungstext pro Sprache. Der Gastname und die Aufenthaltsdaten kommen weiterhin live aus Hostaway.</p>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {locales.map((loc) => (
+          <HeroEditorCard key={loc} slug={bundle.slug} locale={loc} initial={bundle.hero[loc]} />
+        ))}
+      </div>
+    </section>
+  );
+};
+
 const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
   const factLocales = Object.keys(bundle.facts) as Locale[];
   const guideLocales = Object.keys(bundle.guide) as Locale[];
 
   return (
-    <div className="space-y-8">
-      {/* Chatbot facts */}
-      <section className="space-y-3">
+    <Tabs defaultValue="facts" className="space-y-6">
+      <TabsList className="w-full justify-start overflow-x-auto">
+        <TabsTrigger value="facts">Fakten</TabsTrigger>
+        <TabsTrigger value="guide">Gästemappe</TabsTrigger>
+        <TabsTrigger value="recommendations">Empfehlungen</TabsTrigger>
+      </TabsList>
+
+      {/* Fakten — chatbot facts (central knowledge base) */}
+      <TabsContent value="facts" className="space-y-3">
         <h2 className="text-base font-semibold">Chatbot-Facts</h2>
         {factLocales.length === 0 && <p className="text-sm text-muted-foreground">Keine Facts hinterlegt.</p>}
         <div className="grid gap-4 md:grid-cols-2">
@@ -329,42 +415,48 @@ const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
             <FactEditorCard key={loc} slug={bundle.slug} locale={loc} initial={bundle.facts[loc] || ''} />
           ))}
         </div>
-      </section>
+      </TabsContent>
 
-      {/* Guide sections */}
-      <section className="space-y-3">
-        <h2 className="text-base font-semibold">Gästemappen-Sektionen</h2>
-        {guideLocales.length === 0 && <p className="text-sm text-muted-foreground">Keine Sektionen hinterlegt.</p>}
-        {guideLocales.map((loc) => (
-          <Card key={loc} className="p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <Badge variant="outline" className="uppercase">{loc}</Badge>
-              <span className="text-xs text-muted-foreground">guide/{loc}.json</span>
-            </div>
-            <div className="space-y-3">
-              {(bundle.guide[loc] || []).map((s) => (
-                <div key={s.key} className="rounded-md border border-border p-3">
-                  <div className="mb-1 flex flex-wrap items-center gap-2">
-                    <span className="font-medium">{s.title}</span>
-                    <code className="text-xs text-muted-foreground">{s.key}</code>
-                    <VisibilityBadge visibility={s.visibility} />
-                    <Badge variant="outline">{s.phase}</Badge>
-                    <span className="text-xs text-muted-foreground">#{s.sortOrder}</span>
-                    <Badge variant="outline">{s.translationStatus}</Badge>
-                  </div>
-                  <div className="prose prose-sm max-w-none dark:prose-invert">
-                    <ReactMarkdown>{s.bodyMd}</ReactMarkdown>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </section>
+      {/* Gästemappe — hero (editable) + guide sections (read-only for now) */}
+      <TabsContent value="guide" className="space-y-8">
+        <HeroEditor bundle={bundle} />
 
-      {/* Recommendations — editable (German) */}
-      <RecommendationsEditor bundle={bundle} />
-    </div>
+        <section className="space-y-3">
+          <h2 className="text-base font-semibold">Gästemappen-Sektionen</h2>
+          {guideLocales.length === 0 && <p className="text-sm text-muted-foreground">Keine Sektionen hinterlegt.</p>}
+          {guideLocales.map((loc) => (
+            <Card key={loc} className="p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <Badge variant="outline" className="uppercase">{loc}</Badge>
+                <span className="text-xs text-muted-foreground">guide/{loc}.json</span>
+              </div>
+              <div className="space-y-3">
+                {(bundle.guide[loc] || []).map((s) => (
+                  <div key={s.key} className="rounded-md border border-border p-3">
+                    <div className="mb-1 flex flex-wrap items-center gap-2">
+                      <span className="font-medium">{s.title}</span>
+                      <code className="text-xs text-muted-foreground">{s.key}</code>
+                      <VisibilityBadge visibility={s.visibility} />
+                      <Badge variant="outline">{s.phase}</Badge>
+                      <span className="text-xs text-muted-foreground">#{s.sortOrder}</span>
+                      <Badge variant="outline">{s.translationStatus}</Badge>
+                    </div>
+                    <div className="prose prose-sm max-w-none dark:prose-invert">
+                      <ReactMarkdown>{s.bodyMd}</ReactMarkdown>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </section>
+      </TabsContent>
+
+      {/* Empfehlungen — editable (German) */}
+      <TabsContent value="recommendations">
+        <RecommendationsEditor bundle={bundle} />
+      </TabsContent>
+    </Tabs>
   );
 };
 

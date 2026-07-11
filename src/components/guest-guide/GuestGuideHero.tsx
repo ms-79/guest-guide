@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 import {
   Key, Wifi, Baby, Flame, Trash2, AlertTriangle,
   UtensilsCrossed, Mountain, Zap, ShoppingCart, ExternalLink,
 } from 'lucide-react';
 import iconAwpass from '@/assets/icon-awpass.svg';
 import type { GuestData } from '@/pages/GuestGuide';
+import { getHero } from '@/generated/hero';
 import GuestGuideLanguageToggle from './GuestGuideLanguageToggle';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
 import { translations } from './translations';
@@ -14,12 +16,25 @@ interface Props {
   onNavClick?: (section: string) => void;
   logo: string;
   displayName: string;
+  propertySlug: string;
 }
 
-const GuestGuideHero = ({ guestData, onNavClick, logo, displayName }: Props) => {
+// Render editable hero copy inline (so **bold** works) without ReactMarkdown's
+// wrapping <p> — the surrounding <motion.p> already carries the styling.
+const inlineMd = { p: ({ children }: { children?: React.ReactNode }) => <>{children}</> };
+
+const GuestGuideHero = ({ guestData, onNavClick, logo, displayName, propertySlug }: Props) => {
   const { guestName, checkin, checkout } = guestData;
   const { locale } = useGuestGuideLocale();
   const t = translations;
+
+  // Editorial hero copy comes from the Git-backed content layer (per property +
+  // locale, editable in /admin). Properties without hero content fall back to the
+  // built-in ACHZEIT translations so every guide keeps rendering.
+  const hero = getHero(propertySlug, locale);
+  const eyebrow = hero?.eyebrow ?? t.heroTagline[locale];
+  const introMd = hero?.introMd ?? t.heroIntro[locale];
+  const conciergeHint = hero?.conciergeHint ?? t.heroConciergeHint[locale];
 
   const quickActions = [
     { icon: Key, label: t.navZugang[locale], target: 'zugang' },
@@ -78,7 +93,7 @@ const GuestGuideHero = ({ guestData, onNavClick, logo, displayName }: Props) => 
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          {t.heroTagline[locale]}
+          {eyebrow}
         </motion.p>
 
 
@@ -102,18 +117,32 @@ const GuestGuideHero = ({ guestData, onNavClick, logo, displayName }: Props) => 
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          {t.heroIntro[locale]}
+          <ReactMarkdown components={inlineMd}>{introMd}</ReactMarkdown>
         </motion.p>
 
+        {/* Optional subline under the intro */}
+        {hero?.subline && (
+          <motion.p
+            className="text-alpine-snow/50 max-w-xl mx-auto text-sm leading-relaxed mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.42 }}
+          >
+            <ReactMarkdown components={inlineMd}>{hero.subline}</ReactMarkdown>
+          </motion.p>
+        )}
+
         {/* Concierge hint – subtle, no button */}
-        <motion.p
-          className="text-alpine-snow/40 max-w-md mx-auto text-xs md:text-sm leading-relaxed mb-12 italic"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-        >
-          {t.heroConciergeHint[locale]}
-        </motion.p>
+        {conciergeHint && (
+          <motion.p
+            className="text-alpine-snow/40 max-w-md mx-auto text-xs md:text-sm leading-relaxed mb-12 italic"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+          >
+            {conciergeHint}
+          </motion.p>
+        )}
 
         {/* Allgäu Walser Pass */}
         {guestData.awpassLink && (

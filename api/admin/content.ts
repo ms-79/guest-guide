@@ -3,6 +3,7 @@ export const config = { runtime: 'edge' };
 import { hasValidSession } from '../../src/server/session';
 import {
   chatbotFacts,
+  heroContent,
   guideSections,
   places,
   recommendations,
@@ -49,6 +50,7 @@ export default async function handler(req: Request): Promise<Response> {
     slug,
     displayName: propertyMeta[slug].displayName,
     facts: chatbotFacts[slug] ?? {},
+    hero: heroContent[slug] ?? {},
     guide: guideSections[slug] ?? {},
     places: places[slug] ?? [],
     recommendations: recommendations[slug] ?? {},
