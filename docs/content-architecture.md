@@ -185,14 +185,14 @@ Vor und nach einer Änderung an den Facts jede Frage im Chatbot stellen und die
 Antworten manuell vergleichen (bleiben Fakten korrekt, property-spezifisch, ohne
 Halluzination?). Ein automatischer Test kann später darauf aufbauen.
 
-## Admin-Bereich (Phase 2 — Read-only)
+## Admin-Bereich (`/admin`)
 
-Unter `/admin` gibt es eine **passwortgeschützte Nur-Lese-Ansicht** des
-Property-Contents. Sie schreibt nichts — Bearbeiten + Pull-Request-Erstellung
-folgen in Phase 3.
+Unter `/admin` gibt es einen **passwortgeschützten** Content-Admin. Chatbot-Facts
+lassen sich **bearbeiten** (Phase 3 — Speichern öffnet einen Pull Request);
+Gästemappen-Sektionen und Empfehlungen sind vorerst **read-only**.
 
-**Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Chatbot-Facts,
-Gästemappen-Sektionen und Empfehlungen ansehen → Abmelden.
+**Ablauf:** `/admin` → Login mit Zugangscode → Property auswählen → Content
+ansehen → Facts bearbeiten → „Als Pull Request speichern" → PR prüfen/mergen.
 
 **Auth (Edge-safe, ohne Datenbank):**
 - Login `POST /api/admin/login` prüft den Zugangscode konstant-zeitig und setzt
@@ -203,9 +203,22 @@ Gästemappen-Sektionen und Empfehlungen ansehen → Abmelden.
 - `GET /api/admin/content` (Property-Liste) und
   `GET /api/admin/content?propertySlug=…` (Content-Bundle) liefern **nur mit
   gültiger Session** Daten, sonst `401`. Der Content stammt aus dem generierten
-  Modul (kein Dateisystemzugriff, `internal`-Inhalte bereits entfernt). Es gibt
-  **keinen Schreibpfad und keine GitHub-Logik** im Frontend.
+  Modul (kein Dateisystemzugriff, `internal`-Inhalte bereits entfernt).
 - Ein einfacher In-Memory-Limiter bremst Brute-Force auf den Zugangscode.
+
+### Bearbeiten via Pull Request (Phase 3)
+
+- `POST /api/admin/content/pr` (session-geschützt) schreibt **nie** direkt in den
+  Base-Branch. Ablauf serverseitig: neuen Branch vom Base-Branch anlegen →
+  geänderte Datei schreiben → Pull Request gegen den Base-Branch öffnen →
+  PR-URL zurückgeben. Danach: Vercel-Preview prüfen → mergen = live.
+- Unterstützt aktuell `kind: 'facts'` — die Chatbot-Facts-Markdown pro Sprache.
+  Der Dateipfad wird **serverseitig** aus `propertySlug` + `locale` gebaut (kein
+  Path-Traversal); Slug/Locale werden validiert und der Facts-Guard läuft erneut
+  (keine sensiblen Begriffe).
+- Das **GitHub-Token bleibt serverseitig** und wird nie ans Frontend gegeben.
+  Branch-Name z. B. `content/463607-achzeit-20260711-facts-de`, PR-Titel z. B.
+  „Update chatbot facts (de) for ACHZEIT Family & Friends Retreat".
 
 **Benötigte Environment-Variablen (nur serverseitig):**
 
@@ -213,9 +226,14 @@ Gästemappen-Sektionen und Empfehlungen ansehen → Abmelden.
 |---|---|
 | `ADMIN_PASSCODE` | Zugangscode für den Admin-Login. |
 | `ADMIN_SESSION_SECRET` | Zufälliges Secret zum Signieren des Session-Cookies. |
+| `GITHUB_TOKEN` | Token mit Schreibrechten (Contents + Pull Requests) auf dem Repo — für die PR-Erstellung. |
+| `GITHUB_OWNER` | Repo-Owner (Default `ms-79`). |
+| `GITHUB_REPO` | Repo-Name (Default `guest-guide`). |
+| `GITHUB_BASE_BRANCH` | Ziel-Branch der PRs (Default `master`). |
 
-Ohne diese beiden Variablen antwortet der Admin-Login mit „nicht konfiguriert".
-Beide gehören in die Vercel-Projekt-Env, niemals ins Frontend-Bundle oder ins Repo.
+Ohne `ADMIN_*` antwortet der Login mit „nicht konfiguriert"; ohne `GITHUB_TOKEN`
+schlägt nur das Speichern per PR fehl (Lesen/Anmelden geht weiter). Alle gehören
+in die Vercel-Projekt-Env, niemals ins Frontend-Bundle oder ins Repo.
 
 ## Für später vorbereitet (nicht Teil von Phase 1)
 

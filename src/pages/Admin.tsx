@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -15,8 +16,9 @@ import {
 } from '@/components/ui/select';
 import type { GuideSection, Place, RecommendationItem, Locale } from '@/content/schemas';
 
-// Phase 2 is read-only: this page never writes content. Editing + PR creation
-// arrives in Phase 3 via a server-side /api/admin/content/pr endpoint.
+// Phase 3: chatbot facts can be edited here; saving opens a GitHub pull request
+// via the server-side /api/admin/content/pr endpoint (never a direct commit to
+// the base branch). Guide sections & recommendations remain read-only for now.
 
 type PropertyListItem = { slug: string; displayName: string };
 
@@ -97,6 +99,94 @@ const VisibilityBadge = ({ visibility }: { visibility: string }) => (
   <Badge variant={visibility === 'public' ? 'default' : 'secondary'}>{visibility}</Badge>
 );
 
+// Editable chatbot-facts card: view rendered markdown, or edit and open a PR.
+const FactEditorCard = ({ slug, locale, initial }: { slug: string; locale: string; initial: string }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [pr, setPr] = useState<{ url: string; number: number } | null>(null);
+
+  const cancel = () => {
+    setDraft(initial);
+    setEditing(false);
+    setError('');
+  };
+
+  const save = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      const res = await api('content/pr', {
+        method: 'POST',
+        body: JSON.stringify({ propertySlug: slug, kind: 'facts', locale, content: draft }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        setPr({ url: data.url, number: data.number });
+        setEditing(false);
+      } else {
+        setError(data.error || 'Pull Request konnte nicht erstellt werden.');
+      }
+    } catch {
+      setError('Netzwerkfehler.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Card className="p-4">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="uppercase">{locale}</Badge>
+          <span className="text-xs text-muted-foreground">facts.{locale}.md</span>
+        </div>
+        {!editing && (
+          <Button variant="outline" size="sm" onClick={() => { setEditing(true); setPr(null); }}>
+            Bearbeiten
+          </Button>
+        )}
+      </div>
+
+      {pr && (
+        <p className="mb-3 text-sm">
+          ✅ Pull Request erstellt:{' '}
+          <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+            #{pr.number}
+          </a>{' '}
+          — nach Prüfung der Vercel-Preview mergen, dann geht die Änderung live.
+        </p>
+      )}
+
+      {editing ? (
+        <div className="space-y-3">
+          <Textarea
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            rows={18}
+            className="font-mono text-xs"
+            spellCheck={false}
+          />
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <div className="flex gap-2">
+            <Button size="sm" onClick={save} disabled={busy || !draft.trim() || draft === initial}>
+              {busy ? 'Erstelle PR…' : 'Als Pull Request speichern'}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={cancel} disabled={busy}>
+              Abbrechen
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="prose prose-sm max-w-none dark:prose-invert">
+          <ReactMarkdown>{initial}</ReactMarkdown>
+        </div>
+      )}
+    </Card>
+  );
+};
+
 const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
   const factLocales = Object.keys(bundle.facts) as Locale[];
   const guideLocales = Object.keys(bundle.guide) as Locale[];
@@ -110,15 +200,7 @@ const ContentView = ({ bundle }: { bundle: ContentBundle }) => {
         {factLocales.length === 0 && <p className="text-sm text-muted-foreground">Keine Facts hinterlegt.</p>}
         <div className="grid gap-4 md:grid-cols-2">
           {factLocales.map((loc) => (
-            <Card key={loc} className="p-4">
-              <div className="mb-2 flex items-center gap-2">
-                <Badge variant="outline" className="uppercase">{loc}</Badge>
-                <span className="text-xs text-muted-foreground">facts.{loc}.md</span>
-              </div>
-              <div className="prose prose-sm max-w-none dark:prose-invert">
-                <ReactMarkdown>{bundle.facts[loc] || ''}</ReactMarkdown>
-              </div>
-            </Card>
+            <FactEditorCard key={loc} slug={bundle.slug} locale={loc} initial={bundle.facts[loc] || ''} />
           ))}
         </div>
       </section>

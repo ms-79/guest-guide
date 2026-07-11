@@ -105,24 +105,7 @@ export const recommendationsFileSchema = z.object({
 export type RecommendationsFile = z.infer<typeof recommendationsFileSchema>;
 
 // ---------------------------------------------------------------------------
-// B. Chatbot facts guard
+// B. Chatbot facts guard — defined in a zod-free module so Edge routes can
+// import it without bundling zod. Re-exported here for existing consumers.
 // ---------------------------------------------------------------------------
-// Chatbot facts are free-form Markdown (property-specific, locale-specific).
-// They must never contain sensitive/booking-specific data — those come from
-// Hostaway at request time, never from the content repo. This guard is a
-// *defence in depth* check, not a replacement for human review.
-export const FORBIDDEN_FACT_PATTERNS: { label: string; re: RegExp }[] = [
-  { label: 'Türcode', re: /\bt(?:ü|ue)rcode\b/i },
-  { label: 'door code', re: /\bdoor\s?code\b/i },
-  { label: 'PIN', re: /\bpin\b/i },
-  { label: 'Zahlungsstatus', re: /\bzahlungsstatus\b/i },
-  { label: 'payment status', re: /\bpayment\s?status\b/i },
-  { label: 'Gastdaten', re: /\bgastdaten\b/i },
-  { label: 'IBAN', re: /\biban\b/i },
-  { label: 'Kreditkarte', re: /\bkreditkarte\b/i },
-];
-
-/** Returns the labels of any forbidden patterns found in a facts document. */
-export function findForbiddenFactMatches(markdown: string): string[] {
-  return FORBIDDEN_FACT_PATTERNS.filter((p) => p.re.test(markdown)).map((p) => p.label);
-}
+export { FORBIDDEN_FACT_PATTERNS, findForbiddenFactMatches } from './facts-guard';
