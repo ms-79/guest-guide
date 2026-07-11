@@ -295,7 +295,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
 
             <div className="space-y-4">
               {getRecommendations(property.slug, locale, 'restaurant').map((r) => (
-                <a key={r.id} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a key={r.id} href={r.mapsUrl} target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h4 className="font-display text-base text-foreground">{r.name}</h4>
@@ -333,7 +333,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             <p className="text-sm">{t.shoppingIntro[locale]}</p>
 
             <div className="space-y-4">
-              <a href="https://maps.google.com/?q=EDEKA+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=EDEKA+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">EDEKA</h4>
@@ -345,7 +345,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 2 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=Bäckerei+Härle+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=Bäckerei+Härle+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Bäckerei Härle <span className="text-xs font-medium text-alpine-wood">{t.ourTip[locale]}</span></h4>
@@ -357,7 +357,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=Metzgerei+Hubert+Schmid+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=Metzgerei+Hubert+Schmid+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Metzgerei Hubert Schmid</h4>
@@ -369,7 +369,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 12 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 2 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=Feneberg+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=Feneberg+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Feneberg</h4>
@@ -381,7 +381,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 9 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=V-Markt+Fischen+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=V-Markt+Fischen+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">V-Markt</h4>
@@ -393,7 +393,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 5 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=Kur-Apotheke+Färberhaus+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=Kur-Apotheke+Färberhaus+Fischen+im+Allgäu" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Kur-Apotheke Färberhaus</h4>
@@ -427,7 +427,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
               <GuestGuideEvents />
 
               {new Date() <= new Date('2026-03-08T23:59:59') && (
-                <a href="https://www.stinesser-lifte.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://www.stinesser-lifte.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h4 className="font-display text-base text-foreground">Stinesser Lifte</h4>
@@ -442,7 +442,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 </a>
               )}
 
-              <a href="https://www.breitachklamm.com/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://www.breitachklamm.com/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Breitachklamm</h4>
@@ -456,7 +456,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 12 Min.</span></div>
               </a>
 
-              <a href="https://www.ok-bergbahnen.com/nebelhorn" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://www.ok-bergbahnen.com/nebelhorn" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-display text-base text-foreground">Nebelhorn (2.224 m)</h4>
@@ -470,7 +470,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 13 Min.</span></div>
               </a>
 
-              <a href="https://www.ok-bergbahnen.com/fellhorn-kanzelwand" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://www.ok-bergbahnen.com/fellhorn-kanzelwand" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div>
                   <h4 className="font-display text-base text-foreground">Fellhorn / Kanzelwand</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Wandern & Skifahren' : 'Hiking & Skiing'}</p>
@@ -479,7 +479,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 18 Min.</span></div>
               </a>
 
-              <a href="https://www.sturmannshoehle.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://www.sturmannshoehle.de/" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div>
                   <h4 className="font-display text-base text-foreground">Sturmannshöhle</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">Obermaiselstein · {locale === 'de' ? 'Tropfsteinhöhle' : 'Stalactite Cave'}</p>
@@ -488,7 +488,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 7 Min.</span></div>
               </a>
 
-              <a href="https://www.ok-bergbahnen.com/soellereck" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://www.ok-bergbahnen.com/soellereck" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div>
                   <h4 className="font-display text-base text-foreground">Söllereck</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">Oberstdorf · {locale === 'de' ? 'Familienberg' : 'Family Mountain'}</p>
@@ -497,7 +497,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                 <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 9 Min.</span></div>
               </a>
 
-              <a href="https://maps.google.com/?q=Christlessee+Trettachtal" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="https://maps.google.com/?q=Christlessee+Trettachtal" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <div>
                   <h4 className="font-display text-base text-foreground">Christlessee</h4>
                   <p className="text-xs text-muted-foreground mt-0.5">Trettachtal · {locale === 'de' ? 'Bergsee' : 'Mountain Lake'}</p>
@@ -527,21 +527,21 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             <div className="space-y-4">
               <div className="space-y-3">
                 <h4 className="font-display text-base text-foreground">{t.fastestStations[locale]}</h4>
-                <a href="https://maps.google.com/?q=Trigema+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=Trigema+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm"><strong className="text-foreground">150 kW {locale === 'de' ? 'Schnelllader' : 'Fast Charger'}</strong> – Trigema, Dorfstr. 25 (EnBW)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
                   </div>
                   <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 4 Min.</span></div>
                 </a>
-                <a href="https://maps.google.com/?q=McDonald's+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=McDonald's+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm"><strong className="text-foreground">50 kW</strong> – McDonald's, An der Breitach 1 (AllgäuStrom)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
                   </div>
                   <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 6 Min.</span></div>
                 </a>
-                <a href="https://maps.google.com/?q=Parkplatz+P2+Sonthofener+Str+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=Parkplatz+P2+Sonthofener+Str+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm"><strong className="text-foreground">22 kW</strong> – Parkplatz P2 Oberstdorf, Sonthofener Str. 20 (AllgäuStrom)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
@@ -552,21 +552,21 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
 
               <div className="space-y-3">
                 <h4 className="font-display text-base text-foreground">{t.nearestStations[locale]}</h4>
-                <a href="https://maps.google.com/?q=Kurhaus+Fiskina+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=Kurhaus+Fiskina+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm">Kurhaus Fiskina, Bahnhofstr. 3 – 22 kW (New Motion)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
                   </div>
                   <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
                 </a>
-                <a href="https://maps.google.com/?q=Parkplatz+Fischen-Au+Illerstr+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=Parkplatz+Fischen-Au+Illerstr+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm">Parkplatz Fischen-Au, Illerstr. 11 – 11–22 kW (New Motion)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
                   </div>
                   <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 4 Min.</span></div>
                 </a>
-                <a href="https://maps.google.com/?q=Haus+des+Gastes+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+                <a href="https://maps.google.com/?q=Haus+des+Gastes+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm">Haus des Gastes, Dorfstr. 19 – 11–22 kW (New Motion)</p>
                     <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
@@ -685,7 +685,7 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
                   <p className="text-lg font-bold text-foreground">112</p>
                 </div>
               </a>
-              <a href="tel:116117" className="flex items-center gap-3 bg-muted rounded-lg p-4 hover:bg-accent transition-colors">
+              <a href="tel:116117" className="flex items-center gap-3 bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
                 <Phone size={18} className="text-alpine-wood" />
                 <div>
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">{t.medicalService[locale]}</p>
