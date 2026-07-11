@@ -3,7 +3,7 @@ import {
 } from '@/components/ui/accordion';
 import {
   Key, Wifi, Baby, Flame, Trash2, AlertTriangle, Car, Zap,
-  UtensilsCrossed, Phone, MapPin, Star, Mountain, ExternalLink,
+  UtensilsCrossed, Phone, MapPin, Star, Mountain,
   ShoppingCart, HelpCircle, Info,
 } from 'lucide-react';
 import type { GuestData } from '@/pages/GuestGuide';
@@ -24,18 +24,6 @@ function formatTime(time: string, locale: GuestGuideLocale): string {
   if (locale === 'de') return `${time} Uhr`;
   return time; // es, it, nl
 }
-
-const WalkingIcon = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7" />
-  </svg>
-);
-
-const CarIcon = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
-  </svg>
-);
 
 // Shared card list for recommendations (restaurants, shopping, excursions …).
 // Data comes from the Git-backed content layer (getRecommendations); the card
@@ -390,50 +378,32 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
               <div className="space-y-3">
                 <h4 className="font-display text-base text-foreground">{t.fastestStations[locale]}</h4>
                 <a href="https://maps.google.com/?q=Trigema+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm"><strong className="text-foreground">150 kW {locale === 'de' ? 'Schnelllader' : 'Fast Charger'}</strong> – Trigema, Dorfstr. 25 (EnBW)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 4 Min.</span></div>
+                  <p className="text-sm"><strong className="text-foreground">150 kW {locale === 'de' ? 'Schnelllader' : 'Fast Charger'}</strong> – Trigema, Dorfstr. 25 (EnBW)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
                 <a href="https://maps.google.com/?q=McDonald's+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm"><strong className="text-foreground">50 kW</strong> – McDonald's, An der Breitach 1 (AllgäuStrom)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 6 Min.</span></div>
+                  <p className="text-sm"><strong className="text-foreground">50 kW</strong> – McDonald's, An der Breitach 1 (AllgäuStrom)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
                 <a href="https://maps.google.com/?q=Parkplatz+P2+Sonthofener+Str+Oberstdorf" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm"><strong className="text-foreground">22 kW</strong> – Parkplatz P2 Oberstdorf, Sonthofener Str. 20 (AllgäuStrom)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 8 Min.</span></div>
+                  <p className="text-sm"><strong className="text-foreground">22 kW</strong> – Parkplatz P2 Oberstdorf, Sonthofener Str. 20 (AllgäuStrom)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
               </div>
 
               <div className="space-y-3">
                 <h4 className="font-display text-base text-foreground">{t.nearestStations[locale]}</h4>
                 <a href="https://maps.google.com/?q=Kurhaus+Fiskina+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm">Kurhaus Fiskina, Bahnhofstr. 3 – 22 kW (New Motion)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2 gap-3"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><WalkingIcon size={14} /> 11 Min.</span><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 3 Min.</span></div>
+                  <p className="text-sm">Kurhaus Fiskina, Bahnhofstr. 3 – 22 kW (New Motion)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
                 <a href="https://maps.google.com/?q=Parkplatz+Fischen-Au+Illerstr+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm">Parkplatz Fischen-Au, Illerstr. 11 – 11–22 kW (New Motion)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 4 Min.</span></div>
+                  <p className="text-sm">Parkplatz Fischen-Au, Illerstr. 11 – 11–22 kW (New Motion)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
                 <a href="https://maps.google.com/?q=Haus+des+Gastes+Langenwang+Fischen" target="_blank" rel="noopener noreferrer" className="block bg-muted rounded-lg p-4 hover:brightness-95 hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm">Haus des Gastes, Dorfstr. 19 – 11–22 kW (New Motion)</p>
-                    <ExternalLink size={14} className="text-alpine-wood shrink-0 mt-0.5" />
-                  </div>
-                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><CarIcon size={14} /> 4 Min.</span></div>
+                  <p className="text-sm">Haus des Gastes, Dorfstr. 19 – 11–22 kW (New Motion)</p>
+                  <div className="flex justify-end mt-2"><span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-semibold"><MapPin size={14} /> Google Maps</span></div>
                 </a>
               </div>
             </div>
