@@ -44,6 +44,71 @@ type AuthState = 'checking' | 'unauthenticated' | 'authenticated';
 const api = (path: string, init?: RequestInit) =>
   fetch(`/api/admin/${path}`, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } });
 
+// AI editorial helper: returns a draft (never publishes). The caller previews
+// and explicitly accepts. `mode`: 'create' (from facts) | 'improve' | 'shorten' …
+type AiMode = 'create' | 'improve' | 'shorten' | 'lengthen';
+async function aiGenerate(body: {
+  propertySlug: string; locale: string; mode: AiMode; target: string; currentText?: string;
+}): Promise<{ text?: string; error?: string }> {
+  try {
+    const res = await api('ai/generate', { method: 'POST', body: JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.text) return { text: data.text };
+    return { error: data.error || 'KI-Vorschlag fehlgeschlagen.' };
+  } catch {
+    return { error: 'Netzwerkfehler.' };
+  }
+}
+
+// Reusable "Text aus Fakten erstellen" / "Mit KI verbessern" control. Shows a
+// draft preview with Übernehmen / Erneut generieren / Abbrechen. Never
+// overwrites the field without an explicit Übernehmen click.
+const AiAssist = ({
+  slug, locale, target, currentText, onAccept,
+}: {
+  slug: string; locale: Locale; target: string; currentText: string; onAccept: (text: string) => void;
+}) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [draft, setDraft] = useState<string | null>(null);
+  const [mode, setMode] = useState<AiMode>('create');
+
+  const run = async (m: AiMode) => {
+    setBusy(true); setError(''); setMode(m);
+    const r = await aiGenerate({ propertySlug: slug, locale, mode: m, target, currentText });
+    if (r.text) setDraft(r.text); else setError(r.error || 'Fehlgeschlagen.');
+    setBusy(false);
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" size="sm" variant="secondary" onClick={() => run('create')} disabled={busy}>
+          {busy && mode === 'create' ? 'Erzeuge…' : '✨ Text aus Fakten erstellen'}
+        </Button>
+        <Button type="button" size="sm" variant="outline" onClick={() => run('improve')} disabled={busy || !currentText.trim()}>
+          {busy && mode === 'improve' ? 'Verbessere…' : 'Mit KI verbessern'}
+        </Button>
+        <Button type="button" size="sm" variant="ghost" onClick={() => run('shorten')} disabled={busy || !currentText.trim()}>
+          Kürzen
+        </Button>
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      {draft !== null && (
+        <div className="rounded-md border border-border bg-muted/40 p-3 space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">KI-Vorschlag (Vorschau) — nichts wird ohne „Übernehmen" gespeichert:</p>
+          <div className="prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{draft}</ReactMarkdown></div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" size="sm" onClick={() => { onAccept(draft); setDraft(null); }}>Übernehmen</Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => run(mode)} disabled={busy}>Erneut generieren</Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => setDraft(null)}>Abbrechen</Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Where content goes live: merging an open content PR triggers the Vercel deploy.
 // The admin write-flow always branches as `content/<slug>-…` (see api/admin/content/pr.ts),
 // so a head-branch prefix search scopes the pulls list to this property's CONTENT PRs
@@ -364,7 +429,8 @@ const HeroEditorCard = ({ slug, locale, initial }: { slug: string; locale: Local
         <Input value={eyebrow} onChange={(e) => setEyebrow(e.target.value)} placeholder="Eure ACHZEIT beginnt hier." /></div>
       <div className="space-y-1"><Label>Begrüßungstext</Label>
         <Textarea rows={3} value={introMd} onChange={(e) => setIntroMd(e.target.value)} placeholder="Schön, dass ihr da seid …" />
-        <p className="text-xs text-muted-foreground">Markdown erlaubt (**fett**).</p></div>
+        <p className="text-xs text-muted-foreground">Markdown erlaubt (**fett**).</p>
+        <AiAssist slug={slug} locale={locale} target="Begrüßungs-/Willkommenstext (Hero) der Gästemappe" currentText={introMd} onAccept={setIntroMd} /></div>
       <div className="space-y-1"><Label>Subline (optional)</Label>
         <Input value={subline} onChange={(e) => setSubline(e.target.value)} /></div>
       <div className="space-y-1"><Label>Concierge-Hinweis (optional)</Label>

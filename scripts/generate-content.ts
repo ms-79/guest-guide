@@ -34,6 +34,7 @@ import {
   type Place,
   type RecommendationItem,
 } from '../src/content/schemas';
+import { findUnknownPlaceholders } from '../src/content/placeholders';
 import { getProperty } from '../src/config/properties';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -118,7 +119,10 @@ function loadProperty(slug: string): PropertyContent | null {
       }
       if (parsed.data.propertySlug !== slug) err(`[${slug}] hero/${locale}.json propertySlug "${parsed.data.propertySlug}" does not match folder`);
       if (parsed.data.locale !== locale) err(`[${slug}] hero/${locale}.json locale "${parsed.data.locale}" does not match filename`);
-      content.hero[locale] = parsed.data.hero;
+      const h = parsed.data.hero;
+      const badPh = findUnknownPlaceholders([h.eyebrow, h.introMd, h.subline, h.conciergeHint].filter(Boolean).join(' '));
+      if (badPh.length) err(`[${slug}] hero/${locale}.json uses unknown placeholder(s): ${badPh.map((t) => `{{${t}}}`).join(', ')}`);
+      content.hero[locale] = h;
     }
     // If a property publishes hero copy at all, de + en are required (de is the
     // source of truth, en the mandatory fallback for every other locale).
@@ -145,6 +149,8 @@ function loadProperty(slug: string): PropertyContent | null {
       for (const s of data.sections) {
         if (seen.has(s.key)) err(`[${slug}] guide/${locale}.json duplicate section key "${s.key}"`);
         seen.add(s.key);
+        const badPh = findUnknownPlaceholders(s.bodyMd);
+        if (badPh.length) err(`[${slug}] guide/${locale}.json section "${s.key}" uses unknown placeholder(s): ${badPh.map((t) => `{{${t}}}`).join(', ')}`);
       }
       // internal content is never exported to guest guide / chatbot bundles.
       content.guide[locale] = data.sections.filter((s) => s.visibility !== 'internal');
