@@ -20,6 +20,15 @@
       "visibility": "guest",
       "sortOrder": 20,
       "translationStatus": "reviewed"
+    },
+    {
+      "key": "kamin",
+      "title": "Fireplace",
+      "bodyMd": "How to light a fire in the fireplace:\n\n- Fully open the air supply (lever at the bottom).\n- A starter set with firelighters, kindling and wood is provided for your first fire.\n- Light it from the top down, then add larger logs after about 15 minutes.\n- Once it's burning well, close the air supply about halfway.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 30,
+      "translationStatus": "reviewed"
     }
   ]
 }

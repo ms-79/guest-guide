@@ -87,10 +87,20 @@ sind als Schnell-Hinzufügen hinterlegt. Speichern → Pull Request (`kind: 'gui
 Whitelist enthalten (`{{wifiName}}` …). **Interne** Sektionen werden im Admin nicht
 angezeigt (der Generator strippt sie) und bleiben repo-seitig.
 
-**Noch offen:** Die Gästemappen-**UI rendert** die Sektionen noch nicht aus `guide/*.json`
-— sie läuft weiter über `translations.ts` / `GuestGuideContent.tsx`. Das Anbinden des
-Gäste-Frontends an die Content-Schicht ist der nächste Schritt (analog zum Hero, der bereits
-aus der Content-Schicht rendert).
+**Gäste-Rendering (additiv, live):** Die Gästemappe rendert Content-Sektionen aus dem
+generierten, facts-freien Modul `src/generated/guide.ts` (`getGuideSections(slug, locale)`,
+Fallback Locale → `de` → `en`). Es werden nur Sektionen gezeigt, deren `key` **nicht** eine
+der bestehenden, reich gebauten Sektionen ist (`BUILT_IN_GUIDE_KEYS` in
+`GuestGuideContent.tsx`) — so erscheinen im Admin **neu** angelegte Sektionen (z. B. `kamin`)
+live, ohne die bespoke Sektionen (Türcode, WLAN, Zeiten …) zu duplizieren. Erlaubte
+`{{platzhalter}}` werden dabei mit den Werten der **authentifizierten** Guest-Session gefüllt
+(fehlende Werte → `…`, nie geraten).
+
+**Noch offen:** Die bestehenden bespoke Sektionen (Zugang, WLAN, Küche …) sind noch nicht in
+`guide/*.json` migriert — das ist ein „größerer Umbau", weil ihr Content-Modell (nur `bodyMd`)
+die reiche UI (Türcode-Anzeige, formatierte Zeiten, Karten) erst nach Erweiterung ersetzen
+kann. Bis dahin bleiben sie in `translations.ts` / `GuestGuideContent.tsx`; Content-Sektionen
+mit denselben `key`s werden bewusst übersprungen.
 
 ### B. Chatbot Facts (`chatbot/facts.<locale>.md`)
 **Der Kern von Phase 1.** Freies Markdown mit property-spezifischen Fakten in

@@ -20,6 +20,15 @@
       "visibility": "guest",
       "sortOrder": 20,
       "translationStatus": "source"
+    },
+    {
+      "key": "kamin",
+      "title": "Kamin",
+      "bodyMd": "So macht ihr Feuer im Kamin:\n\n- Kaminzufuhr (Hebel unten) vollständig öffnen.\n- Ein Starterset mit Anzünder, Anfeuerholz und Holz ist als Erstausstattung vorhanden.\n- Von oben nach unten anzünden, nach ca. 15 Minuten größere Scheite nachlegen.\n- Zufuhr nach dem Anbrennen halb schließen.",
+      "phase": "stay",
+      "visibility": "guest",
+      "sortOrder": 30,
+      "translationStatus": "source"
     }
   ]
 }

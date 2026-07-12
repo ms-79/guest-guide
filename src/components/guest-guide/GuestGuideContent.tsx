@@ -6,12 +6,40 @@ import {
   UtensilsCrossed, Phone, MapPin, Star, Mountain,
   ShoppingCart, HelpCircle, Info,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import type { GuestData } from '@/pages/GuestGuide';
 import type { PropertyConfig } from '@/config/properties';
 import GuestGuideEvents from './GuestGuideEvents';
 import { useGuestGuideLocale } from './GuestGuideLanguageContext';
 import { translations, type GuestGuideLocale } from './translations';
 import { getRecommendations } from '@/generated/recommendations';
+import { getGuideSections } from '@/generated/guide';
+
+// Keys already covered by the rich, bespoke accordion sections below (incl. the
+// admin's known standard-section keys that map onto them). Content-layer guide
+// sections with these keys are skipped so they don't duplicate the built-ins —
+// only genuinely NEW sections (e.g. added in /admin) render additively.
+const BUILT_IN_GUIDE_KEYS = new Set([
+  'zugang', 'wlan', 'wifi', 'familie', 'kueche', 'faq', 'sauna', 'restaurants',
+  'einkaufen', 'ausfluege', 'e-auto', 'checkout', 'checkin', 'parken', 'kontakt',
+  'entsorgung', 'anleitungen', 'notfall',
+]);
+
+// Fill whitelisted {{placeholders}} with the authenticated guest's own values.
+// Unknown or empty values fall back to '…' (never guess). WHY here: guests are
+// already authenticated in this view, and these values come from Hostaway at
+// runtime — they are never stored in the content repo.
+function fillPlaceholders(text: string, g: GuestData): string {
+  const first = (g.guestName || '').trim().split(/\s+/)[0] || '';
+  const map: Record<string, string> = {
+    guestFirstName: first,
+    wifiPassword: g.wifiPassword || '',
+    accessPin: g.boxCode || '',
+    arrivalDate: g.checkin || '',
+    departureDate: g.checkout || '',
+  };
+  return text.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_m, tok: string) => map[tok] || '…');
+}
 
 function formatTime(time: string, locale: GuestGuideLocale): string {
   const [hStr, mStr = '00'] = time.split(':');
@@ -68,6 +96,11 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
   const { boxCode, wifiPassword } = guestData;
   const { locale } = useGuestGuideLocale();
   const t = translations;
+
+  // Additional, content-driven sections maintained in /admin (guide/*.json).
+  // Only sections whose key isn't already a built-in are shown (no duplication).
+  const customSections = getGuideSections(property.slug, locale)
+    .filter((s) => !BUILT_IN_GUIDE_KEYS.has(s.key));
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12 md:py-16">
@@ -499,6 +532,23 @@ const GuestGuideContent = ({ guestData, activeSection, onSectionChange, property
             </div>
           </AccordionContent>
         </AccordionItem>
+
+        {/* Weitere, im Admin gepflegte Sektionen (guide/*.json) */}
+        {customSections.map((s) => (
+          <AccordionItem key={s.key} value={s.key} id={s.key} className="border border-border rounded-lg px-6 overflow-hidden">
+            <AccordionTrigger className="text-lg md:text-xl font-display hover:no-underline">
+              <span className="flex items-center gap-3">
+                <Info size={20} className="text-alpine-wood" />
+                {s.title}
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              <div className="prose prose-sm max-w-none dark:prose-invert">
+                <ReactMarkdown>{fillPlaceholders(s.bodyMd, guestData)}</ReactMarkdown>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
 
         {/* Notfall */}
         <AccordionItem value="notfall" id="notfall" className="border border-border rounded-lg px-6 overflow-hidden">
