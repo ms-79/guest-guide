@@ -83,12 +83,14 @@
    `hostawayField`, `active`, `chatbotEnabled`. Defaults aus Kategorien ableiten (siehe Auftrag
    §5.6). Chatbot rendert die Facts-Tabelle → Markdown-Kontext (eine Source of Truth). Migration
    der bestehenden `facts.de.md` in dieses Modell.
-3. **Gästemappen-Sektionen editierbar** (`guide/*.json`): **Admin-Editor erledigt** — pro Sprache
-   anlegen/bearbeiten/sortieren/entfernen, Standard-Sektionen als Schnell-Hinzufügen, KI-Button je
-   Sektion, Platzhalter-Whitelist, Speichern → PR (`kind: 'guide'`). **Offen:** (a) das Gäste-**Frontend**
-   an `guide/*.json` anbinden (rendert noch aus `translations.ts`/`GuestGuideContent.tsx`) und
-   bestehende Sektionen dorthin migrieren; (b) optional explizite Fact-Referenzen je Sektion +
-   feste Sektionen vor versehentlichem Löschen schützen.
+3. **Gästemappen-Sektionen editierbar + additiv gerendert** (`guide/*.json`): **erledigt** —
+   Admin-Editor (anlegen/bearbeiten/sortieren/entfernen, Standard-Sektionen, KI-Button, PR
+   `kind: 'guide'`) **und** Gäste-Rendering: `GuestGuideContent` zeigt neue Content-Sektionen aus
+   `src/generated/guide.ts` (`getGuideSections`), übersprungen werden `BUILT_IN_GUIDE_KEYS`
+   (keine Duplikate mit den bespoke Sektionen). Platzhalter werden aus der Guest-Session gefüllt.
+   Beispiel live: `kamin` (aus den Facts). **Offen:** die bestehenden **bespoke** Sektionen
+   (Zugang/WLAN/Küche …) nach `guide/*.json` migrieren — braucht ein reicheres Content-Modell
+   (Türcode-Anzeige, Zeiten, Karten); optional Fact-Referenzen je Sektion + Löschschutz.
 4. **Sektions-Vorschläge** aus Ausstattung/Facts (Sauna→„Sauna", Kamin→„Kamin", …) mit Status
    `suggested / accepted / dismissed` (ignorierte tauchen nicht erneut auf).
 5. **Veraltungserkennung**: Sektion als „Möglicherweise veraltet" markieren, wenn ein genutzter
