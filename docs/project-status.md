@@ -76,20 +76,19 @@
 > die Content-Schicht, der property-aware Chatbot, der Facts-Editor, der Empfehlungs-Editor
 > und (neu) die **Hero-Pflege + Tab-Struktur**. **Noch NICHT gebaut** — nach Priorität:
 
-1. **KI „Text aus Fakten erstellen"** — Grundgerüst **erledigt** (`POST /api/admin/ai/generate`
-   + `AiAssist`-UI, zunächst im Hero-Editor). **Offen:** dieselben Buttons an die
-   Gästemappen-Sektionen hängen (kommt mit Punkt 3) und optional an die Empfehlungen.
+1. **KI „Text aus Fakten erstellen"** — **erledigt** (`POST /api/admin/ai/generate` + `AiAssist`-UI)
+   im **Hero-Editor** und in den **Gästemappen-Sektionen**. **Offen:** optional an die Empfehlungen.
 2. **Strukturierte Fakten-Tabelle** (ersetzt die heutige `chatbot/facts.de.md`-Freitext-Pflege):
    Facts als Einträge mit `name`, `category`, `description`, `source` (manual|hostaway),
    `hostawayField`, `active`, `chatbotEnabled`. Defaults aus Kategorien ableiten (siehe Auftrag
    §5.6). Chatbot rendert die Facts-Tabelle → Markdown-Kontext (eine Source of Truth). Migration
    der bestehenden `facts.de.md` in dieses Modell.
-3. **Gästemappen-Sektionen editierbar** (`guide/*.json`): feste Standard-Sektionen (WLAN, Zugang,
-   Check-in/out, Parken, Kontakt, Müll & Abreise) einführen, bestehende Sektionen aus
-   `translations.ts` / `GuestGuideContent.tsx` migrieren, Fact-Referenzen je Sektion, KI-Button,
-   dynamische Hostaway-Platzhalter (`{{wifiName}}`, `{{accessPin}}` …, nur bei gültiger Session).
-   Heute sind `guide/*.json` erst **read-only** im Admin; die Gästemappe rendert noch aus
-   `translations.ts`/`GuestGuideContent.tsx`.
+3. **Gästemappen-Sektionen editierbar** (`guide/*.json`): **Admin-Editor erledigt** — pro Sprache
+   anlegen/bearbeiten/sortieren/entfernen, Standard-Sektionen als Schnell-Hinzufügen, KI-Button je
+   Sektion, Platzhalter-Whitelist, Speichern → PR (`kind: 'guide'`). **Offen:** (a) das Gäste-**Frontend**
+   an `guide/*.json` anbinden (rendert noch aus `translations.ts`/`GuestGuideContent.tsx`) und
+   bestehende Sektionen dorthin migrieren; (b) optional explizite Fact-Referenzen je Sektion +
+   feste Sektionen vor versehentlichem Löschen schützen.
 4. **Sektions-Vorschläge** aus Ausstattung/Facts (Sauna→„Sauna", Kamin→„Kamin", …) mit Status
    `suggested / accepted / dismissed` (ignorierte tauchen nicht erneut auf).
 5. **Veraltungserkennung**: Sektion als „Möglicherweise veraltet" markieren, wenn ein genutzter

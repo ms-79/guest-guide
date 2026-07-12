@@ -4,7 +4,7 @@ import { hasValidSession } from '../../../src/server/session';
 import { createContentPr, type GithubConfig } from '../../../src/server/github';
 import { findForbiddenFactMatches } from '../../../src/content/facts-guard';
 import { findUnknownPlaceholders } from '../../../src/content/placeholders';
-import { heroContentSchema, placesFileSchema, recommendationsFileSchema } from '../../../src/content/schemas';
+import { heroContentSchema, guideFileSchema, placesFileSchema, recommendationsFileSchema } from '../../../src/content/schemas';
 import { propertyMeta } from '../../../src/generated/content';
 
 const env = (name: string): string => (process.env[name] || '').replace(/^\uFEFF/, '').trim();
@@ -23,6 +23,8 @@ const stampNow = () => new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 
  * never commits to the base branch directly.
  *
  * kind: 'facts'           → chatbot facts Markdown (single file, per locale)
+ * kind: 'hero'            → hero/welcome copy (hero/<locale>.json)
+ * kind: 'guide'           → guide sections (guide/<locale>.json, per locale)
  * kind: 'recommendations' → recommendations for a property, German only
  *                           (writes recommendations/places.json + de.json)
  */
@@ -95,6 +97,29 @@ export default async function handler(req: Request): Promise<Response> {
     files = [{ path: `content/properties/${propertySlug}/hero/${locale}.json`, content }];
     title = `Update hero copy (${locale}) for ${displayName}`;
     branch = `content/${propertySlug}-${stampNow()}-hero-${locale}`;
+  } else if (kind === 'guide') {
+    const locale = typeof payload.locale === 'string' ? payload.locale : '';
+    if (!LOCALES.includes(locale)) return json({ error: 'Ungültige Sprache.' }, 400);
+    const parsed = guideFileSchema.safeParse({ propertySlug, locale, sourceLocale: 'de', sections: payload.sections });
+    if (!parsed.success) return json({ error: 'Ungültige Sektions-Daten.', detail: parsed.error.issues.slice(0, 3) }, 400);
+
+    const seen = new Set<string>();
+    for (const s of parsed.data.sections) {
+      if (seen.has(s.key)) return json({ error: `Doppelter Sektions-Schlüssel "${s.key}".` }, 400);
+      seen.add(s.key);
+      const combined = `${s.title} ${s.bodyMd}`;
+      const hits = findForbiddenFactMatches(combined);
+      if (hits.length) return json({ error: `Sektion "${s.key}" enthält unzulässige Begriffe (${hits.join(', ')}).` }, 400);
+      const badPh = findUnknownPlaceholders(combined);
+      if (badPh.length) return json({ error: `Sektion "${s.key}" nutzt unbekannte Platzhalter (${badPh.map((t) => `{{${t}}}`).join(', ')}).` }, 400);
+    }
+
+    const content = JSON.stringify({ propertySlug, locale, sourceLocale: 'de', sections: parsed.data.sections }, null, 2) + '\n';
+    if (new TextEncoder().encode(content).length > MAX_CONTENT_BYTES) return json({ error: 'Inhalt ist zu groß.' }, 400);
+
+    files = [{ path: `content/properties/${propertySlug}/guide/${locale}.json`, content }];
+    title = `Update guide sections (${locale}) for ${displayName}`;
+    branch = `content/${propertySlug}-${stampNow()}-guide-${locale}`;
   } else if (kind === 'recommendations') {
     // German-only: client sends the full places list + the German items.
     const placesParsed = placesFileSchema.safeParse({ propertySlug, places: payload.places });
