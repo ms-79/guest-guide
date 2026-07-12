@@ -15,7 +15,7 @@
     {
       "key": "sauna",
       "title": "Sauna",
-      "bodyMd": "Die Sauna befindet sich im Keller. Bitte nach der Nutzung ausschalten und kurz lüften. Immer auf einem Handtuch sitzen.",
+      "bodyMd": "# Sauna\n\nDie Sauna im Keller ist dein persönlicher Wellness-Raum – perfekt nach einem Tag in den Bergen oder einfach zum Entspannen mit der Familie.\n\n**So geht's:**\n- **Einschalten:** Power-Taste oben rechts ca. 3 Sekunden halten, bis der Ladekreis voll ist\n- **Aufheizzeit:** etwa 30–45 Minuten\n- **Temperatur einstellen:** Drehregler drehen → „Temperatur\" wählen → drehen → drücken zum Bestätigen (empfohlen 70–85 °C)\n- **Abschalten:** Power-Taste kurz drücken (das Licht bleibt noch 30 Minuten an)\n- **Automatik:** Die Sauna läuft maximal 3 Stunden, dann schaltet sie sich selbst ab\n\n**Wichtig:** Bitte immer auf einem Handtuch sitzen und danach kurz lüften.\n\nViel Entspannung!",
       "phase": "stay",
       "visibility": "guest",
       "sortOrder": 20,
